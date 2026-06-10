@@ -21,6 +21,10 @@ EMBED = {
     'tri_L5_uncompacted': 'global_tri_L5_uncompacted.topojson',
     'tri_L6_compacted':   'global_tri_L6_compacted.topojson',
     'tri_L6_uncompacted': 'global_tri_L6_uncompacted.topojson',
+    'tri_L7_compacted':   'global_tri_L7_compacted.topojson',
+    'tri_L7_uncompacted': 'global_tri_L7_uncompacted.topojson',
+    'tri_L8_compacted':   'global_tri_L8_compacted.topojson',
+    'tri_L8_uncompacted': 'global_tri_L8_uncompacted.topojson',
     'a5_compacted':       'cmp_a5_compacted.topojson',
     'a5_uncompacted':     'cmp_a5_uncompacted.topojson',
     'h3_compacted':       'cmp_h3_compacted.topojson',
@@ -278,6 +282,8 @@ $ curl https://YOUR-WORKER.workers.dev/locate/-0.1276,51.5072?level=6
           <button data-v="4">~440 km</button>
           <button data-v="5">~220 km</button>
           <button data-v="6" class="on">~110 km</button>
+          <button data-v="7">~55 km</button>
+          <button data-v="8">~28 km</button>
         </div></div>
       <div class="row"><label>Hierarchy</label>
         <div class="seg" id="seg-mode">
