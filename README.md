@@ -395,7 +395,7 @@ local dataset instead.
 
 * neighbour traversal across face boundaries (edge-adjacency tables)
 * level 7–9 products + PMTiles in CI
-* vectorized `locate` (numpy batch) and a DuckDB UDF for `addr64` joins
+* vectorized `locate` DuckDB UDF for `addr64` joins
 * optional ISEA-style equal-area variant (snyder projection per face)
 * polygon→cells fill (`polyfill` equivalent)
 
