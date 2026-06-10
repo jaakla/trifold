@@ -51,7 +51,7 @@ for key, fn in EMBED.items():
                 os.path.getsize(pm_src) != os.path.getsize(pm_dst) or
                 os.path.getmtime(pm_src) > os.path.getmtime(pm_dst)):
             shutil.copy2(pm_src, pm_dst)
-        pmtiles[key] = {'url': f'data/{pm_name}', 'sourceLayer': 'cells'}
+        pmtiles[key] = {'url': f'https://pub-7e631bea93414a488b6a0fec7a7225e5.r2.dev/data/{pm_name}', 'sourceLayer': 'cells'}
 
         geojson_path = os.path.join(DATA, f'{stem}.geojson')
         if not os.path.isfile(geojson_path):
