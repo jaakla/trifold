@@ -10,7 +10,6 @@ import shutil
 
 DATA = 'data'
 OUT = 'docs/index.html'
-DOCS_DATA = 'docs/data'
 JS_SDK = 'js/trifold.js'
 DOCS_SDK = 'docs/sdk/trifold.js'
 GH = 'https://github.com/jaakla/trifold'
@@ -45,12 +44,7 @@ for key, fn in EMBED.items():
     pm_name = f'{stem}.pmtiles'
     pm_src = os.path.join(DATA, pm_name)
     if os.path.isfile(pm_src):
-        os.makedirs(DOCS_DATA, exist_ok=True)
-        pm_dst = os.path.join(DOCS_DATA, pm_name)
-        if (not os.path.isfile(pm_dst) or
-                os.path.getsize(pm_src) != os.path.getsize(pm_dst) or
-                os.path.getmtime(pm_src) > os.path.getmtime(pm_dst)):
-            shutil.copy2(pm_src, pm_dst)
+        # PMTiles served from Cloudflare R2, no local copy needed
         pmtiles[key] = {'url': f'https://pub-7e631bea93414a488b6a0fec7a7225e5.r2.dev/data/{pm_name}', 'sourceLayer': 'cells'}
 
         geojson_path = os.path.join(DATA, f'{stem}.geojson')
@@ -71,7 +65,7 @@ for key, fn in EMBED.items():
             'interior': interior,
             'byLevel': by_level,
         }
-        print(f"pmtiles source: {key} -> docs/data/{pm_name}")
+        print(f"pmtiles: {key} -> {pmtiles[key]['url']}")
         continue
 
     raw = open(os.path.join(DATA, fn), 'rb').read()
