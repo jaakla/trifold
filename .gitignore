@@ -9,3 +9,4 @@ data/*.pkl
 !data/sample_*.geojson
 .venv/
 poetry.lock
+.DS_Store

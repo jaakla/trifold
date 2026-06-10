@@ -310,35 +310,50 @@ tests/              test_address.py
 Quickstart:
 
 ```bash
-pip install -e ".[build]"
+poetry install --all-extras
+poetry run pytest tests/
+poetry run python scripts/build_grids.py --levels 4 5 6
+poetry run python scripts/build_comparison_dggs.py
+poetry run python scripts/build_a5_layer.py
+poetry run python scripts/build_more_dggs.py
+poetry run python scripts/make_site.py          # → docs/index.html
+```
+
+After `eval "$(poetry env activate)"`, omit `poetry run`:
+
+```bash
 pytest tests/
 python scripts/build_grids.py --levels 4 5 6
 python scripts/build_comparison_dggs.py
-python scripts/build_a5_layer.py        # A5 pentagons (pip install pya5)
+python scripts/build_a5_layer.py
 python scripts/build_more_dggs.py       # S2 + rHEALPix + HTM layers
-python scripts/make_site.py          # → docs/index.html (landing + viewer)
+python scripts/make_site.py              # → docs/index.html
 ```
 
 ---
 
 ## Development environment
 
-Create and activate a virtual environment, then install the package plus build extras.
-
-Preferred (installs package + extras declared in `pyproject.toml`):
+Poetry is the recommended development environment:
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -e ".[build]"
+poetry install --all-extras
+eval "$(poetry env activate)"  # activate in the current zsh/bash session
 ```
 
-Alternative (use the repository `requirements.txt`):
+Poetry 2.x no longer includes `poetry shell` by default. It manages this
+environment itself and may not install `pip`; do not run pip installation
+commands while the prompt starts with `(trifold)`. Use `poetry add` to add
+dependencies, or `poetry run COMMAND` without activating the environment.
+
+Alternatively, use a standard virtual environment instead of Poetry:
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
+deactivate 2>/dev/null || true  # leave the Poetry environment first
+python -m venv .venv-pip
+source .venv-pip/bin/activate
+python -m ensurepip --upgrade
+python -m pip install -e ".[build,dev]"
 ```
 
 `tippecanoe` is required for `scripts/make_pmtiles.sh` (OS-level tool):
@@ -350,18 +365,18 @@ brew install tippecanoe
 # Linux: build from source or use the docker image; the script assumes `tippecanoe` is on PATH
 ```
 
-Optional modern workflow (Poetry):
+PMTiles are built from generated level-6 GeoJSON files. Generate those
+files first, then run `tippecanoe` through the wrapper:
 
 ```bash
-poetry install
-poetry shell
-```
-
-Generate PMTiles after installing `tippecanoe`:
-
-```bash
+python scripts/build_grids.py --levels 6
 ./scripts/make_pmtiles.sh
 ```
+
+The grid build requires the Natural Earth checkout described in
+Natural Earth 1:50m land data. The default build downloads and verifies the
+pinned v5.1.2 GeoJSON automatically. Use `--land PATH` to supply another
+local dataset instead.
 
 ## 9. Roadmap
 

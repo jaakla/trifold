@@ -10,9 +10,45 @@
 # any static host with Range support). The viewer loads it with the
 # pmtiles JS protocol:  https://github.com/protomaps/PMTiles
 set -euo pipefail
-cd "$(dirname "$0")/../data"
 
-for f in global_tri_L6_compacted global_tri_L6_uncompacted; do
+ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+DATA_DIR="$ROOT_DIR/data"
+GRIDS=(global_tri_L6_compacted global_tri_L6_uncompacted)
+
+if ! command -v tippecanoe >/dev/null 2>&1; then
+  cat >&2 <<'ERROR'
+error: tippecanoe is not installed or is not on PATH.
+
+macOS: brew install tippecanoe
+Linux: https://github.com/felt/tippecanoe#installation
+ERROR
+  exit 1
+fi
+
+missing=()
+for grid in "${GRIDS[@]}"; do
+  [[ -f "$DATA_DIR/${grid}.geojson" ]] || missing+=("data/${grid}.geojson")
+done
+
+if ((${#missing[@]})); then
+  printf 'error: required generated grid input(s) are missing:\n' >&2
+  printf '  %s\n' "${missing[@]}" >&2
+  cat >&2 <<'ERROR'
+
+Generate them first:
+  python scripts/build_grids.py --levels 6
+
+The default build also requires Natural Earth land data at:
+  natural-earth-vector/geojson/ne_50m_land.geojson
+
+See data/README.md for the download commands.
+ERROR
+  exit 1
+fi
+
+cd "$DATA_DIR"
+
+for f in "${GRIDS[@]}"; do
   tippecanoe -o "${f}.pmtiles" \
     --layer=cells \
     --minimum-zoom=0 --maximum-zoom=8 \
