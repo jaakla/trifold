@@ -4,10 +4,13 @@ interactive 7-system DGGS comparison viewer (GitHub Pages ready).
 """
 import base64
 import gzip
+import json
 import os
+import shutil
 
 DATA = 'data'
 OUT = 'docs/index.html'
+DOCS_DATA = 'docs/data'
 GH = 'https://github.com/jaakla/trifold'
 
 EMBED = {
@@ -32,16 +35,55 @@ EMBED = {
 }
 
 datasets = {}
+pmtiles = {}
+dataset_stats = {}
 total = 0
 for key, fn in EMBED.items():
+    stem = fn.removesuffix('.topojson')
+    pm_name = f'{stem}.pmtiles'
+    pm_src = os.path.join(DATA, pm_name)
+    if os.path.isfile(pm_src):
+        os.makedirs(DOCS_DATA, exist_ok=True)
+        pm_dst = os.path.join(DOCS_DATA, pm_name)
+        if (not os.path.isfile(pm_dst) or
+                os.path.getsize(pm_src) != os.path.getsize(pm_dst) or
+                os.path.getmtime(pm_src) > os.path.getmtime(pm_dst)):
+            shutil.copy2(pm_src, pm_dst)
+        pmtiles[key] = {'url': f'data/{pm_name}', 'sourceLayer': 'cells'}
+
+        geojson_path = os.path.join(DATA, f'{stem}.geojson')
+        if not os.path.isfile(geojson_path):
+            raise FileNotFoundError(
+                f'{pm_src} exists but {geojson_path} is needed for viewer stats')
+        with open(geojson_path) as src:
+            features = json.load(src)['features']
+        by_level = {}
+        interior = 0
+        for feature in features:
+            props = feature['properties']
+            level = str(props['level'])
+            by_level[level] = by_level.get(level, 0) + 1
+            interior += bool(props.get('interior'))
+        dataset_stats[key] = {
+            'count': len(features),
+            'interior': interior,
+            'byLevel': by_level,
+        }
+        print(f"pmtiles source: {key} -> docs/data/{pm_name}")
+        continue
+
     raw = open(os.path.join(DATA, fn), 'rb').read()
-    gz = gzip.compress(raw, 9)
+    gz = gzip.compress(raw, 9, mtime=0)
     datasets[key] = base64.b64encode(gz).decode()
     total += len(datasets[key])
-print(f"embedded payload: {total/1e6:.1f} MB b64 across {len(EMBED)} datasets")
+print(f"embedded payload: {total/1e6:.1f} MB b64 across {len(datasets)} datasets")
 
-data_js = "const DATASETS = {\n" + ",\n".join(
-    f'  "{k}": "{v}"' for k, v in datasets.items()) + "\n};"
+data_js = (
+    "const DATASETS = {\n" + ",\n".join(
+        f'  {json.dumps(k)}: {json.dumps(v)}' for k, v in datasets.items()) +
+    "\n};\n" +
+    f"const PMTILES_DATASETS = {json.dumps(pmtiles, separators=(',', ':'))};\n" +
+    f"const DATASET_STATS = {json.dumps(dataset_stats, separators=(',', ':'))};")
 
 html = """<!doctype html>
 <html lang="en">
@@ -53,6 +95,7 @@ html = """<!doctype html>
 <script src="https://unpkg.com/maplibre-gl@5.6.0/dist/maplibre-gl.js"></script>
 <link href="https://unpkg.com/maplibre-gl@5.6.0/dist/maplibre-gl.css" rel="stylesheet">
 <script src="https://unpkg.com/topojson-client@3/dist/topojson-client.min.js"></script>
+<script src="https://unpkg.com/pmtiles@3/dist/pmtiles.js"></script>
 <style>
   :root{--ink:#1c2733;--mut:#5b6b7b;--acc:#2b6f9a;--warm:#d94e2f;--bg:#fbfaf7;--card:#fff}
   *{box-sizing:border-box}
@@ -171,9 +214,9 @@ html = """<!doctype html>
   <div class="cards">
     <div class="card"><b>Exact nesting</b><p>Parent = union of 4 children, verified to
       floating-point noise (10⁻¹⁹ of cell area). Lossless multi-resolution aggregation.</p></div>
-    <div class="card"><b>Poles &amp; antimeridian, solved</b><p>Both poles are lattice vertices:
+    <div class="card"><b>Poles and antimeridian</b><p>Both poles are lattice vertices:
       six meridian wedges meet at exactly ±90°. Antimeridian cells use continuous longitudes
-      and are flagged. No sampling shortcuts — classification is exact polygon math.</p></div>
+      and are flagged. Classification uses polygon geometry.</p></div>
     <div class="card"><b>Compacted coverage</b><p>Interior cells merge up the quadtree as far
       as they stay wholly on land; coastlines stay fine. 27,614 → 10,046 cells at level 6,
       identical 171.1M km² coverage.</p></div>
@@ -216,13 +259,13 @@ $ curl https://YOUR-WORKER.workers.dev/locate/-0.1276,51.5072?level=6
   <div class="inner">
     <h2>Live demo — 7 grid systems, one map</h2>
     <p>Trifold triangles vs <a href="https://a5geo.org" target="_blank">A5</a> pentagons,
-    H3 hexagons, S2 quads, rHEALPix, HTM (Trifold's octahedral ancestor) and a plain lon/lat
-    grid. Same land, same styling. Toggle <b>globe ↔ flat</b> and watch what Mercator does to
-    the poles; click any cell for its address and properties.</p>
+    H3 hexagons, S2 quads, rHEALPix, HTM (a related octahedral grid) and a plain lon/lat
+    grid. Each layer uses the same land mask and styling. Toggle <b>globe ↔ flat</b> to compare
+    the globe and Mercator projections; click any cell for its address and properties.</p>
   </div>
   <div class="viewerwrap">
     <div id="map"></div>
-    <div id="loading">Decompressing grid data…</div>
+    <div id="loading">Loading grid data…</div>
     <div class="panel">
       <div class="row"><label>System</label>
         <div class="seg" id="seg-sys">
@@ -258,7 +301,7 @@ $ curl https://YOUR-WORKER.workers.dev/locate/-0.1276,51.5072?level=6
 </section>
 
 <section id="compare">
-  <h2>Fair comparison</h2>
+  <h2>Grid system comparison</h2>
   <table>
     <tr><th></th><th><b>T3</b> (this)</th><th>A5</th><th>H3</th><th>S2</th><th>rHEALPix</th><th>HTM/QTM</th></tr>
     <tr><td>base solid</td><td>icosahedron</td><td>dodecahedron</td><td>icosahedron</td>
@@ -275,39 +318,38 @@ $ curl https://YOUR-WORKER.workers.dev/locate/-0.1276,51.5072?level=6
         <td class="good">6 uniform</td><td>4</td><td>4</td><td>3 (+vertex)</td></tr>
     <tr><td>index</td><td>uint64, prefix=subtree</td><td>uint64, Hilbert</td>
         <td>uint64</td><td>uint64, Hilbert</td><td>string</td><td>quadtree string</td></tr>
-    <tr><td>ecosystem</td><td>this repo (2026)</td><td>young (2025)</td>
-        <td class="good">huge</td><td class="good">huge</td><td>niche / OGC</td><td>astronomy</td></tr>
+    <tr><td>ecosystem</td><td>this repository (2026)</td><td>introduced in 2025</td>
+        <td class="good">widely used</td><td class="good">widely used</td>
+        <td>academic / OGC</td><td>astronomy</td></tr>
   </table>
-  <p>Honest bottom line: need neighbour traversal or a mature ecosystem → <b>H3</b>; pure
-  spatial indexing → <b>S2</b>; strictly equal areas → <b>rHEALPix</b> or its web-native cousin
-  <a href="https://a5geo.org" target="_blank"><b>A5</b></a>. T3's niche is exact hierarchical
-  aggregation, variable-resolution tilings that snap, and pipelines that think in triangles.
-  T3 and A5 are mirror images: exact geometry / approximate areas vs exact areas / approximate
-  geometry. Full analysis: <a href="t3-technical-reference.md">technical reference</a>.</p>
+  <p>Selection depends on the application. <b>H3</b> provides uniform neighbour traversal and
+  a mature ecosystem; <b>S2</b> focuses on spatial indexing; <b>rHEALPix</b> and
+  <a href="https://a5geo.org" target="_blank"><b>A5</b></a> provide equal-area cells. T3
+  focuses on exact hierarchical aggregation, variable-resolution tilings, and pipelines based
+  on triangular geometry. Full analysis:
+  <a href="t3-technical-reference.md">technical reference</a>.</p>
 </section>
 
 <section id="usecases">
-  <h2>What triangles are good for — and not</h2>
+  <h2>Suitable uses and limitations</h2>
   <div class="twocol">
-    <div class="card"><b>✔ Genuinely good</b><ul>
+    <div class="card"><b>Suitable uses</b><ul>
       <li><b>Lossless multi-resolution aggregation</b> — level-9 sums roll into level-6 cells
         exactly; no slivers, no overlap weighting.</li>
-      <li><b>Variable-resolution coverage</b> — compacted tilings snap perfectly; any subtree
+      <li><b>Variable-resolution coverage</b> — compacted tilings retain shared boundaries; any subtree
         is one uint64 range scan.</li>
       <li><b>Simplicial pipelines</b> — FEM/FVM meshes, TINs, barycentric interpolation,
         subdivision surfaces plug in directly.</li>
-      <li><b>Geodesic honesty</b> — no polar singularity; ~±20% smooth area variation
+      <li><b>Geodesic properties</b> — no polar singularity; ~±20% smooth area variation
         worldwide vs 17× collapse for lon/lat at 80°N.</li>
       <li><b>Survey/sampling designs</b> where hierarchy beats neighbour traversal.</li>
     </ul></div>
-    <div class="card"><b>✘ Honestly not</b><ul>
+    <div class="card"><b>Limitations</b><ul>
       <li><b>Neighbour-heavy algorithms</b> — 3 edge + 9 vertex neighbours with alternating
-        orientation; hexagons are simply better for diffusion, routing, CA.</li>
-      <li><b>General-audience choropleths</b> — hex maps look calm, triangle maps look
-        technical.</li>
+        orientation; hexagonal grids provide 6 uniform neighbours.</li>
+      <li><b>General-audience choropleths</b> — triangle boundaries can be visually prominent.</li>
       <li><b>Orientation-sensitive statistics</b> — up/down cells are congruent but rotated 60°.</li>
-      <li><b>City-scale local work</b> — just use a projected CRS; a global DGGS buys nothing
-        there.</li>
+      <li><b>City-scale local work</b> — a projected CRS and planar grid may be simpler.</li>
     </ul></div>
   </div>
 </section>
@@ -315,15 +357,15 @@ $ curl https://YOUR-WORKER.workers.dev/locate/-0.1276,51.5072?level=6
 <section id="serving">
   <h2>Serving at scale</h2>
   <div class="cards">
-    <div class="card"><b>Embedded TopoJSON</b><p>What this page does — fine to ~30k cells.
-      Shared-arc deduplication cuts 40–60% vs GeoJSON; gzip+base64 in-page, decompressed via
-      DecompressionStream.</p></div>
+    <div class="card"><b>Automatic source selection</b><p>This page uses PMTiles from
+      <code>docs/data/</code> when available and falls back to embedded, gzip-compressed
+      TopoJSON for other datasets.</p></div>
     <div class="card"><b>PMTiles</b><p><code>scripts/make_pmtiles.sh</code> tiles any product
       with tippecanoe into a single static file; host on anything with HTTP Range support.
-      Right answer for "show me everything" at level 7+.</p></div>
+      Suitable for full-grid display at level 7 and above.</p></div>
     <div class="card"><b>Cloudflare Worker</b><p><code>worker/cell-server.js</code> — zero
-      stored data, cells regenerated from pure math, edge-cached. Right answer for "give me
-      <i>these</i> cells" from a DB join on addr64. Free tier, one wrangler command.</p></div>
+      stored data, cells regenerated from geometry and edge-cached. Suitable for retrieving
+      selected cells, including addresses produced by a database join on addr64.</p></div>
   </div>
 </section>
 
@@ -345,28 +387,29 @@ const COASTAL='#74a9cf';
 const SYS_NOTES={
  tri:'Trifold (T3): icosahedral triangles, exact aperture-4 nesting. Click a cell for its '+
      'compact base32 address, digit path and uint64. Pole cells are meridian wedges reaching '+
-     '±90° — Mercator clips them, Globe shows them properly.',
+     '±90°. Mercator clips them; Globe displays the complete geometry.',
  a5:'<a href="https://a5geo.org" target="_blank">A5</a> (Felix Palmer, 2025): dodecahedral '+
-    'pentagons, res 6 (~8,300 km²) — <b>exactly</b> equal area within a level, A5\\'s signature. '+
+    'pentagons, res 6 (~8,300 km²), with equal area within each level. '+
     'Aperture-4 hierarchy is <i>logical</i>: parents only approximately cover children. '+
     'Compacted via native a5.compact.',
- h3:'Uber H3, res 3 hexagons (~12,400 km²). 12 pentagons globally (find one!). Aperture-7 '+
+ h3:'Uber H3, res 3 hexagons (~12,400 km²), with 12 pentagons globally. Aperture-7 '+
     'parents only approximately contain children; compacted via native h3.compact_cells.',
  s2:'Google S2 (via s2sphere), level 6 (~20,750 km²). Cube-sphere quadtree with exact '+
-    'aperture-4 nesting and superb Hilbert indexing; cell areas vary ~2× face-centre to '+
+    'aperture-4 nesting and Hilbert indexing; cell areas vary ~2× face-centre to '+
     'corner. The pole sits at a cube-face centre = shared corner of 4 cells.',
  rhpx:'rHEALPix res 4 (~12,950 km², aperture 9 — 3×3 children, exact nesting). Near-exact '+
-    'equal area; note the polar cap/dart cells. The OGC-adopted equal-area workhorse.',
- htm:'HTM-style octahedral triangles, level 6 (~15,570 km²) — Trifold\\'s ancestor from '+
-    'astronomy, built here with T3\\'s own machinery on an octahedron. Compare its larger '+
-    'shape deformation (90° faces) against T3\\'s icosahedron.',
+    'equal area with polar cap and dart cells. The grid is included in the OGC DGGS standard.',
+ htm:'HTM-style octahedral triangles, level 6 (~15,570 km²), based on the astronomy grid '+
+    'and generated here on an octahedron. Its 90° faces produce more shape deformation than '+
+    'the T3 icosahedron.',
  rect:'Plain lon/lat quadtree, level 7 (~15,500 km² at the equator, shrinking toward the '+
-    'poles) — the distortion every spherical DGGS exists to avoid. Switch to Globe and look '+
-    'at the poles.',
+    'poles). Globe view shows the convergence of meridians at the poles.',
 };
 
 let state={sys:'tri',level:'6',mode:'compacted',proj:'globe'};
 const cache={};
+const protocol=new pmtiles.Protocol();
+maplibregl.addProtocol('pmtiles',protocol.tile);
 
 function addr64FromPath(path){
   const [head,digits='']=path.split('-');
@@ -389,6 +432,27 @@ function dataKey(){
   return state.sys==='tri'?`tri_L${state.level}_${state.mode}`:`${state.sys}_${state.mode}`;
 }
 
+const fillPaint={
+  'fill-color':['case',['!',['get','interior']],COASTAL,
+    ['match',['get','level'],0,LEVEL_COLORS[0],1,LEVEL_COLORS[1],2,LEVEL_COLORS[2],
+     3,LEVEL_COLORS[3],4,LEVEL_COLORS[4],5,LEVEL_COLORS[5],6,LEVEL_COLORS[6],
+     7,LEVEL_COLORS[7],LEVEL_COLORS[8]]],
+  'fill-opacity':0.55};
+function addGridLayers(sourceLayer){
+  const sourceSpec={source:'grid'};
+  if(sourceLayer)sourceSpec['source-layer']=sourceLayer;
+  map.addLayer({id:'grid-fill',type:'fill',...sourceSpec,paint:fillPaint});
+  map.addLayer({id:'grid-line',type:'line',...sourceSpec,
+    paint:{'line-color':'#333','line-width':0.5,'line-opacity':0.7}});
+}
+function replaceGridSource(source,sourceLayer){
+  if(map.getLayer('grid-line'))map.removeLayer('grid-line');
+  if(map.getLayer('grid-fill'))map.removeLayer('grid-fill');
+  if(map.getSource('grid'))map.removeSource('grid');
+  map.addSource('grid',source);
+  addGridLayers(sourceLayer);
+}
+
 const map=new maplibregl.Map({
   container:'map',
   style:{version:8,projection:{type:'globe'},
@@ -403,14 +467,7 @@ map.addControl(new maplibregl.NavigationControl());
 
 map.on('load',async()=>{
   map.addSource('grid',{type:'geojson',data:{type:'FeatureCollection',features:[]}});
-  map.addLayer({id:'grid-fill',type:'fill',source:'grid',paint:{
-    'fill-color':['case',['!',['get','interior']],COASTAL,
-      ['match',['get','level'],0,LEVEL_COLORS[0],1,LEVEL_COLORS[1],2,LEVEL_COLORS[2],
-       3,LEVEL_COLORS[3],4,LEVEL_COLORS[4],5,LEVEL_COLORS[5],6,LEVEL_COLORS[6],
-       7,LEVEL_COLORS[7],LEVEL_COLORS[8]]],
-    'fill-opacity':0.55}});
-  map.addLayer({id:'grid-line',type:'line',source:'grid',
-    paint:{'line-color':'#333','line-width':0.5,'line-opacity':0.7}});
+  addGridLayers();
   map.on('click','grid-fill',e=>{
     const p=e.features[0].properties;
     let html=`<b>${p.id}</b><br>level ${p.level}`;
@@ -433,14 +490,23 @@ map.on('load',async()=>{
 async function refresh(){
   document.getElementById('loading').style.display='flex';
   document.getElementById('row-level').style.display=state.sys==='tri'?'block':'none';
-  const gj=await decode(dataKey());
-  map.getSource('grid').setData(gj);
-  const byLevel={};let nInt=0;
-  for(const f of gj.features){
-    byLevel[f.properties.level]=(byLevel[f.properties.level]||0)+1;
-    if(f.properties.interior)nInt++;
+  const key=dataKey();
+  let byLevel={},nInt=0,n=0;
+  if(PMTILES_DATASETS[key]){
+    const spec=PMTILES_DATASETS[key];
+    const url=new URL(spec.url,window.location.href).href;
+    replaceGridSource({type:'vector',url:`pmtiles://${url}`},spec.sourceLayer);
+    const stats=DATASET_STATS[key];
+    byLevel=stats.byLevel;nInt=stats.interior;n=stats.count;
+  }else{
+    const gj=await decode(key);
+    replaceGridSource({type:'geojson',data:gj});
+    for(const f of gj.features){
+      byLevel[f.properties.level]=(byLevel[f.properties.level]||0)+1;
+      if(f.properties.interior)nInt++;
+    }
+    n=gj.features.length;
   }
-  const n=gj.features.length;
   document.getElementById('stats').innerHTML=
     `<b>${n.toLocaleString()}</b> cells · ${nInt.toLocaleString()} interior · `+
     `${(n-nInt).toLocaleString()} coastal`;

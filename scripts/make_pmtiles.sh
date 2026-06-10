@@ -5,14 +5,15 @@
 #   macOS:  brew install tippecanoe
 #   Linux:  build from source, or use the docker image
 #
-# PMTiles = single-file tile archive, served as static HTTP range requests
-# (GitHub Pages won't do ranges reliably; use Cloudflare R2/Pages, S3, or
-# any static host with Range support). The viewer loads it with the
-# pmtiles JS protocol:  https://github.com/protomaps/PMTiles
+# PMTiles = single-file tile archive, served as static HTTP range requests.
+# Archives are built in data/ and copied to docs/data/ for GitHub Pages.
+# The viewer loads them with the PMTiles JS protocol:
+# https://github.com/protomaps/PMTiles
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 DATA_DIR="$ROOT_DIR/data"
+DOCS_DATA_DIR="$ROOT_DIR/docs/data"
 GRIDS=(global_tri_L6_compacted global_tri_L6_uncompacted)
 
 if ! command -v tippecanoe >/dev/null 2>&1; then
@@ -38,15 +39,13 @@ if ((${#missing[@]})); then
 Generate them first:
   python scripts/build_grids.py --levels 6
 
-The default build also requires Natural Earth land data at:
-  natural-earth-vector/geojson/ne_50m_land.geojson
-
-See data/README.md for the download commands.
+The grid builder downloads the pinned Natural Earth input automatically.
 ERROR
   exit 1
 fi
 
 cd "$DATA_DIR"
+mkdir -p "$DOCS_DATA_DIR"
 
 for f in "${GRIDS[@]}"; do
   tippecanoe -o "${f}.pmtiles" \
@@ -55,9 +54,11 @@ for f in "${GRIDS[@]}"; do
     --no-tile-size-limit \
     --detect-shared-borders \
     --coalesce-densest-as-needed \
+    --no-progress-indicator \
     --force \
     "${f}.geojson"
-  echo "wrote ${f}.pmtiles"
+  cp "${f}.pmtiles" "$DOCS_DATA_DIR/${f}.pmtiles"
+  echo "wrote data/${f}.pmtiles and docs/data/${f}.pmtiles"
 done
 
 cat <<'NOTE'
@@ -68,7 +69,7 @@ Viewer usage (replace the embedded-TopoJSON source):
   maplibregl.addProtocol('pmtiles', protocol.tile);
   map.addSource('grid', {
     type: 'vector',
-    url: 'pmtiles://https://YOUR_HOST/global_tri_L6_compacted.pmtiles'
+    url: 'pmtiles://https://YOUR_HOST/data/global_tri_L6_compacted.pmtiles'
   });
   map.addLayer({ id:'grid-fill', type:'fill', source:'grid',
                  'source-layer':'cells', paint:{...} });

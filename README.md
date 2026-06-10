@@ -32,13 +32,13 @@ Because children are built from the parent's own vertices plus edge
 midpoints, **a parent cell is bit-for-bit the union of its children**.
 Aggregating data up the hierarchy or drilling down loses nothing and
 double-counts nothing. That property — *exact congruent nesting* — is the
-heart of this project, and it is genuinely rare among global grids
-(see [§6](#6-fair-comparison-with-other-dggs)).
+central property of this project and is uncommon among global grids
+(see [§6](#6-comparison-with-other-dggs)).
 
 The repository contains the Python library, a three-form addressing codec,
 global grid products generated against Natural Earth land, generators for
-three rival grid systems, an interactive MapLibre demo (globe and flat),
-and a Cloudflare Worker that serves any cell on demand from pure math.
+comparison grid systems, an interactive MapLibre demo (globe and flat),
+and a Cloudflare Worker that computes cells on demand from the grid geometry.
 
 ---
 
@@ -63,8 +63,8 @@ carry 2 bits of information. The compact form re-encodes the *same* path
 bits in Crockford base32 (5 bits/char, no ambiguous `I L O U`), prefixed
 by face and level characters: `T` `F`(face 15) `6`(level 6) `958`(12 path
 bits in 3 chars). Level 15 — sub-kilometre cells — still fits in 9
-characters. Base64 would save little and break URLs; raw binary is
-unreadable. Base32 is the sweet spot.
+characters. Base64 would save little and is not URL-safe; raw binary is
+not human-readable. Base32 provides a compact, URL-safe representation.
 
 **The uint64 layout** packs face (5 bits) + up to 27 path digits (54 bits)
 + level (5 bits). The path is left-aligned and the level is the low-bit
@@ -163,42 +163,42 @@ neighbours' vertices bit-exactly.
 
 ---
 
-## 4. What triangles are genuinely good for
+## 4. Suitable uses and limitations
 
 * **Lossless multi-resolution aggregation.** Sum level-9 statistics into
   level-6 cells and the numbers are *exact* — no boundary slivers, no
-  overlap weighting. This is the killer feature versus hexagons.
+  overlap weighting. This differs from non-congruent hexagonal hierarchies.
 * **Variable-resolution coverage** (the compacted mode): one dataset,
-  coarse where uniform, fine where it matters — with cells that still
-  snap together perfectly. Database range scans over `addr64` retrieve
+  coarse where uniform, fine where it matters, with cells that retain
+  shared boundaries. Database range scans over `addr64` retrieve
   any subtree as one interval.
 * **Simplicial data structures.** Triangles are *the* primitive of
   numerical geometry: FEM/FVM meshes, terrain TINs, barycentric
   interpolation, subdivision surfaces. A triangular DGGS plugs into that
   machinery directly; quads and hexes need conversion.
-* **Geodesic honesty at every scale.** Cells are quasi-equilateral
+* **Geodesic properties.** Cells are quasi-equilateral
   everywhere — no polar singularity, no latitude-dependent area collapse
   (a lon/lat grid cell at 80°N has ~17% of its equatorial area; Trifold
   cells vary ~±20% worldwide, smoothly).
 * **Sampling designs and ecology-style survey grids**, where equal-ish
   area and hierarchical refinement matter more than neighbour traversal.
 
-## …and what they are *not* good for (honesty section)
+### Limitations
 
 * **Neighbour-heavy algorithms.** A triangle has 3 edge-neighbours but 9
   more vertex-neighbours, and alternating up/down orientation makes
-  "movement" semantics awkward. Hexagons' 6 uniform neighbours are simply
-  better for diffusion, routing, cellular automata, and game-of-life-style
+  "movement" semantics less uniform. Hexagonal grids provide 6 uniform
+  neighbours for diffusion, routing, cellular automata, and related
   analyses. (Neighbour traversal across icosahedron face boundaries is
   also unimplemented here — see roadmap.)
-* **Human visual comfort.** Hex maps look calm; triangle maps look
-  technical. For choropleth-style communication to general audiences,
-  H3 will usually present better.
+* **Choropleth presentation.** Triangle boundaries can be visually
+  prominent. Hexagonal grids may be easier to read for general-audience
+  choropleths.
 * **Anisotropy-sensitive statistics.** Up- and down-pointing cells are
   congruent but rotated 60°; kernel-based methods that assume identical
   cell orientation need care.
-* **Tiny-scale local work.** Below ~city scale, just use a projected CRS
-  and a planar grid; a global DGGS buys you nothing there.
+* **Local analysis.** At city scale and below, a projected CRS and planar
+  grid may be simpler than a global DGGS.
 
 ---
 
@@ -210,88 +210,81 @@ addressing, comparison, use cases, serving) with the interactive viewer
 embedded as its centerpiece:
 
 * **7 systems**: Trifold (T3) triangles, [A5](https://a5geo.org) pentagons,
-  H3 hexagons, authentic S2 quads (s2sphere), rHEALPix (aperture 9,
-  near-equal-area), HTM octahedral triangles (T3's astronomy ancestor,
+  H3 hexagons, S2 quads (s2sphere), rHEALPix (aperture 9,
+  near-equal-area), HTM octahedral triangles (a related astronomy grid,
   built with T3's own machinery), and lon/lat rectangles — same land,
-  same styling, honest side-by-side;
-* **globe ↔ flat** toggle (MapLibre GL v5 native globe projection — watch
-  what Mercator does to the Antarctic pole wedges, then switch to globe);
+  same styling and land mask;
+* **globe ↔ flat** toggle (MapLibre GL v5 native globe and Mercator
+  projections);
 * compacted ↔ uncompacted, three triangle resolutions, click-for-address.
 
-Workshop choreography that works well: start on *Lon/lat, flat* (audience
-nods, looks normal) → switch to *globe* (poles collapse — laughter) →
-*Cube quad* (better, but spot the face-corner distortion) → *H3* (lovely,
-but ask "what's the parent of this hexagon?") → *A5* (exactly equal
-areas — then ask the same parent question) → *rHEALPix* (equal-area the
-OGC way, mind the polar darts) → *HTM* (triangles, but watch the
-octahedron's distortion) → *Trifold compacted*
-(exact nesting punchline) → click a cell, read `TF6958` aloud, then
-`curl` the same address from the Worker. Five minutes, full arc.
+A presentation can compare the systems in this order: lon/lat in Mercator
+and globe projections, S2, H3, A5, rHEALPix, HTM, and Trifold compacted.
+This sequence shows projection effects, area variation, parent-child
+geometry, and compact addressing.
 
 ---
 
-## 6. Fair comparison with other DGGS
+## 6. Comparison with other DGGS
 
 | | **Trifold** (this) | **A5** (pentagon) | **H3** (hex) | **S2** (square) | **rHEALPix** | **Geohash / slippy** |
 |---|---|---|---|---|---|---|
 | cell shape | spherical triangle | equilateral pentagon | hexagon (+12 pentagons) | curvilinear quad | quad (squashed at caps) | lon/lat rect |
 | aperture | 4 | 4 (logical) | 7 | 4 | 9 | 4 (slippy) / 32 (geohash) |
 | **exact parent⊃child nesting** | **yes, congruent** | no (logical only, index-exact) | **no** (≈7 children, ragged) | yes (within face) | yes | yes (but planar) |
-| equal area | ~±20%, smooth | **exactly equal** per level | ~±35% across res; pentagons differ | up to ~2× corner/centre | **exactly equal-area** | wildly unequal by latitude |
-| neighbours | 3 edge + 9 vertex, mixed | 5, two distance classes | **6 uniform** (best) | 4 + 4 | 4 + 4 | 4 + 4 |
-| pole handling | vertex wedges, clean | clean | clean | clean | polar caps, clean | **singular / degenerate** |
-| index arithmetic | uint64, prefix = subtree | uint64, Hilbert | uint64, well-engineered | uint64, superb (Hilbert) | string/int | string prefix |
-| ecosystem | this repo 🙂 | young (2025), growing fast | **huge** (Uber, DuckDB, BigQuery…) | huge (Google, S2geometry) | academic, OGC-adopted | universal |
-| best at | lossless hierarchy, simplicial/FEM work, multi-res coverage | density-honest statistics, equal-area viz | neighbour ops, viz, analytics joins | indexing, range queries, storage | equal-area statistics | quick hacks, tiling |
+| equal area | ~±20%, smooth | **exactly equal** per level | ~±35% across res; pentagons differ | up to ~2× corner/centre | **exactly equal-area** | varies with latitude |
+| neighbours | 3 edge + 9 vertex, mixed | 5, two distance classes | **6 uniform** | 4 + 4 | 4 + 4 | 4 + 4 |
+| pole handling | vertex wedges | regular cells | regular cells | face vertices | polar caps | **singular / degenerate** |
+| index arithmetic | uint64, prefix = subtree | uint64, Hilbert | uint64 | uint64, Hilbert | string/int | string prefix |
+| ecosystem | this repository | introduced in 2025 | widely used (Uber, DuckDB, BigQuery…) | widely used (Google, S2geometry) | academic, OGC-adopted | widely used |
+| typical uses | lossless hierarchy, simplicial/FEM work, multi-resolution coverage | equal-area statistics and visualization | neighbour operations, visualization, analytics joins | indexing, range queries, storage | equal-area statistics | tiling and prefix lookup |
 
-Honest bottom line: **if you need neighbour traversal or a mature
-ecosystem, use H3; if you need pure spatial indexing, use S2; if you need
-strictly equal areas, use rHEALPix — or its modern web-native cousin
-[A5](https://a5geo.org).** Trifold's niche is real but
-specific: *exact* hierarchical aggregation, variable-resolution tilings
-that snap, and any pipeline that already thinks in triangles. The demo's
-comparison mode exists precisely so you can check these claims visually.
+Selection depends on the application: **H3 provides uniform neighbour
+traversal and a mature ecosystem; S2 focuses on spatial indexing;
+rHEALPix and [A5](https://a5geo.org) provide equal-area cells.** Trifold
+focuses on exact hierarchical aggregation, variable-resolution tilings,
+and pipelines based on triangular geometry. The demo provides a visual
+comparison of these properties.
 
 Kin and prior art: OGC DGGS Abstract Specification (Topic 21); ISEA3H /
 DGGRID (icosahedral, aperture 3/4 hex); QTM (Dutton's Quaternary
-Triangular Mesh — the closest ancestor of this scheme, octahedron-based);
+Triangular Mesh, an octahedron-based related scheme);
 SCENZ-Grid; HTM (Hierarchical Triangular Mesh, used in astronomy — also
-triangular aperture-4, octahedron-based; Trifold is essentially "HTM on an
-icosahedron with modern addressing and web tooling" — the demo includes
-an authentic octahedral HTM layer so the difference is visible, not
-asserted); and
+triangular aperture-4 and octahedron-based; Trifold uses an icosahedron,
+compact addressing, and web tooling. The demo includes
+an octahedral HTM layer for comparison); and
 [**A5**](https://a5geo.org) (Felix Palmer, 2025) — a dodecahedron-based
-pentagonal DGGS that is in many ways Trifold's mirror image: it trades
+pentagonal DGGS with a different hierarchy and area trade-off. It trades
 exact geometric nesting (its aperture-4 hierarchy is logical, with exact
 *index* prefixes but only approximate parent/child geometry) for
 **exactly equal-area cells** within each level via a Snyder-derived
-equal-area projection. Same 64-bit-integer indexing philosophy, opposite
-corner of the design space — which is why it's in the demo's comparison
-mode (`scripts/build_a5_layer.py`, using the official
+equal-area projection. Both systems use 64-bit integer indexing. A5 is
+included in the demo's comparison mode (`scripts/build_a5_layer.py`, using
+the official
 [`pya5`](https://pypi.org/project/pya5/) library).
 
 ---
 
 ## 7. Serving at scale
 
-Embedded TopoJSON (as in the demo) is fine to ~30k cells / ~10 MB. Beyond
-that, two production paths, both serverless:
+Embedded TopoJSON is used in the demo for datasets up to about 30k cells
+or 10 MB. Larger datasets can use either of these serverless approaches:
 
 **Pregenerated PMTiles** — `scripts/make_pmtiles.sh` converts any product
-to a single-file vector-tile archive via tippecanoe. Host it on anything
-with HTTP Range support (Cloudflare R2/Pages, S3; *not* plain GitHub
-Pages) and point MapLibre at `pmtiles://…`. Level 8 (~28 km, ~440k land
-cells) tiles to a few tens of MB and renders instantly; this is the right
-answer for "show me everything".
+to a single-file vector-tile archive via tippecanoe and copies level-6
+archives to `docs/data/` for GitHub Pages. `make_site.py` detects matching
+archives in `data/`, copies them into the published directory, and uses
+them instead of embedding the corresponding TopoJSON. Level 8 (~28 km,
+~440k land cells) tiles to a few tens of MB and supports full-grid display.
 
 **Dynamic generation** — `worker/cell-server.js`, deployable free with
 `npx wrangler deploy`. No stored data: cells are regenerated from pure
 math on every request and cached at the edge (`/cell/TF6958`,
-`/locate/lon,lat?level=N`, `/children/…`, `/cells/a,b,c`). This is the
-right answer for "give me *these* cells" — apps that know which addresses
-they need (from a database join on `addr64`, say) and fetch geometry
-lazily. The two approaches compose: PMTiles for the basemap-of-cells,
-Worker for interactive lookup.
+`/locate/lon,lat?level=N`, `/children/…`, `/cells/a,b,c`). This supports
+applications that know which addresses they need, for example from a
+database join on `addr64`, and fetch geometry lazily. The two approaches
+can be combined: PMTiles for full-grid display and the Worker for
+interactive lookup.
 
 ---
 
@@ -371,7 +364,12 @@ files first, then run `tippecanoe` through the wrapper:
 ```bash
 python scripts/build_grids.py --levels 6
 ./scripts/make_pmtiles.sh
+python scripts/make_site.py
 ```
+
+The wrapper writes archives under both `data/` and `docs/data/`. The site
+generator also copies any matching PMTiles it finds in `data/` and embeds
+TopoJSON only for datasets without an archive.
 
 The grid build requires the Natural Earth checkout described in
 Natural Earth 1:50m land data. The default build downloads and verifies the
