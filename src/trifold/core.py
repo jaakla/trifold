@@ -277,3 +277,189 @@ def cell_triangle(face, digits, verts_faces=None):
     for d in digits:
         tri = subdivide(tri)[d]
     return tri
+
+
+# ------------------------------------------------------- batch locate
+def _batch_plane_side(a, b, pts):
+    """Vectorised scalar triple product  dot(cross(a, b), pts).
+
+    All inputs shape ``[N, 3]``.  Returns shape ``[N]``.
+    Inlined to avoid allocating the intermediate cross-product array.
+    """
+    return ((a[:, 1] * b[:, 2] - a[:, 2] * b[:, 1]) * pts[:, 0] +
+            (a[:, 2] * b[:, 0] - a[:, 0] * b[:, 2]) * pts[:, 1] +
+            (a[:, 0] * b[:, 1] - a[:, 1] * b[:, 0]) * pts[:, 2])
+
+
+def _locate_chunk(points, level, face_tris, edge_normals):
+    """Locate a chunk of *N* unit-vector points on the sphere.
+
+    Parameters
+    ----------
+    points : ndarray [N, 3]
+        Unit vectors (pre-converted from lon/lat).
+    level : int
+        Subdivision depth.
+    face_tris : ndarray [20, 3, 3]
+        Precomputed icosahedron face vertices.
+    edge_normals : ndarray [20, 3, 3]
+        Precomputed ``cross(v_i, v_j)`` for each face edge.
+
+    Returns
+    -------
+    faces : ndarray int32 [N]
+        Icosahedron face index (0..19).
+    path_bits : ndarray uint64 [N]
+        Base-4 path digits, right-aligned (``2 * level`` significant bits).
+    """
+    N = len(points)
+
+    # ---- face assignment: test all points against all 20 faces ----
+    # dots[n, f, e] = dot(edge_normals[f, e], points[n])
+    dots = np.einsum('fej,nj->nfe', edge_normals, points)   # [N, 20, 3]
+    inside = (dots >= -1e-14).all(axis=2)                    # [N, 20]
+    has_match = inside.any(axis=1)
+    # argmax on boolean returns index of first True
+    faces = np.where(has_match,
+                     np.argmax(inside, axis=1), 0).astype(np.int32)
+
+    # fallback: nearest face centroid for numeric edge cases
+    no_match = ~has_match
+    if np.any(no_match):
+        centroids = face_tris.mean(axis=1)                   # [20, 3]
+        centroids /= np.linalg.norm(centroids, axis=1, keepdims=True)
+        faces[no_match] = np.argmax(
+            points[no_match] @ centroids.T, axis=1).astype(np.int32)
+
+    # ---- initialise per-point triangle vertices ----
+    v0 = face_tris[faces, 0].copy()                          # [N, 3]
+    v1 = face_tris[faces, 1].copy()
+    v2 = face_tris[faces, 2].copy()
+
+    # ---- descend through subdivision levels ----
+    path_bits = np.zeros(N, dtype=np.uint64)
+
+    for _ in range(level):
+        # midpoints (normalised: great-circle midpoint on the sphere)
+        m01 = v0 + v1
+        m01 /= np.linalg.norm(m01, axis=1, keepdims=True)
+        m12 = v1 + v2
+        m12 /= np.linalg.norm(m12, axis=1, keepdims=True)
+        m20 = v2 + v0
+        m20 /= np.linalg.norm(m20, axis=1, keepdims=True)
+
+        # four children: same vertex order as scalar subdivide()
+        ch_a = (v0,  m01, m20, m01)
+        ch_b = (m01, v1,  m12, m12)
+        ch_c = (m20, m12, v2,  m20)
+
+        digit = np.full(N, -1, dtype=np.int32)
+        best_margin = np.full(N, -np.inf)
+        best_d = np.zeros(N, dtype=np.int32)
+        nv0 = np.empty_like(v0)
+        nv1 = np.empty_like(v1)
+        nv2 = np.empty_like(v2)
+
+        for d in range(4):
+            a, b, c = ch_a[d], ch_b[d], ch_c[d]
+            s0 = _batch_plane_side(a, b, points)
+            s1 = _batch_plane_side(b, c, points)
+            s2 = _batch_plane_side(c, a, points)
+
+            ok = (s0 >= -1e-14) & (s1 >= -1e-14) & (s2 >= -1e-14)
+            margin = np.minimum(np.minimum(s0, s1), s2)
+
+            # track best margin for tolerance fallback
+            better = margin > best_margin
+            best_margin[better] = margin[better]
+            best_d[better] = d
+
+            # first match wins (same tie-break as scalar locate)
+            assign = ok & (digit < 0)
+            digit[assign] = d
+            nv0[assign] = a[assign]
+            nv1[assign] = b[assign]
+            nv2[assign] = c[assign]
+
+        # fallback: choose child with highest minimum margin
+        fb = digit < 0
+        if np.any(fb):
+            digit[fb] = best_d[fb]
+            for d in range(4):
+                sel = fb & (best_d == d)
+                if np.any(sel):
+                    nv0[sel] = ch_a[d][sel]
+                    nv1[sel] = ch_b[d][sel]
+                    nv2[sel] = ch_c[d][sel]
+
+        v0, v1, v2 = nv0, nv1, nv2
+        path_bits = (path_bits << np.uint64(2)) | digit.astype(np.uint64)
+
+    return faces, path_bits
+
+
+def locate_batch(lons, lats, level, chunk_size=1_000_000):
+    """Vectorised point location for arrays of coordinates.
+
+    Equivalent to calling :func:`locate` on every element, but processes
+    the full array with numpy — typically **100–1000× faster** than a
+    Python loop.
+
+    Parameters
+    ----------
+    lons, lats : array-like of float
+        Longitude (−180 .. 180) and latitude (−90 .. 90).
+    level : int
+        Subdivision level (0 .. 27).
+    chunk_size : int, optional
+        Maximum points per processing chunk.  Controls peak memory;
+        ~300 MB per 1 M points.
+
+    Returns
+    -------
+    faces : ndarray of int32
+        Icosahedron face index (0 .. 19) per point.
+    path_bits : ndarray of uint64
+        Base-4 path digits, right-aligned (``2 × level`` significant
+        bits).  Left-align for the addr64 path field with
+        ``path_bits << (2 * (27 - level))``.
+    """
+    lons = np.asarray(lons, dtype=np.float64).ravel()
+    lats = np.asarray(lats, dtype=np.float64).ravel()
+    if len(lons) != len(lats):
+        raise ValueError("lons and lats must have the same length")
+    if not 0 <= level <= 27:
+        raise ValueError("level must be in 0..27")
+    N = len(lons)
+    if N == 0:
+        return np.array([], dtype=np.int32), np.array([], dtype=np.uint64)
+
+    # precompute icosahedron geometry (once per call)
+    verts, faces_list = icosahedron()
+    face_tris = np.array([[verts[i], verts[j], verts[k]]
+                          for i, j, k in faces_list])        # [20, 3, 3]
+    edge_normals = np.empty((20, 3, 3))
+    for f in range(20):
+        a, b, c = face_tris[f]
+        edge_normals[f, 0] = np.cross(a, b)
+        edge_normals[f, 1] = np.cross(b, c)
+        edge_normals[f, 2] = np.cross(c, a)
+
+    # convert lon/lat → unit vectors
+    lam = np.radians(lons)
+    phi = np.radians(lats)
+    cos_phi = np.cos(phi)
+    points = np.column_stack([cos_phi * np.cos(lam),
+                              cos_phi * np.sin(lam),
+                              np.sin(phi)])                  # [N, 3]
+
+    all_faces = np.empty(N, dtype=np.int32)
+    all_paths = np.empty(N, dtype=np.uint64)
+    for start in range(0, N, chunk_size):
+        end = min(start + chunk_size, N)
+        f, p = _locate_chunk(points[start:end], level,
+                             face_tris, edge_normals)
+        all_faces[start:end] = f
+        all_paths[start:end] = p
+
+    return all_faces, all_paths
