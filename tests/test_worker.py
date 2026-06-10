@@ -6,7 +6,8 @@ import subprocess
 import pytest
 
 from trifold import (build_export_ring, cell_triangle, densified_ring_xyz,
-                     children64, encode64, from_compact, locate, parent64,
+                     children64, decode_rhombus64, encode64, from_compact,
+                     hex_id, locate, parent64, rhombus64, rhombus_id,
                      to_compact, to_path)
 
 
@@ -53,6 +54,9 @@ def test_python_and_worker_addresses_agree(tmp_path):
             'id': to_compact(addr),
             'path': to_path(addr),
             'addr64': str(addr),
+            'rhombus_id': rhombus_id(addr),
+            'rhombus_hilbert': str(rhombus64(addr)),
+            'hex_id': hex_id(addr),
             'level': level,
         })
 
@@ -77,6 +81,9 @@ def test_python_and_worker_geometry_agree(tmp_path):
         'id': compact,
         'path': to_path(addr),
         'addr64': str(addr),
+        'rhombus_id': rhombus_id(addr),
+        'rhombus_hilbert': str(rhombus64(addr)),
+        'hex_id': hex_id(addr),
         'level': len(digits),
         'pole': '',
     }
@@ -90,8 +97,8 @@ def test_python_and_worker_geometry_agree(tmp_path):
 def test_javascript_sdk_is_importable_and_reusable():
     script = """
 import {
-  children64, fromCompact, isAncestor, locateAddress, parent64,
-  toCompact, toPath,
+  children64, decodeRhombus64, fromCompact, hexId, isAncestor,
+  locateAddress, parent64, rhombus64, rhombusId, toCompact, toPath,
 } from %s;
 const london = locateAddress(-0.1276, 51.5072, 6);
 const parent = parent64(london);
@@ -102,6 +109,10 @@ console.log(JSON.stringify({
   parent: toCompact(parent),
   children: children64(parent).map(toCompact),
   ancestor: isAncestor(parent, london),
+  rhombusId: rhombusId(london),
+  rhombus64: rhombus64(london).toString(),
+  rhombusDecoded: decodeRhombus64(rhombus64(london)),
+  hexId: hexId(london),
 }));
 """ % json.dumps(SDK.as_uri())
     result = subprocess.run(
@@ -117,4 +128,10 @@ console.log(JSON.stringify({
         'parent': to_compact(parent),
         'children': [to_compact(child) for child in children64(parent)],
         'ancestor': True,
+        'rhombusId': rhombus_id(addr),
+        'rhombus64': str(rhombus64(addr)),
+        'rhombusDecoded': dict(zip(
+            ('diamond', 'level', 'x', 'y'),
+            decode_rhombus64(rhombus64(addr)))),
+        'hexId': hex_id(addr),
     }

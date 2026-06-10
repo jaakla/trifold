@@ -28,6 +28,33 @@ base-4 path digits. Both SDKs support:
 GeoJSON serializes `addr64` as a decimal string because JSON numbers do not
 represent every unsigned 64-bit value exactly.
 
+### Derived grouping indexes
+
+Triangle geometry and `addr64` remain the source of truth. Two projections
+support storage layout and display without defining a second grid:
+
+| Key | Purpose | Cardinality |
+|---|---|---|
+| `rhombus_id` | exact grouping and display | two triangles on the complete grid |
+| `rhombus_hilbert` / `rhombus64()` | spatial sort or partition key | one key per rhombus |
+| `hex_id` | per-level display and neighbor-style grouping | six triangles in face interiors |
+
+The twenty base faces are paired into ten diamonds. At level `L`, each
+diamond is a `2^L × 2^L` rhombus array. Dropping the triangle orientation
+from `(diamond, level, x, y, orientation)` is exactly 2:1, and each parent
+rhombus is the union of four child rhombi. `rhombus64()` applies a standard
+Hilbert traversal to `(x, y)` within the diamond.
+
+`hex_id` uses a triangular-lattice three-coloring independently on each
+icosahedron face. Face-interior groups contain six triangles. Groups on
+face seams contain three or six triangles depending on phase; the fixed
+vertex groups contain one or five. This is a display projection, not an
+H3-compatible topology, and it has no hierarchy.
+
+Land-filtered or variable-resolution products may contain partial rhombus or
+hex groups. Their grouped features include `triangle_count`; exact 2:1
+rhombus cardinality applies to a complete uniform-level grid.
+
 ## Python
 
 Install the core SDK with `pip install .`. Install `.[land]` when using
@@ -64,6 +91,8 @@ Address and hierarchy:
 - `to_compact`, `from_compact`, `to_path`, `from_path`
 - `parent64`, `children64`, `is_ancestor`, `descendant_range`
 - `face_of`, `level_of`, `path_of`
+- `rhombus_id`, `rhombus64`, `decode_rhombus64`, `rhombus_coords`
+- `hex_id`, `lattice_triangle`
 
 Location and geometry:
 
@@ -124,6 +153,8 @@ Address and hierarchy:
 - `parseAddress`, `encode64`, `decode64`
 - `toCompact`, `fromCompact`, `toPath`, `fromPath`
 - `parent64`, `children64`, `isAncestor`, `descendantRange`
+- `rhombusId`, `rhombus64`, `decodeRhombus64`, `rhombusCoords`
+- `hexId`, `latticeTriangle`
 
 Location and geometry:
 

@@ -1,10 +1,14 @@
 import random
+from collections import Counter, defaultdict
+from itertools import product
 import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
 from trifold.address import (encode64, decode64, to_compact, from_compact,
                              to_path, from_path, parent64, children64,
-                             is_ancestor, descendant_range, MAX_LEVEL)
+                             is_ancestor, descendant_range, hex_id,
+                             rhombus64, decode_rhombus64, rhombus_coords,
+                             rhombus_id, MAX_LEVEL)
 
 
 def test_roundtrips():
@@ -74,6 +78,42 @@ def test_compact_examples():
     london = from_compact('TF6958')
     assert london == 8811996358392152070
     assert to_path(london) == 'F15-102111'
+
+
+def test_rhombus_projection_is_exact_and_hierarchical():
+    for level in range(5):
+        groups = defaultdict(list)
+        for face in range(20):
+            for digits in product(range(4), repeat=level):
+                addr = encode64(face, digits)
+                coords = rhombus_coords(addr)
+                key = rhombus64(addr)
+                assert decode_rhombus64(key) == coords[:4]
+                groups[rhombus_id(addr)].append((coords, key))
+                if level:
+                    parent = rhombus_coords(parent64(addr))
+                    assert coords[:2] == (parent[0], level)
+                    assert coords[2] // 2 == parent[2]
+                    assert coords[3] // 2 == parent[3]
+
+        assert len(groups) == 10 * 4 ** level
+        assert all(len(members) == 2 for members in groups.values())
+        assert all({coords[4] for coords, _ in members} == {0, 1}
+                   for members in groups.values())
+        assert all(len({key for _, key in members}) == 1
+                   for members in groups.values())
+
+
+def test_hex_projection_has_six_triangle_face_interiors():
+    counts = Counter()
+    for face in range(20):
+        for digits in product(range(4), repeat=4):
+            counts[hex_id(encode64(face, digits))] += 1
+
+    assert counts
+    assert all(count == 6 for key, count in counts.items()
+               if key.startswith('HF'))
+    assert {count for key, count in counts.items() if key.startswith('HE')} == {3, 6}
 
 
 if __name__ == '__main__':

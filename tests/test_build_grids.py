@@ -44,3 +44,38 @@ def test_custom_missing_land_path_is_not_downloaded(tmp_path):
     path = tmp_path / 'custom.geojson'
     with pytest.raises(FileNotFoundError, match='Omit --land'):
         build_grids.ensure_land(path, is_default=False)
+
+
+def test_dissolve_features_groups_without_recomputing_cells():
+    features = [
+        {
+            'type': 'Feature',
+            'properties': {
+                'rhombus_id': 'R00-01-0-0', 'rhombus_hilbert': '1',
+                'hex_id': 'HF00-01-1-0-1', 'level': 1,
+                'interior': True, 'area_km2': 2, 'pole': '', 'xam': False,
+            },
+            'geometry': {'type': 'Polygon', 'coordinates': [[
+                [0, 0], [1, 0], [0, 1], [0, 0],
+            ]]},
+        },
+        {
+            'type': 'Feature',
+            'properties': {
+                'rhombus_id': 'R00-01-0-0', 'rhombus_hilbert': '1',
+                'hex_id': 'HF00-01-1-0-0', 'level': 1,
+                'interior': False, 'area_km2': 3, 'pole': '', 'xam': False,
+            },
+            'geometry': {'type': 'Polygon', 'coordinates': [[
+                [1, 0], [1, 1], [0, 1], [1, 0],
+            ]]},
+        },
+    ]
+
+    grouped = build_grids.dissolve_features(features, 'rhombus')
+
+    assert len(grouped) == 1
+    assert grouped[0]['properties']['triangle_count'] == 2
+    assert grouped[0]['properties']['area_km2'] == 5
+    assert grouped[0]['properties']['interior'] is False
+    assert grouped[0]['geometry']['type'] == 'Polygon'

@@ -13,6 +13,7 @@ OUT = 'docs/index.html'
 JS_SDK = 'js/trifold.js'
 DOCS_SDK = 'docs/sdk/trifold.js'
 GH = 'https://github.com/jaakla/trifold'
+PMTILES_BASE_URL = os.environ.get('TRIFOLD_PMTILES_BASE_URL', 'data').rstrip('/')
 
 EMBED = {
     'tri_L4_compacted':   'global_tri_L4_compacted.topojson',
@@ -38,6 +39,11 @@ EMBED = {
     'rect_compacted':     'cmp_rectquad_compacted.topojson',
     'rect_uncompacted':   'cmp_rectquad_uncompacted.topojson',
 }
+for level in range(4, 9):
+    for mode in ('compacted', 'uncompacted'):
+        for group in ('rhombus', 'hex'):
+            key = f'tri_L{level}_{mode}_{group}'
+            EMBED[key] = f'global_tri_L{level}_{mode}_{group}.topojson'
 
 datasets = {}
 pmtiles = {}
@@ -49,7 +55,7 @@ for key, fn in EMBED.items():
     pm_src = os.path.join(DATA, pm_name)
     if os.path.isfile(pm_src):
         # PMTiles served from Cloudflare R2, no local copy needed
-        pmtiles[key] = {'url': f'https://pub-7e631bea93414a488b6a0fec7a7225e5.r2.dev/data/{pm_name}', 'sourceLayer': 'cells'}
+        pmtiles[key] = {'url': f'{PMTILES_BASE_URL}/{pm_name}', 'sourceLayer': 'cells'}
 
         geojson_path = os.path.join(DATA, f'{stem}.geojson')
         if not os.path.isfile(geojson_path):
@@ -239,6 +245,11 @@ html = """<!doctype html>
     <tr><td><b>addr64</b></td><td><code>8811996358392152070</code></td><td>compute: sort, join, mask</td>
       <td>8 bytes</td></tr>
   </table>
+  <p>Each triangle also carries two derived grouping keys. <code>rhombus_id</code> pairs
+  triangles exactly; <code>rhombus_hilbert</code> orders those pairs spatially within ten
+  base diamonds. <code>hex_id</code> provides six-triangle groups inside each icosahedron
+  face, with documented seam and vertex exceptions. These keys do not replace
+  <code>addr64</code> or change the source geometry.</p>
   <div class="bitbox"> 63       59                                                       5     0
  ┌─────────┬────────────────────────────────────────────────────────┬─────┐
  │ face:5  │ path digits, 2 bits each, left-aligned                 │ L:5 │
@@ -284,6 +295,12 @@ $ curl https://YOUR-WORKER.workers.dev/locate/-0.1276,51.5072?level=6
           <button data-v="6" class="on">~110 km</button>
           <button data-v="7">~55 km</button>
           <button data-v="8">~28 km</button>
+        </div></div>
+      <div class="row" id="row-group"><label>Group as</label>
+        <div class="seg" id="seg-group">
+          <button data-v="triangle" class="on">Triangle ▲</button>
+          <button data-v="rhombus">Rhombus ◆</button>
+          <button data-v="hex">Hex group ⬡</button>
         </div></div>
       <div class="row"><label>Hierarchy</label>
         <div class="seg" id="seg-mode">
@@ -359,8 +376,8 @@ $ curl https://YOUR-WORKER.workers.dev/locate/-0.1276,51.5072?level=6
 <section id="serving">
   <h2>Serving at scale</h2>
   <div class="cards">
-    <div class="card"><b>Automatic source selection</b><p>This page uses PMTiles from
-      <code>docs/data/</code> when available and falls back to embedded, gzip-compressed
+    <div class="card"><b>Automatic source selection</b><p>This page uses PMTiles when a
+      matching archive exists in <code>data/</code> and falls back to embedded, gzip-compressed
       TopoJSON for other datasets.</p></div>
     <div class="card"><b>PMTiles</b><p><code>scripts/make_pmtiles.sh</code> tiles any product
       with tippecanoe into a single static file; host on anything with HTTP Range support.
@@ -408,8 +425,13 @@ const SYS_NOTES={
  rect:'Plain lon/lat quadtree, level 7 (~15,500 km² at the equator, shrinking toward the '+
     'poles). Globe view shows the convergence of meridians at the poles.',
 };
+const GROUP_NOTES={
+ triangle:' The triangle layer is the source geometry and exact accounting unit.',
+ rhombus:' Full-grid rhombi are exact two-triangle groups with a nested Hilbert-addressed diamond hierarchy. Land-filtered layers may show partial groups.',
+ hex:' Hex groups contain six triangles in face interiors. Icosahedron seams and vertices have smaller or phase-shifted groups.',
+};
 
-let state={sys:'tri',level:'6',mode:'compacted',proj:'globe'};
+let state={sys:'tri',level:'6',mode:'compacted',group:'triangle',proj:'globe'};
 const cache={};
 const protocol=new pmtiles.Protocol();
 maplibregl.addProtocol('pmtiles',protocol.tile);
@@ -421,12 +443,14 @@ async function decode(key){
   const topo=JSON.parse(await new Response(stream).text());
   const gj=topojson.feature(topo,topo.objects[Object.keys(topo.objects)[0]]);
   if(key.startsWith('tri_'))for(const feature of gj.features)
-    feature.properties.addr64=feature.properties.addr64||
-      fromPath(feature.properties.path).toString();
+    if(feature.properties.path&&!feature.properties.addr64)
+      feature.properties.addr64=fromPath(feature.properties.path).toString();
   cache[key]=gj;return gj;
 }
 function dataKey(){
-  return state.sys==='tri'?`tri_L${state.level}_${state.mode}`:`${state.sys}_${state.mode}`;
+  if(state.sys!=='tri')return `${state.sys}_${state.mode}`;
+  const suffix=state.group==='triangle'?'':`_${state.group}`;
+  return `tri_L${state.level}_${state.mode}${suffix}`;
 }
 
 const fillPaint={
@@ -470,6 +494,10 @@ map.on('load',async()=>{
     let html=`<b>${p.id}</b><br>level ${p.level}`;
     if(p.path)html+=`<br>path <span style="font-family:monospace">${p.path}</span>`+
       `<br>uint64 <span style="font-family:monospace">${p.addr64}</span>`;
+    if(p.rhombus_id)html+=`<br>rhombus <span style="font-family:monospace">${p.rhombus_id}</span>`;
+    if(p.rhombus_hilbert)html+=`<br>Hilbert <span style="font-family:monospace">${p.rhombus_hilbert}</span>`;
+    if(p.hex_id)html+=`<br>hex group <span style="font-family:monospace">${p.hex_id}</span>`;
+    if(p.triangle_count)html+=`<br>${p.triangle_count} source triangle${p.triangle_count===1?'':'s'}`;
     if(p.edge_km)html+=`<br>edge ~${p.edge_km} km`;
     if(p.area_km2)html+=`<br>area ${Number(p.area_km2).toLocaleString()} km²`;
     html+=`<br>${p.interior?'interior':'coastal (mixed)'}`;
@@ -487,6 +515,7 @@ map.on('load',async()=>{
 async function refresh(){
   document.getElementById('loading').style.display='flex';
   document.getElementById('row-level').style.display=state.sys==='tri'?'block':'none';
+  document.getElementById('row-group').style.display=state.sys==='tri'?'block':'none';
   const key=dataKey();
   let byLevel={},nInt=0,n=0;
   if(PMTILES_DATASETS[key]){
@@ -504,15 +533,17 @@ async function refresh(){
     }
     n=gj.features.length;
   }
+  const unit=state.sys==='tri'&&state.group!=='triangle'?'groups':'cells';
   document.getElementById('stats').innerHTML=
-    `<b>${n.toLocaleString()}</b> cells · ${nInt.toLocaleString()} interior · `+
+    `<b>${n.toLocaleString()}</b> ${unit} · ${nInt.toLocaleString()} interior · `+
     `${(n-nInt).toLocaleString()} coastal`;
   document.getElementById('legend').innerHTML=
     Object.keys(byLevel).sort((a,b)=>a-b).map(L=>
       `<i style="background:${LEVEL_COLORS[L]||'#ccc'}"></i>level ${L}: `+
       `${byLevel[L].toLocaleString()}`).join('<br>')+
     `<br><i style="background:${COASTAL}"></i>coastal (mixed)`;
-  document.getElementById('sysnote').innerHTML=SYS_NOTES[state.sys];
+  document.getElementById('sysnote').innerHTML=SYS_NOTES[state.sys]+
+    (state.sys==='tri'?GROUP_NOTES[state.group]:'');
   document.getElementById('loading').style.display='none';
 }
 function wireSeg(id,prop,cb){
@@ -523,6 +554,7 @@ function wireSeg(id,prop,cb){
 }
 wireSeg('seg-sys','sys',refresh);
 wireSeg('seg-level','level',refresh);
+wireSeg('seg-group','group',refresh);
 wireSeg('seg-mode','mode',refresh);
 wireSeg('seg-proj','proj',()=>{
   try{map.setProjection({type:state.proj});}catch(e){console.warn(e);}

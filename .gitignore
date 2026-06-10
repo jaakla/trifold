@@ -10,3 +10,4 @@ data/*.pkl
 .venv/
 poetry.lock
 .DS_Store
+docs/data/

@@ -73,6 +73,17 @@ export function icosahedron() {
 const ICO = icosahedron();
 const NORTH = [0, 0, 1];
 const SOUTH = [0, 0, -1];
+const DIAMONDS = [
+  [0, 1, [0, 5]], [2, 3, [0, 7]], [4, 7, [10, 11]],
+  [5, 15, [5, 9]], [6, 16, [4, 11]], [8, 17, [6, 10]],
+  [9, 18, [7, 8]], [10, 11, [3, 4]], [12, 13, [3, 6]],
+  [14, 19, [8, 9]],
+];
+const FACE_DIAMOND = Array(20);
+DIAMONDS.forEach(([faceA, faceB, edge], diamond) => {
+  FACE_DIAMOND[faceA] = { diamond, half: 0, edge };
+  FACE_DIAMOND[faceB] = { diamond, half: 1, edge };
+});
 
 /** Split a spherical triangle into its four aperture-4 children. */
 export function subdivide(triangle) {
@@ -234,6 +245,139 @@ export function descendantRange(address) {
   const path = (value >> LEVEL_BITS) & PATH_MASK;
   const highPath = path | (suffixBits ? (1n << suffixBits) - 1n : 0n);
   return [value, (BigInt(face) << 59n) | (highPath << LEVEL_BITS) | BigInt(MAX_LEVEL)];
+}
+
+/** Return exact integer barycentric vertices for one triangle. */
+export function latticeTriangle(addressOrFace, digits) {
+  const identity = identityFromArgs(addressOrFace, digits);
+  let vertices = [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
+  for (const digit of identity.digits) {
+    const [v0, v1, v2] = vertices;
+    const doubled = vertices.map(vertex => vertex.map(value => 2 * value));
+    const midpoint = (a, b) => a.map((value, index) => value + b[index]);
+    const m01 = midpoint(v0, v1);
+    const m12 = midpoint(v1, v2);
+    const m20 = midpoint(v2, v0);
+    vertices = [
+      [doubled[0], m01, m20],
+      [m01, doubled[1], m12],
+      [m20, m12, doubled[2]],
+      [m01, m12, m20],
+    ][digit];
+  }
+  return vertices;
+}
+
+function hilbertXYToIndex(level, inputX, inputY) {
+  let x = inputX;
+  let y = inputY;
+  let index = 0n;
+  for (let scale = Math.floor((2 ** level) / 2); scale > 0; scale = Math.floor(scale / 2)) {
+    const rx = x & scale ? 1 : 0;
+    const ry = y & scale ? 1 : 0;
+    index += BigInt(scale) * BigInt(scale) * BigInt((3 * rx) ^ ry);
+    if (ry === 0) {
+      if (rx === 1) {
+        x = scale - 1 - x;
+        y = scale - 1 - y;
+      }
+      [x, y] = [y, x];
+    }
+  }
+  return index;
+}
+
+function hilbertIndexToXY(level, inputIndex) {
+  const size = 2 ** level;
+  let x = 0;
+  let y = 0;
+  let value = inputIndex;
+  for (let scale = 1; scale < size; scale *= 2) {
+    const rx = Number(1n & (value >> 1n));
+    const ry = Number(1n & (value ^ BigInt(rx)));
+    if (ry === 0) {
+      if (rx === 1) {
+        x = scale - 1 - x;
+        y = scale - 1 - y;
+      }
+      [x, y] = [y, x];
+    }
+    x += scale * rx;
+    y += scale * ry;
+    value >>= 2n;
+  }
+  return [x, y];
+}
+
+/** Map a triangle to `{diamond, level, x, y, orientation}`. */
+export function rhombusCoords(address) {
+  const identity = parseAddress(address);
+  const size = 2 ** identity.digits.length;
+  const { diamond, half, edge } = FACE_DIAMOND[identity.face];
+  const faceVertices = ICO.faces[identity.face];
+  const edgeIndexes = edge.map(vertex => faceVertices.indexOf(vertex));
+  const points = latticeTriangle(identity).map(barycentric => {
+    let x = barycentric[edgeIndexes[0]];
+    let y = barycentric[edgeIndexes[1]];
+    if (half) [x, y] = [size - y, size - x];
+    return [x, y];
+  });
+  const x = Math.min(...points.map(point => point[0]));
+  const y = Math.min(...points.map(point => point[1]));
+  const orientation = points.some(point => point[0] === x && point[1] === y) ? 0 : 1;
+  return { diamond, level: identity.digits.length, x, y, orientation };
+}
+
+/** Return the human-readable ID shared by an exact triangle pair. */
+export function rhombusId(address) {
+  const { diamond, level, x, y } = rhombusCoords(address);
+  return `R${String(diamond).padStart(2, "0")}-${String(level).padStart(2, "0")}-${x}-${y}`;
+}
+
+/** Return the Hilbert-linearized BigInt key shared by an exact triangle pair. */
+export function rhombus64(address) {
+  const { diamond, level, x, y } = rhombusCoords(address);
+  const hilbert = hilbertXYToIndex(level, x, y) << BigInt(2 * (MAX_LEVEL - level));
+  return (BigInt(diamond) << 59n) | (hilbert << LEVEL_BITS) | BigInt(level);
+}
+
+/** Decode a rhombus64 key to `{diamond, level, x, y}`. */
+export function decodeRhombus64(address) {
+  const value = typeof address === "bigint" ? address : BigInt(address);
+  if (value < 0n || value >= (1n << 63n)) throw new RangeError("rhombus64 is outside its 63-bit range");
+  const diamond = Number((value >> 59n) & 15n);
+  const level = Number(value & 31n);
+  if (diamond >= DIAMONDS.length || level > MAX_LEVEL) throw new RangeError("invalid rhombus64 value");
+  const hilbert = ((value >> LEVEL_BITS) & PATH_MASK) >> BigInt(2 * (MAX_LEVEL - level));
+  const [x, y] = hilbertIndexToXY(level, hilbert);
+  return { diamond, level, x, y };
+}
+
+function canonicalVertexId(face, level, barycentric) {
+  const faceVertices = ICO.faces[face];
+  const nonzero = barycentric.map((value, index) => value ? index : -1)
+    .filter(index => index >= 0);
+  if (nonzero.length === 1) {
+    return `HV${String(faceVertices[nonzero[0]]).padStart(2, "0")}-${String(level).padStart(2, "0")}`;
+  }
+  if (nonzero.length === 2) {
+    const [first, second] = nonzero;
+    const vertexA = faceVertices[first];
+    const vertexB = faceVertices[second];
+    const [low, high] = [vertexA, vertexB].sort((a, b) => a - b);
+    const highIndex = vertexA === high ? first : second;
+    return `HE${String(low).padStart(2, "0")}${String(high).padStart(2, "0")}-${String(level).padStart(2, "0")}-${barycentric[highIndex]}`;
+  }
+  return `HF${String(face).padStart(2, "0")}-${String(level).padStart(2, "0")}-${barycentric.join("-")}`;
+}
+
+/** Return a per-level display-group key with six-triangle face interiors. */
+export function hexId(address) {
+  const identity = parseAddress(address);
+  const centers = latticeTriangle(identity)
+    .filter(vertex => (vertex[1] + 2 * vertex[2]) % 3 === 0);
+  if (centers.length !== 1) throw new Error("triangle lattice coloring must select one vertex");
+  return canonicalVertexId(identity.face, identity.digits.length, centers[0]);
 }
 
 /** Return the spherical triangle for an address. */
@@ -443,6 +587,9 @@ export function cellMetrics(address) {
     id: toCompact(identity),
     path: toPath(identity),
     addr64: value,
+    rhombusId: rhombusId(identity),
+    rhombusHilbert: rhombus64(identity),
+    hexId: hexId(identity),
     face: identity.face,
     level: identity.digits.length,
     edgeKm: edgeKm(triangle),
@@ -473,6 +620,9 @@ export function cellFeature(address, { precision = 6 } = {}) {
       id: toCompact(identity),
       path: toPath(identity),
       addr64: value.toString(),
+      rhombus_id: rhombusId(identity),
+      rhombus_hilbert: rhombus64(identity).toString(),
+      hex_id: hexId(identity),
       level: identity.digits.length,
       pole: exported.pole,
     },

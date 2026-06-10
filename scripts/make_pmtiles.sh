@@ -17,6 +17,11 @@ DOCS_DATA_DIR="$ROOT_DIR/docs/data"
 GRIDS=(global_tri_L6_compacted global_tri_L6_uncompacted \
   global_tri_L7_uncompacted global_tri_L8_uncompacted \
   global_tri_L7_compacted global_tri_L8_compacted)
+shopt -s nullglob
+for grouped in "$DATA_DIR"/global_tri_L{4..8}_{compacted,uncompacted}_{rhombus,hex}.geojson; do
+  GRIDS+=("$(basename "${grouped%.geojson}")")
+done
+shopt -u nullglob
 
 if ! command -v tippecanoe >/dev/null 2>&1; then
   cat >&2 <<'ERROR'

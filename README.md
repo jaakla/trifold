@@ -134,6 +134,27 @@ The same operations are available from the standalone
 (`GET /locate/-0.1276,51.5072?level=6` → `TF6958`). The Worker is an HTTP
 adapter over the SDK. The Python and JavaScript implementations are cross-tested.
 
+### Derived grouping keys
+
+Every triangle can also be projected into two grouping indexes without
+changing its geometry or accounting identity:
+
+| property | role | behavior |
+|---|---|---|
+| `rhombus_id` | exact grouping | two triangles per rhombus on the complete grid |
+| `rhombus_hilbert` | sort/partition key | Hilbert order within ten nested base diamonds |
+| `hex_id` | display grouping | six triangles in face interiors; seam and vertex exceptions |
+
+Rhombi have an exact aperture-4 hierarchy: a parent rhombus is the union of
+four child rhombi. Hex groups are defined independently at each level and do
+not nest. The face-local coloring produces three- or six-triangle seam groups
+and fixed one- or five-triangle vertex groups, so `hex_id` is a visualization
+and grouping key rather than a uniform global hex grid.
+
+Land-filtered and compacted exports can contain partial groups when member
+triangles fall outside the coverage or are represented at another level.
+Grouped features include `triangle_count` to make this explicit.
+
 ---
 
 ## 3. Grid products
@@ -147,7 +168,8 @@ Built against Natural Earth 1:50m land, base level 6 (~110 km edges):
 
 Both cover the identical 171.1M km² (149M km² of land + the seaward
 overhang of coastal cells), verified to 0 invalid geometries. Per-cell
-properties: `id` (compact), `path`, `addr64`, `level`, `interior`,
+properties: `id` (compact), `path`, `addr64`, `rhombus_id`,
+`rhombus_hilbert`, `hex_id`, `level`, `interior`,
 `edge_km`, `area_km2`, `pole`, `xam`.
 
 TopoJSON is the recommended interchange form for grids: every triangle
@@ -157,7 +179,7 @@ compacted grid, edges are densified by recursive midpoint subdivision to a
 fixed sub-lattice — a large cell's boundary passes through its small
 neighbours' vertices bit-exactly.
 
-### Special cases (where global grids go to die)
+### Special cases
 
 * **Antimeridian.** Cells crossing ±180° are written with *continuous*
   longitudes (e.g. `176 → 184`). This intentionally deviates from RFC 7946
@@ -285,11 +307,11 @@ the official
 Embedded TopoJSON is used in the demo for datasets up to about 30k cells
 or 10 MB. Larger datasets can use either of these serverless approaches:
 
-**Pregenerated PMTiles** — `scripts/make_pmtiles.sh` converts any product
-to a single-file vector-tile archive via tippecanoe and copies level-6
-archives to `docs/data/` for GitHub Pages. `make_site.py` detects matching
-archives in `data/`, copies them into the published directory, and uses
-them instead of embedding the corresponding TopoJSON. Level 8 (~28 km,
+**Pregenerated PMTiles** — `scripts/make_pmtiles.sh` converts grid products
+to single-file vector-tile archives via tippecanoe and copies them to
+`docs/data/` for GitHub Pages. `make_site.py` detects matching archives in
+`data/` and uses them instead of embedding the corresponding TopoJSON.
+Set `TRIFOLD_PMTILES_BASE_URL` when the archives are hosted separately. Level 8 (~28 km,
 ~440k land cells) tiles to a few tens of MB and supports full-grid display.
 
 **Dynamic generation** — `worker/cell-server.js`, deployable free with
@@ -383,7 +405,7 @@ python scripts/make_site.py
 ```
 
 The wrapper writes archives under both `data/` and `docs/data/`. The site
-generator also copies any matching PMTiles it finds in `data/` and embeds
+generator detects matching PMTiles in `data/` and embeds
 TopoJSON only for datasets without an archive.
 
 The grid build requires the Natural Earth checkout described in

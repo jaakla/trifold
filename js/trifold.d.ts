@@ -2,7 +2,7 @@ export type CellIdentity = { face: number; digits: number[] };
 export type AddressLike = bigint | number | string | CellIdentity | [number, number[]];
 export type PolygonFeature = {
   type: "Feature";
-  properties: Record<string, string | number>;
+  properties: Record<string, string | number | boolean>;
   geometry: { type: "Polygon"; coordinates: number[][][] };
 };
 export type PolygonFeatureCollection = {
@@ -30,6 +30,17 @@ export function parent64(address: bigint | number | string): bigint;
 export function children64(address: bigint | number | string): bigint[];
 export function isAncestor(ancestor: bigint | number | string, descendant: bigint | number | string): boolean;
 export function descendantRange(address: bigint | number | string): [bigint, bigint];
+export function latticeTriangle(address: AddressLike): number[][];
+export function latticeTriangle(face: number, digits: number[]): number[][];
+export function rhombusCoords(address: AddressLike): {
+  diamond: number; level: number; x: number; y: number; orientation: number;
+};
+export function rhombusId(address: AddressLike): string;
+export function rhombus64(address: AddressLike): bigint;
+export function decodeRhombus64(address: bigint | number | string): {
+  diamond: number; level: number; x: number; y: number;
+};
+export function hexId(address: AddressLike): string;
 export function cellTriangle(address: AddressLike): number[][];
 export function cellTriangle(face: number, digits: number[]): number[][];
 export function locate(lon: number, lat: number, level: number): CellIdentity;
@@ -39,6 +50,7 @@ export function areaKm2(triangle: number[][]): number;
 export function cellRing(address: AddressLike, options?: { depth?: number; precision?: number }): number[][];
 export function cellMetrics(address: AddressLike): {
   id: string; path: string; addr64: bigint; face: number; level: number;
+  rhombusId: string; rhombusHilbert: bigint; hexId: string;
   edgeKm: number; areaKm2: number;
 };
 export function cellFeature(address: AddressLike, options?: { precision?: number }): PolygonFeature;

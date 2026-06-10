@@ -16,13 +16,12 @@ from urllib.request import Request, urlopen
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
 from trifold.api import (area_km2, build_compacted, cell_geometry_ring,
-                         edge_km, expand_to_base, from_path, to_compact,
-                         to_path)
+                         edge_km, expand_to_base, from_path, hex_id,
+                         rhombus64, rhombus_id, to_compact, to_path)
 
 DEFAULT_LAND = 'natural-earth-vector/geojson/ne_50m_land.geojson'
-LAND_URL = ('https://raw.githubusercontent.com/nvkelso/natural-earth-vector/'
-            'v5.1.2/geojson/ne_50m_land.geojson')
-LAND_SHA256 = 'e874b27a51d146452be360cafb3cc50c86001074a67d534113e6534682f9826b'
+LAND_URL = ('https://maps.goplex.ee/osm/osm_simplified_land_polygons.geojson')
+LAND_SHA256 = 'e7543aeb9a15c51fcba4983fe7f5353db4d11eb98d71a08105a20a6e5735919e'
 
 
 def download_land(path, url=LAND_URL, sha256=LAND_SHA256):
@@ -83,6 +82,9 @@ def cells_to_features(cells):
                 'id': to_compact(addr),            # primary key (compact b32)
                 'path': to_path(addr),             # teaching form
                 'addr64': str(addr),               # uint64 (string: JSON-safe)
+                'rhombus_id': rhombus_id(addr),
+                'rhombus_hilbert': str(rhombus64(addr)),
+                'hex_id': hex_id(addr),
                 'level': c['level'],
                 'interior': bool(c['interior']),
                 'edge_km': round(edge_km(c['tri']), 1),
@@ -95,14 +97,112 @@ def cells_to_features(cells):
     return feats
 
 
+def add_derived_properties(features):
+    """Add projection keys to existing triangle features in place."""
+    for feature in features:
+        props = feature['properties']
+        addr = from_path(props['path'])
+        props['rhombus_id'] = rhombus_id(addr)
+        props['rhombus_hilbert'] = str(rhombus64(addr))
+        props['hex_id'] = hex_id(addr)
+    return features
+
+
+def dissolve_features(features, group_by):
+    """Dissolve triangle features by a derived display-group key."""
+    from collections import defaultdict
+
+    from shapely import affinity
+    from shapely.geometry import mapping, shape
+    from shapely.ops import unary_union
+
+    property_name = f'{group_by}_id'
+    groups = defaultdict(list)
+    for feature in features:
+        groups[feature['properties'][property_name]].append(feature)
+
+    dissolved = []
+    for group_id, members in groups.items():
+        geometries = [shape(member['geometry']) for member in members]
+        reference = sum(geometries[0].bounds[::2]) / 2
+        aligned = []
+        for geometry in geometries:
+            center = sum(geometry.bounds[::2]) / 2
+            aligned.append(affinity.translate(
+                geometry, xoff=360 * round((reference - center) / 360)))
+        geometry = unary_union(aligned)
+        center = sum(geometry.bounds[::2]) / 2
+        geometry = affinity.translate(geometry, xoff=-360 * round(center / 360))
+
+        first = members[0]['properties']
+        props = {
+            'id': group_id,
+            property_name: group_id,
+            'level': first['level'],
+            'triangle_count': len(members),
+            'interior': all(member['properties']['interior'] for member in members),
+            'area_km2': round(sum(member['properties']['area_km2']
+                                  for member in members), 0),
+            'pole': next((member['properties']['pole'] for member in members
+                          if member['properties']['pole']), ''),
+            'xam': geometry.bounds[0] < -180 or geometry.bounds[2] > 180,
+        }
+        if group_by == 'rhombus':
+            props['rhombus_hilbert'] = first['rhombus_hilbert']
+        dissolved.append({
+            'type': 'Feature',
+            'properties': props,
+            'geometry': mapping(geometry),
+        })
+    return dissolved
+
+
+def write_collection(features, path, topojson_enabled=True):
+    fc = {'type': 'FeatureCollection', 'features': features}
+    with open(path, 'w') as f:
+        json.dump(fc, f, separators=(',', ':'))
+    line = f"  {path}: {len(features)} cells, {os.path.getsize(path) / 1e6:.1f} MB"
+    if topojson_enabled:
+        import topojson
+        topo = topojson.Topology(fc, prequantize=1e6)
+        topo_path = path.replace('.geojson', '.topojson')
+        with open(topo_path, 'w') as f:
+            f.write(topo.to_json())
+        line += f" | topojson {os.path.getsize(topo_path) / 1e6:.1f} MB"
+    print(line)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--levels', type=int, nargs='+', default=[4, 5, 6])
     ap.add_argument('--land', default=DEFAULT_LAND)
     ap.add_argument('--out', default='data')
-    ap.add_argument('--topojson', action='store_true', default=True)
+    ap.add_argument('--topojson', action=argparse.BooleanOptionalAction,
+                    default=True)
+    ap.add_argument('--group-by', nargs='+', choices=('rhombus', 'hex'),
+                    default=[], help='also export dissolved display groups')
+    ap.add_argument('--group-existing', action='store_true',
+                    help='enrich existing triangle GeoJSON and derive groups')
     args = ap.parse_args()
     os.makedirs(args.out, exist_ok=True)
+
+    if args.group_existing:
+        if not args.group_by:
+            ap.error('--group-existing requires --group-by')
+        for base in args.levels:
+            for mode in ('compacted', 'uncompacted'):
+                path = os.path.join(args.out, f'global_tri_L{base}_{mode}.geojson')
+                if not os.path.isfile(path):
+                    raise FileNotFoundError(f'existing grid not found: {path}')
+                with open(path) as src:
+                    features = add_derived_properties(json.load(src)['features'])
+                has_pmtiles = os.path.isfile(path.replace('.geojson', '.pmtiles'))
+                write_collection(features, path, args.topojson and not has_pmtiles)
+                for group_by in args.group_by:
+                    grouped = dissolve_features(features, group_by)
+                    grouped_path = path.replace('.geojson', f'_{group_by}.geojson')
+                    write_collection(grouped, grouped_path, args.topojson)
+        return
 
     ensure_land(args.land, args.land == DEFAULT_LAND)
     import geopandas as gpd
@@ -119,20 +219,12 @@ def main():
               f"({time.time()-t0:.0f}s)")
         for mode, cells in (('compacted', comp), ('uncompacted', unc)):
             feats = cells_to_features(cells)
-            fc = {'type': 'FeatureCollection', 'features': feats}
             gj = os.path.join(args.out, f'global_tri_L{base}_{mode}.geojson')
-            with open(gj, 'w') as f:
-                json.dump(fc, f, separators=(',', ':'))
-            sz = os.path.getsize(gj) / 1e6
-            line = f"  {gj}: {len(feats)} cells, {sz:.1f} MB"
-            if args.topojson:
-                import topojson
-                topo = topojson.Topology(fc, prequantize=1e6)
-                tj = gj.replace('.geojson', '.topojson')
-                with open(tj, 'w') as f:
-                    f.write(topo.to_json())
-                line += f" | topojson {os.path.getsize(tj)/1e6:.1f} MB"
-            print(line)
+            write_collection(feats, gj, args.topojson)
+            for group_by in args.group_by:
+                grouped = dissolve_features(feats, group_by)
+                grouped_path = gj.replace('.geojson', f'_{group_by}.geojson')
+                write_collection(grouped, grouped_path, args.topojson)
 
 
 if __name__ == '__main__':

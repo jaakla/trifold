@@ -16,12 +16,15 @@ import {
   cellFeature,
   children64,
   encode64,
+  hexId,
   levelFeatureCollection,
   locateAddress,
   parent64,
   parseAddress,
   toCompact,
   toPath,
+  rhombus64,
+  rhombusId,
 } from "../js/trifold.js";
 
 const CORS = {
@@ -66,6 +69,9 @@ export default {
           id: toCompact(address),
           path: toPath(address),
           addr64: address.toString(),
+          rhombus_id: rhombusId(address),
+          rhombus_hilbert: rhombus64(address).toString(),
+          hex_id: hexId(address),
           level,
         });
       }

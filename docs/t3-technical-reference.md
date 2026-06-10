@@ -128,7 +128,7 @@ against the JavaScript Worker's public endpoint.
   Mercator clips them at ±85° (use globe view). Polygon-fill
   (`polyfill`-equivalent) is on the roadmap, not yet implemented.
 
-### 6. Fair comparison
+### 6. Comparison
 
 | Property | **T3** | A5 | H3 | S2 | rHEALPix | HTM/QTM |
 |---|---|---|---|---|---|---|
@@ -139,7 +139,7 @@ against the JavaScript Worker's public endpoint.
 | Edge neighbors | 3 (+9 vertex) | 5 | **6 uniform** | 4 | 4 | 3 (+vertex) |
 | Index | uint64, prefix=subtree | uint64, Hilbert | uint64 | uint64, Hilbert | string | quadtree string/int |
 | Ecosystem | this repo (2026) | young (2025), growing | **huge** | huge | niche/OGC | niche/astronomy |
-| Best at | lossless hierarchy, simplicial/FEM, multi-res coverage | density-honest statistics | neighbor ops, analytics | indexing, range queries | equal-area statistics | astronomy heritage |
+| Best at | lossless hierarchy, simplicial/FEM, multi-res coverage | density statistics | neighbor ops, analytics | indexing, range queries | equal-area statistics | astronomy heritage |
 
 **T3 vs HTM/QTM specifically**: T3 is essentially "HTM on an icosahedron
 with modern addressing and web tooling." The icosahedron's smaller faces
@@ -152,7 +152,7 @@ A5 has exact areas and approximate (logical) geometry. Same 64-bit
 indexing philosophy. Pick by which invariant your application cannot
 tolerate breaking.
 
-### 7. Status and honest limitations
+### 7. Status and limitations
 
 Single-repo, single-author project (first release 2026, v0.1.0), no
 independent benchmark yet, neighbor traversal across face boundaries not

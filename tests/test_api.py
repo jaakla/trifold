@@ -29,6 +29,9 @@ def test_cell_helpers_share_one_documented_shape():
     assert metrics['id'] == 'TF6958'
     assert metrics['path'] == to_path(metrics['addr64'])
     assert metrics['level'] == 6
+    assert metrics['rhombus_id'] == feature['properties']['rhombus_id']
+    assert str(metrics['rhombus_hilbert']) == feature['properties']['rhombus_hilbert']
+    assert metrics['hex_id'] == feature['properties']['hex_id']
     assert feature['properties']['addr64'] == str(metrics['addr64'])
     assert feature['geometry']['coordinates'][0] == ring
 
