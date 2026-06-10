@@ -77,17 +77,19 @@ integration into pipelines, databases, or viewers.*
 
 One cell identity, three encodings (see README §2 for the full spec):
 
-- **uint64**: 5 face bits + 5 level bits + up to 27 path digits at 2 bits
-  each, path left-aligned. Numeric sort = depth-first hierarchical order;
+- **uint64**: 5 face bits + up to 27 path digits at 2 bits each + 5 low
+  level bits. The path is left-aligned. Numeric sort = depth-first order;
   parent/child/ancestor are O(1) bit operations; *all descendants of a
-  cell* is one contiguous integer interval (ideal for DB range scans).
+  cell* fall within the inclusive interval returned by `descendant_range`
+  (ideal for DB range scans).
 - **compact base32** (`TF6958`): Crockford alphabet, 5 bits/char —
   a level-6 cell is 6 characters, level 15 is 9. For humans, URLs, CSVs.
 - **digit path** (`F15-102111`): one base-4 digit per level, the
   teaching/debug form.
 
-All three round-trip losslessly; codecs exist in Python and JS and are
-cross-tested (5,000 randomized round-trips in `tests/test_address.py`).
+All three round-trip losslessly. Python runs 5,000 randomized codec
+round-trips, and `tests/test_worker.py` cross-tests representative points
+against the JavaScript Worker's public endpoint.
 
 ### 4. Tooling
 
@@ -154,11 +156,12 @@ tolerate breaking.
 Single-repo, single-author project (first release 2026, v0.1.0), no
 independent benchmark yet, neighbor traversal across face boundaries not
 implemented, equal-area variant (Snyder/ISEA-style projection per face)
-on the roadmap. The equal-coverage and exact-nesting claims are verified
-by the build pipeline itself (assertions in `scripts/build_grids.py` and
-`tests/`), not by third parties. Treat T3 as **research/demonstration
-grade**: suitable for analysis pipelines and teaching today, not yet for
-production systems that need the routine breadth of H3 or S2.
+on the roadmap. Core area preservation and point location are covered by
+`tests/test_core.py`; published land-coverage figures come from generated
+build outputs, not independent third-party validation. Treat T3 as
+**research/demonstration grade**: suitable for analysis pipelines and
+teaching today, not yet for production systems that need the routine
+breadth of H3 or S2.
 
 ## Recommendations
 
@@ -166,8 +169,9 @@ production systems that need the routine breadth of H3 or S2.
    constraint** — multi-resolution statistics, conservative regridding,
    simplicial/FEM-adjacent pipelines — and pair it with H3 when the same
    project also needs heavy neighbor traversal.
-2. **Use `addr64` as the storage key** (8 bytes, sortable, subtree = range
-   scan); show `compact` in UIs; reserve `path` for documentation.
+2. **Use `addr64` as the storage key** (8 bytes, sortable; use
+   `descendant_range` for subtree scans); show `compact` in UIs and reserve
+   `path` for documentation.
 3. **Serve small extents from the Worker, large extents from PMTiles**;
    embed TopoJSON only below ~30k cells.
 4. **Thresholds that would change this assessment**: an implemented

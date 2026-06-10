@@ -54,9 +54,9 @@ a different consumer:
 
 | form | example (London, level 6) | for | size |
 |---|---|---|---|
-| **compact** | `TF6958` | humans, URLs, labels, CSV columns | 4 + ⌈2L/5⌉ chars |
+| **compact** | `TF6958` | humans, URLs, labels, CSV columns | 3 + ⌈2L/5⌉ chars |
 | **path** | `F15-102111` | teaching, debugging — shows the tree descent | 4 + L chars |
-| **addr64** | `8760156584165769216` | compute — sort, join, mask | 8 bytes |
+| **addr64** | `8811996358392152070` | compute — sort, join, mask | 8 bytes |
 
 **Why not just digits 0–3?** A digit string spends 8 bits per character to
 carry 2 bits of information. The compact form re-encodes the *same* path
@@ -66,23 +66,29 @@ bits in 3 chars). Level 15 — sub-kilometre cells — still fits in 9
 characters. Base64 would save little and break URLs; raw binary is
 unreadable. Base32 is the sweet spot.
 
-**The uint64 layout** packs face (5 bits) + level (5 bits) + up to 27 path
-digits (54 bits), path left-aligned:
+**The uint64 layout** packs face (5 bits) + up to 27 path digits (54 bits)
++ level (5 bits). The path is left-aligned and the level is the low-bit
+tie-breaker that places a parent before its descendants:
 
 ```
- 63       59        54                                            0
- ┌─────────┬─────────┬──────────────────────────────────────────────┐
- │ face:5  │ level:5 │ path digits, 2 bits each, left-aligned       │
- └─────────┴─────────┴──────────────────────────────────────────────┘
+ 63       59                                                       5     0
+ ┌─────────┬────────────────────────────────────────────────────────┬─────┐
+ │ face:5  │ path digits, 2 bits each, left-aligned                 │ L:5 │
+ └─────────┴────────────────────────────────────────────────────────┴─────┘
 ```
 
-Left-alignment buys three O(1) properties:
+Left-alignment and the low level field provide these properties:
 
 * numeric sort = depth-first hierarchical order within a face
   (Z-order curve — spatially adjacent cells tend to be numerically close);
-* `parent = (a & path_mask(level-1)) | level_bits(level-1)` — bit ops only;
-* `is_ancestor(a, b)` = one shift and compare. Perfect for range scans in
-  databases: *all descendants of cell X* is a contiguous uint64 interval.
+* parent and child addresses are direct masks/shifts — no tree traversal;
+* `is_ancestor(a, b)` = one shift and compare;
+* `descendant_range(a)` returns the inclusive uint64 interval containing
+  that cell and all descendants, suitable for database range scans.
+
+**Compatibility:** this corrected field order changes numeric `addr64`
+values produced by the initial v0.1.0 code. Compact and path addresses are
+unchanged; regenerate stored numeric IDs from either string form.
 
 ```python
 import trifold as tg
@@ -102,10 +108,10 @@ TF6958
 $ trifold show TF6958
 compact : TF6958
 path    : F15-102111
-addr64  : 8760156584165769216 (0x7993C16000000000)
+addr64  : 8811996358392152070 (0x7A4A800000000006)
 level   : 6
 edge_km : 116.9
-area_km2: 7042
+area_km2: 5864
 $ trifold geom TF6958 > london_cell.geojson
 ```
 
@@ -311,6 +317,50 @@ python scripts/build_comparison_dggs.py
 python scripts/build_a5_layer.py        # A5 pentagons (pip install pya5)
 python scripts/build_more_dggs.py       # S2 + rHEALPix + HTM layers
 python scripts/make_site.py          # → docs/index.html (landing + viewer)
+```
+
+---
+
+## Development environment
+
+Create and activate a virtual environment, then install the package plus build extras.
+
+Preferred (installs package + extras declared in `pyproject.toml`):
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -e ".[build]"
+```
+
+Alternative (use the repository `requirements.txt`):
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+`tippecanoe` is required for `scripts/make_pmtiles.sh` (OS-level tool):
+
+```bash
+# macOS (Homebrew)
+brew install tippecanoe
+
+# Linux: build from source or use the docker image; the script assumes `tippecanoe` is on PATH
+```
+
+Optional modern workflow (Poetry):
+
+```bash
+poetry install
+poetry shell
+```
+
+Generate PMTiles after installing `tippecanoe`:
+
+```bash
+./scripts/make_pmtiles.sh
 ```
 
 ## 9. Roadmap

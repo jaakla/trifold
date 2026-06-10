@@ -190,23 +190,23 @@ html = """<!doctype html>
   <table>
     <tr><th>form</th><th>example</th><th>for</th><th>size</th></tr>
     <tr><td><b>compact</b></td><td><code>TF6958</code></td><td>humans, URLs, labels</td>
-      <td>4 + ⌈2L/5⌉ chars</td></tr>
+      <td>3 + ⌈2L/5⌉ chars</td></tr>
     <tr><td><b>path</b></td><td><code>F15-102111</code></td><td>teaching, debugging</td>
       <td>4 + L chars</td></tr>
-    <tr><td><b>addr64</b></td><td><code>8760156584165769216</code></td><td>compute: sort, join, mask</td>
+    <tr><td><b>addr64</b></td><td><code>8811996358392152070</code></td><td>compute: sort, join, mask</td>
       <td>8 bytes</td></tr>
   </table>
-  <div class="bitbox"> 63       59        54                                            0
- ┌─────────┬─────────┬──────────────────────────────────────────────┐
- │ face:5  │ level:5 │ path digits, 2 bits each, left-aligned       │
- └─────────┴─────────┴──────────────────────────────────────────────┘
+  <div class="bitbox"> 63       59                                                       5     0
+ ┌─────────┬────────────────────────────────────────────────────────┬─────┐
+ │ face:5  │ path digits, 2 bits each, left-aligned                 │ L:5 │
+ └─────────┴────────────────────────────────────────────────────────┴─────┘
  numeric sort = hierarchical order · ancestor test = shift + compare
- all descendants of a cell = one contiguous uint64 interval</div>
+ descendant_range(cell) = inclusive subtree interval</div>
   <pre><code>$ pip install -e . &amp;&amp; trifold locate -0.1276 51.5072 6
 TF6958
-$ trifold show TF6958        # → path F15-102111 · edge ~117 km · area 7,042 km²
+$ trifold show TF6958        # → path F15-102111 · edge ~117 km · area 5,864 km²
 $ curl https://YOUR-WORKER.workers.dev/locate/-0.1276,51.5072?level=6
-{"id":"TF6958","path":"F15-102111","addr64":"8760156584165769216","level":6}</code></pre>
+{"id":"TF6958","path":"F15-102111","addr64":"8811996358392152070","level":6}</code></pre>
   <p class="muted">Why base32 instead of digits 0–3? A digit string spends 8 bits per character
   to carry 2 bits. Crockford base32 packs 5 bits/char with no ambiguous I/L/O/U — same path
   bits, 40% of the length, URL-safe.</p>
@@ -368,12 +368,21 @@ const SYS_NOTES={
 let state={sys:'tri',level:'6',mode:'compacted',proj:'globe'};
 const cache={};
 
+function addr64FromPath(path){
+  const [head,digits='']=path.split('-');
+  let bits=0n;
+  for(const digit of digits)bits=(bits<<2n)|BigInt(digit);
+  bits<<=BigInt(2*(27-digits.length));
+  return ((BigInt(Number(head.slice(1)))<<59n)|(bits<<5n)|BigInt(digits.length)).toString();
+}
 async function decode(key){
   if(cache[key])return cache[key];
   const b=Uint8Array.from(atob(DATASETS[key]),c=>c.charCodeAt(0));
   const stream=new Blob([b]).stream().pipeThrough(new DecompressionStream('gzip'));
   const topo=JSON.parse(await new Response(stream).text());
   const gj=topojson.feature(topo,topo.objects[Object.keys(topo.objects)[0]]);
+  if(key.startsWith('tri_'))for(const feature of gj.features)
+    feature.properties.addr64=addr64FromPath(feature.properties.path);
   cache[key]=gj;return gj;
 }
 function dataKey(){

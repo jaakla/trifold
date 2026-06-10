@@ -148,7 +148,7 @@ function toAddr64(face, digits) {
   let path = 0n;
   for (const d of digits) path = (path << 2n) | BigInt(d);
   path <<= BigInt(2 * (27 - digits.length));
-  return ((BigInt(face) << 59n) | (BigInt(digits.length) << 54n) | path)
+  return ((BigInt(face) << 59n) | (path << 5n) | BigInt(digits.length))
          .toString();
 }
 

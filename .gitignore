@@ -8,3 +8,4 @@ data/*.pmtiles
 data/*.pkl
 !data/sample_*.geojson
 .venv/
+poetry.lock

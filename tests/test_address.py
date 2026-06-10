@@ -4,7 +4,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
 from trifold.address import (encode64, decode64, to_compact, from_compact,
                              to_path, from_path, parent64, children64,
-                             is_ancestor, level_of, MAX_LEVEL)
+                             is_ancestor, descendant_range, MAX_LEVEL)
 
 
 def test_roundtrips():
@@ -17,6 +17,11 @@ def test_roundtrips():
         assert decode64(a) == (face, digits)
         assert from_compact(to_compact(a)) == a
         assert from_path(to_path(a)) == a
+        if digits:
+            assert parent64(a) == encode64(face, digits[:-1])
+        if level < MAX_LEVEL:
+            assert children64(a) == [encode64(face, digits + (d,))
+                                     for d in range(4)]
 
 
 def test_hierarchy():
@@ -39,9 +44,24 @@ def test_sort_is_hierarchical():
                 gen(digits + [d], level + 1)
     gen([], 0)
     df_order = cells[:]                 # generation order is depth-first
-    # Sorting by (path-aligned bits, level) reproduces DFS preorder:
-    by_num = sorted(cells, key=lambda a: (a & ((1 << 54) - 1), level_of(a)))
-    assert by_num == df_order
+    assert sorted(cells) == df_order
+
+
+def test_descendants_form_one_integer_range():
+    cells = []
+    for face in (3, 4):
+        def gen(digits):
+            cells.append(encode64(face, tuple(digits)))
+            if len(digits) < 4:
+                for d in range(4):
+                    gen(digits + [d])
+        gen([])
+
+    for a in cells:
+        low, high = descendant_range(a)
+        assert low == a
+        for b in cells:
+            assert (low <= b <= high) == is_ancestor(a, b)
 
 
 def test_compact_examples():
@@ -51,8 +71,13 @@ def test_compact_examples():
     assert c.startswith('T96')
     assert from_compact(c.lower()) == a    # case-insensitive
 
+    london = from_compact('TF6958')
+    assert london == 8811996358392152070
+    assert to_path(london) == 'F15-102111'
+
 
 if __name__ == '__main__':
     test_roundtrips(); test_hierarchy()
-    test_sort_is_hierarchical(); test_compact_examples()
+    test_sort_is_hierarchical(); test_descendants_form_one_integer_range()
+    test_compact_examples()
     print("all address tests passed")

@@ -9,10 +9,10 @@ Encodings
 ---------
 1. addr64 (uint64)  — for compute.
      bits 63..59  face   (5 bits, 0..19)
-     bits 58..54  level  (5 bits, 0..27)
-     bits 53..0   path digits, 2 bits each, LEFT-aligned (d1 at bits 53..52)
+     bits 58..5   path digits, 2 bits each, LEFT-aligned (d1 at bits 58..57)
+     bits 4..0    level  (5 bits, 0..27)
    Properties: numeric sort == hierarchical (Z-order) sort within a face;
-   ancestor test is a shift+compare; parent/child are O(1) bit ops.
+   descendants occupy one integer range; ancestor test is a shift+compare.
 
 2. compact (string) — for humans, URLs, labels.  'T' + base32(face) +
    base32(level) + base32(path bits, right-padded to 5-bit chars).
@@ -30,10 +30,14 @@ for _c, _i in [('I', 1), ('L', 1), ('O', 0), ('U', 27)]:  # leniency
     B32_INV[_c] = _i
 
 MAX_LEVEL = 27
+LEVEL_BITS = 5
+PATH_BITS = 2 * MAX_LEVEL
+PATH_MASK = (1 << PATH_BITS) - 1
 
 __all__ = ['encode64', 'decode64', 'to_compact', 'from_compact',
            'to_path', 'from_path', 'parent64', 'children64', 'level_of',
-           'face_of', 'path_of', 'is_ancestor', 'MAX_LEVEL']
+           'face_of', 'path_of', 'is_ancestor', 'descendant_range',
+           'MAX_LEVEL']
 
 
 # ----------------------------------------------------------- uint64 core
@@ -49,13 +53,15 @@ def encode64(face: int, digits: tuple[int, ...] | list[int]) -> int:
             raise ValueError(f"path digit {d} out of range 0..3")
         path = (path << 2) | d
     path <<= 2 * (MAX_LEVEL - level)           # left-align
-    return (face << 59) | (level << 54) | path
+    return (face << 59) | (path << LEVEL_BITS) | level
 
 
 def decode64(a: int) -> tuple[int, tuple[int, ...]]:
     face = (a >> 59) & 0x1F
-    level = (a >> 54) & 0x1F
-    digits = tuple((a >> (54 - 2 * (i + 1))) & 0x3 for i in range(level))
+    level = a & 0x1F
+    path = (a >> LEVEL_BITS) & PATH_MASK
+    digits = tuple((path >> (PATH_BITS - 2 * (i + 1))) & 0x3
+                   for i in range(level))
     return face, digits
 
 
@@ -64,7 +70,7 @@ def face_of(a: int) -> int:
 
 
 def level_of(a: int) -> int:
-    return (a >> 54) & 0x1F
+    return a & 0x1F
 
 
 def path_of(a: int) -> tuple[int, ...]:
@@ -72,17 +78,25 @@ def path_of(a: int) -> tuple[int, ...]:
 
 
 def parent64(a: int) -> int:
-    face, digits = decode64(a)
-    if not digits:
+    level = level_of(a)
+    if level == 0:
         raise ValueError("level-0 cell has no parent")
-    return encode64(face, digits[:-1])
+    parent_level = level - 1
+    shift = PATH_BITS - 2 * parent_level
+    path = ((a >> LEVEL_BITS) & PATH_MASK) >> shift << shift
+    return (face_of(a) << 59) | (path << LEVEL_BITS) | parent_level
 
 
 def children64(a: int) -> list[int]:
-    face, digits = decode64(a)
-    if len(digits) >= MAX_LEVEL:
+    level = level_of(a)
+    if level >= MAX_LEVEL:
         raise ValueError("at max level")
-    return [encode64(face, tuple(digits) + (d,)) for d in range(4)]
+    child_level = level + 1
+    shift = PATH_BITS - 2 * child_level
+    path = (a >> LEVEL_BITS) & PATH_MASK
+    face = face_of(a) << 59
+    return [face | ((path | (d << shift)) << LEVEL_BITS) | child_level
+            for d in range(4)]
 
 
 def is_ancestor(a: int, b: int) -> bool:
@@ -93,9 +107,25 @@ def is_ancestor(a: int, b: int) -> bool:
     if la > lb:
         return False
     mask_bits = 2 * la
-    pa = (a & ((1 << 54) - 1)) >> (54 - mask_bits) if mask_bits else 0
-    pb = (b & ((1 << 54) - 1)) >> (54 - mask_bits) if mask_bits else 0
+    if not mask_bits:
+        return True
+    shift = PATH_BITS - mask_bits
+    pa = ((a >> LEVEL_BITS) & PATH_MASK) >> shift
+    pb = ((b >> LEVEL_BITS) & PATH_MASK) >> shift
     return pa == pb
+
+
+def descendant_range(a: int) -> tuple[int, int]:
+    """Inclusive range whose valid addresses are exactly this subtree.
+
+    The guarantee applies to valid encoded cells stored in the same uint64
+    column; unused integer values may also occur between valid addresses.
+    """
+    level = level_of(a)
+    suffix_bits = PATH_BITS - 2 * level
+    path = (a >> LEVEL_BITS) & PATH_MASK
+    high_path = path | ((1 << suffix_bits) - 1 if suffix_bits else 0)
+    return a, (face_of(a) << 59) | (high_path << LEVEL_BITS) | MAX_LEVEL
 
 
 # ----------------------------------------------------------- compact form
