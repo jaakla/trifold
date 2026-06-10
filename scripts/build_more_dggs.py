@@ -256,7 +256,7 @@ if __name__ == '__main__':
     build_rhealpix(classify, args.rhpxres, args.out)
 
     import geopandas as gpd
-    from trifold.classify import LandClassifier
+    from trifold.land import LandClassifier
     print("HTM (octahedral triangles via Trifold machinery):")
     clf = LandClassifier(gpd.read_file(args.land))
     build_htm(clf, args.htmlevel, args.out)

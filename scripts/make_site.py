@@ -11,6 +11,8 @@ import shutil
 DATA = 'data'
 OUT = 'docs/index.html'
 DOCS_DATA = 'docs/data'
+JS_SDK = 'js/trifold.js'
+DOCS_SDK = 'docs/sdk/trifold.js'
 GH = 'https://github.com/jaakla/trifold'
 
 EMBED = {
@@ -377,7 +379,8 @@ $ curl https://YOUR-WORKER.workers.dev/locate/-0.1276,51.5072?level=6
   built with MapLibre GL &amp; topojson-client
 </footer>
 
-<script>
+<script type="module">
+import {fromPath} from './sdk/trifold.js';
 __DATA__
 
 const LEVEL_COLORS={0:'#3f0008',1:'#67000d',2:'#a50f15',3:'#cb181d',4:'#ef3b2c',
@@ -411,13 +414,6 @@ const cache={};
 const protocol=new pmtiles.Protocol();
 maplibregl.addProtocol('pmtiles',protocol.tile);
 
-function addr64FromPath(path){
-  const [head,digits='']=path.split('-');
-  let bits=0n;
-  for(const digit of digits)bits=(bits<<2n)|BigInt(digit);
-  bits<<=BigInt(2*(27-digits.length));
-  return ((BigInt(Number(head.slice(1)))<<59n)|(bits<<5n)|BigInt(digits.length)).toString();
-}
 async function decode(key){
   if(cache[key])return cache[key];
   const b=Uint8Array.from(atob(DATASETS[key]),c=>c.charCodeAt(0));
@@ -425,7 +421,8 @@ async function decode(key){
   const topo=JSON.parse(await new Response(stream).text());
   const gj=topojson.feature(topo,topo.objects[Object.keys(topo.objects)[0]]);
   if(key.startsWith('tri_'))for(const feature of gj.features)
-    feature.properties.addr64=addr64FromPath(feature.properties.path);
+    feature.properties.addr64=feature.properties.addr64||
+      fromPath(feature.properties.path).toString();
   cache[key]=gj;return gj;
 }
 function dataKey(){
@@ -536,6 +533,8 @@ wireSeg('seg-proj','proj',()=>{
 """
 
 os.makedirs('docs', exist_ok=True)
+os.makedirs(os.path.dirname(DOCS_SDK), exist_ok=True)
+shutil.copy2(JS_SDK, DOCS_SDK)
 with open(OUT, 'w') as f:
     f.write(html.replace('__DATA__', data_js).replace('__GH__', GH))
 print(f"{OUT}: {os.path.getsize(OUT)/1e6:.1f} MB")

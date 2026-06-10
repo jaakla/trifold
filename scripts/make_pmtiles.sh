@@ -14,7 +14,9 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 DATA_DIR="$ROOT_DIR/data"
 DOCS_DATA_DIR="$ROOT_DIR/docs/data"
-GRIDS=(global_tri_L6_compacted global_tri_L6_uncompacted)
+GRIDS=(global_tri_L6_compacted global_tri_L6_uncompacted \
+  global_tri_L7_uncompacted global_tri_L8_uncompacted \
+  global_tri_L7_compacted global_tri_L8_compacted)
 
 if ! command -v tippecanoe >/dev/null 2>&1; then
   cat >&2 <<'ERROR'

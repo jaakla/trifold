@@ -1,5 +1,4 @@
 """trifold.grid — quadtree compaction, expansion, export rings."""
-import numpy as np
 from .core import (icosahedron, subdivide, densified_ring_xyz,
                    contains_point, NORTH, SOUTH, build_export_ring,
                    edge_km, area_km2)

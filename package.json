@@ -1,0 +1,14 @@
+{
+  "name": "@trifold/grid",
+  "version": "0.1.0",
+  "description": "Dependency-free JavaScript SDK for the Trifold triangular DGGS",
+  "type": "module",
+  "exports": {
+    ".": "./js/trifold.js"
+  },
+  "files": [
+    "js/trifold.js",
+    "js/trifold.d.ts"
+  ],
+  "license": "MIT"
+}

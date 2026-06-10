@@ -12,8 +12,9 @@ integration into pipelines, databases, or viewers.*
   bit-for-bit the geometric union of its four children** — the property
   that motivates the whole design. Cells are 64-bit integers across **28
   resolution levels** (level 0 = 20 cells of ~25.5M km², level 27 ≈ 2 m
-  edges). Reference implementations: Python (`src/trifold`, this repo)
-  and JavaScript (`worker/cell-server.js`), cross-tested to agree.
+  edges). Reference implementations: Python (`trifold.api`) and JavaScript
+  (`js/trifold.js`), cross-tested to agree. The CLI, builders, website, and
+  Worker are adapters that use these SDKs.
 - **Its headline strength is lossless hierarchy**: aggregating level-9
   statistics into level-6 cells is *exact* — no boundary slivers, no
   overlap weighting, no approximation. Compacted (variable-resolution)
@@ -93,15 +94,15 @@ against the JavaScript Worker's public endpoint.
 
 ### 4. Tooling
 
-- **Python**: `pip install -e .` → `import trifold`; key functions
+- **Python SDK**: `pip install -e .` → `import trifold.api`; key functions
   `locate`, `cell_triangle`, `encode64/decode64`, `to_compact/from_compact`,
   `to_path/from_path`, `parent64/children64/is_ancestor`,
-  `LandClassifier`, `build_compacted`, `expand_to_base`,
-  `cell_geometry_ring`, `edge_km`, `area_km2`. CLI: `trifold locate|show|
-  geom|parent|children`.
-- **JavaScript**: `worker/cell-server.js` — a complete port (icosahedron,
-  subdivision, point location, all three codecs, ring building with pole
-  wedges) packaged as a Cloudflare Worker with endpoints `/cell/{addr}`,
+  `build_compacted`, `expand_to_base`, `cell_geometry_ring`, `edge_km`, and
+  `area_km2`. `LandClassifier` is in the optional `trifold.land` extension.
+  CLI: `trifold locate|show|geom|parent|children`.
+- **JavaScript SDK**: `js/trifold.js` is a dependency-free ES module with
+  TypeScript declarations. `worker/cell-server.js` is an HTTP adapter with
+  endpoints `/cell/{addr}`,
   `/cells/{a,b,…}`, `/locate/{lon},{lat}?level=N`, `/parent`, `/children`,
   `/level/{N}`. Deploy free with `npx wrangler deploy`.
 - **Exports**: GeoJSON and TopoJSON (TopoJSON recommended — shared-arc

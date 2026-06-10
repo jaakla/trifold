@@ -14,10 +14,6 @@ Special-case handling:
     exactly on the +/-180 meridian (avoids atan2 sign instability).
 """
 import numpy as np
-from shapely.geometry import Polygon, box
-from shapely.prepared import prep
-from shapely.strtree import STRtree
-from shapely import affinity
 
 EARTH_R = 6371.0088  # km
 LON_ROT = np.radians(7.3)

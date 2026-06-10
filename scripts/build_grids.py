@@ -15,10 +15,9 @@ from urllib.request import Request, urlopen
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
-from trifold import (LandClassifier, build_compacted, expand_to_base,
-                     cell_geometry_ring, edge_km, area_km2,
-                     encode64, to_compact, to_path)
-from trifold.address import from_path
+from trifold.api import (area_km2, build_compacted, cell_geometry_ring,
+                         edge_km, expand_to_base, from_path, to_compact,
+                         to_path)
 
 DEFAULT_LAND = 'natural-earth-vector/geojson/ne_50m_land.geojson'
 LAND_URL = ('https://raw.githubusercontent.com/nvkelso/natural-earth-vector/'
@@ -107,6 +106,7 @@ def main():
 
     ensure_land(args.land, args.land == DEFAULT_LAND)
     import geopandas as gpd
+    from trifold.land import LandClassifier
     land = gpd.read_file(args.land)
     clf = LandClassifier(land)
     print(f"classifier ready ({len(clf.pieces)} land pieces)")

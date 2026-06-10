@@ -40,6 +40,20 @@ global grid products generated against Natural Earth land, generators for
 comparison grid systems, an interactive MapLibre demo (globe and flat),
 and a Cloudflare Worker that computes cells on demand from the grid geometry.
 
+### SDK and application code
+
+Core grid behavior is exposed through two standalone SDKs:
+
+| Runtime | Public SDK | Code using it |
+|---|---|---|
+| Python | `trifold.api` (also re-exported by `trifold`) | CLI and build scripts |
+| JavaScript | `js/trifold.js` / `@trifold/grid` | Cloudflare Worker and website |
+
+The SDKs cover address codecs, hierarchy operations, point location, cell
+geometry, metrics, and GeoJSON. Python land classification is an optional
+extension under `trifold.land`. See the [SDK API reference](docs/sdk-api.md)
+for the supported functions and examples.
+
 ---
 
 ## 2. Addressing: one identity, three encodings
@@ -91,7 +105,7 @@ values produced by the initial v0.1.0 code. Compact and path addresses are
 unchanged; regenerate stored numeric IDs from either string form.
 
 ```python
-import trifold as tg
+import trifold.api as tg
 addr = tg.encode64(*tg.locate(-0.1276, 51.5072, level=6))
 tg.to_compact(addr)        # 'TF6958'
 tg.to_path(addr)           # 'F15-102111'
@@ -115,9 +129,10 @@ area_km2: 5864
 $ trifold geom TF6958 > london_cell.geojson
 ```
 
-…and from the [Cloudflare Worker](worker/cell-server.js)
-(`GET /locate/-0.1276,51.5072?level=6` → `TF6958`), which is a faithful
-JS port — the two implementations are cross-tested to agree.
+The same operations are available from the standalone
+[JavaScript SDK](js/trifold.js) and the [Cloudflare Worker](worker/cell-server.js)
+(`GET /locate/-0.1276,51.5072?level=6` → `TF6958`). The Worker is an HTTP
+adapter over the SDK. The Python and JavaScript implementations are cross-tested.
 
 ---
 

@@ -1,0 +1,147 @@
+# Trifold SDK API
+
+Trifold provides equivalent Python and JavaScript SDKs. The command-line
+interface, data builders, website, and Cloudflare Worker consume these SDKs;
+they do not define separate grid implementations.
+
+## Package boundaries
+
+| Domain | Python | JavaScript |
+|---|---|---|
+| Public SDK | `trifold.api` and `trifold` | `js/trifold.js`, package `@trifold/grid` |
+| Optional land extension | `trifold.land` | not implemented |
+| Applications | `trifold.cli`, `scripts/` | `worker/cell-server.js`, generated website |
+| Implementation modules | `address.py`, `core.py`, `grid.py`, `classify.py` | none outside `js/trifold.js` |
+
+Applications should use the public SDK modules. Implementation modules may
+change without preserving their internal structure.
+
+## Address model
+
+A cell identity consists of an icosahedron face in `0..19` and zero to 27
+base-4 path digits. Both SDKs support:
+
+- unsigned 64-bit integer (`int` in Python, `BigInt` in JavaScript);
+- compact Crockford base32, for example `TF6958`;
+- path notation, for example `F15-102111`.
+
+GeoJSON serializes `addr64` as a decimal string because JSON numbers do not
+represent every unsigned 64-bit value exactly.
+
+## Python
+
+Install the core SDK with `pip install .`. Install `.[land]` when using
+`LandClassifier`, or `.[build]` for the repository's data-generation scripts.
+Then import the facade:
+
+```python
+from trifold.api import (
+    cell_feature,
+    cell_metrics,
+    children64,
+    locate_address,
+    parent64,
+    to_compact,
+)
+
+address = locate_address(-0.1276, 51.5072, level=6)
+assert to_compact(address) == "TF6958"
+
+feature = cell_feature(address)
+metrics = cell_metrics(address)
+parent = parent64(address)
+children = children64(parent)
+```
+
+`import trifold` re-exports the same API for compatibility. New application
+code may prefer `trifold.api` because it makes the dependency boundary clear.
+
+### Python API groups
+
+Address and hierarchy:
+
+- `parse_address`, `encode64`, `decode64`
+- `to_compact`, `from_compact`, `to_path`, `from_path`
+- `parent64`, `children64`, `is_ancestor`, `descendant_range`
+- `face_of`, `level_of`, `path_of`
+
+Location and geometry:
+
+- `locate_address` returns an addr64 integer
+- `locate` returns `(face, digits)` for lower-level use
+- `cell_triangle`, `cell_ring`, `cell_metrics`, `cell_feature`
+- `edge_km`, `area_km2`
+- `icosahedron`, `subdivide`, `contains_point`
+
+Coverage generation:
+
+- `build_compacted`
+- `expand_to_base`
+- `cell_geometry_ring`
+
+Land classification is a separate extension because it requires Shapely and
+PyProj:
+
+```python
+from trifold.api import build_compacted
+from trifold.land import LandClassifier
+
+classifier = LandClassifier(land_geodataframe)
+cells = build_compacted(classifier, base_level=6)
+```
+
+## JavaScript
+
+The SDK is a dependency-free ES module. The repository includes npm package
+metadata and TypeScript declarations.
+
+```js
+import {
+  cellFeature,
+  cellMetrics,
+  children64,
+  locateAddress,
+  parent64,
+  toCompact,
+} from "./js/trifold.js";
+
+const address = locateAddress(-0.1276, 51.5072, 6);
+console.assert(toCompact(address) === "TF6958");
+
+const feature = cellFeature(address);
+const metrics = cellMetrics(address);
+const parent = parent64(address);
+const children = children64(parent);
+```
+
+In the generated GitHub Pages site, the same module is published at
+`./sdk/trifold.js`.
+
+### JavaScript API groups
+
+Address and hierarchy:
+
+- `parseAddress`, `encode64`, `decode64`
+- `toCompact`, `fromCompact`, `toPath`, `fromPath`
+- `parent64`, `children64`, `isAncestor`, `descendantRange`
+
+Location and geometry:
+
+- `locateAddress` returns a `BigInt`
+- `locate` returns `{face, digits}`
+- `cellTriangle`, `cellRing`, `cellMetrics`, `cellFeature`
+- `edgeKm`, `areaKm2`
+- `icosahedron`, `subdivide`, `containsPoint`
+
+Enumeration:
+
+- `levelFeatureCollection(level, {face, maxLevel})`
+
+The `maxLevel` option is an application safety limit for enumeration. It does
+not change the address limit of 27.
+
+## Compatibility
+
+The compact, path, and addr64 encodings are shared across both SDKs. Tests
+compare point location and GeoJSON coordinates between Python and JavaScript.
+Public SDK names and encoded address values are compatibility-sensitive.

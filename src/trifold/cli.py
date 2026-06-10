@@ -3,15 +3,19 @@ import argparse
 import json
 import sys
 
-from . import (encode64, to_compact, from_compact, to_path, from_path,
-               locate, cell_triangle, parent64, children64,
-               build_export_ring, densified_ring_xyz, decode64,
-               edge_km, area_km2, level_of)
+from .api import (
+    cell_feature,
+    cell_metrics,
+    children64,
+    locate_address,
+    parent64,
+    parse_address,
+    to_compact,
+)
 
 
 def _parse_any(s):
-    s = s.strip()
-    return from_path(s) if s.upper().startswith('F') else from_compact(s)
+    return parse_address(s)
 
 
 def main(argv=None):
@@ -37,35 +41,21 @@ def main(argv=None):
     a = p.parse_args(argv)
 
     if a.cmd == 'locate':
-        face, digits = locate(a.lon, a.lat, a.level)
-        addr = encode64(face, digits)
-        print(to_compact(addr))
+        print(to_compact(locate_address(a.lon, a.lat, a.level)))
         return
 
     addr = _parse_any(a.addr)
 
     if a.cmd == 'show':
-        face, digits = decode64(addr)
-        tri = cell_triangle(face, digits)
-        print(f"compact : {to_compact(addr)}")
-        print(f"path    : {to_path(addr)}")
+        metrics = cell_metrics(addr)
+        print(f"compact : {metrics['id']}")
+        print(f"path    : {metrics['path']}")
         print(f"addr64  : {addr} (0x{addr:016X})")
-        print(f"level   : {len(digits)}")
-        print(f"edge_km : {edge_km(tri):.1f}")
-        print(f"area_km2: {area_km2(tri):.0f}")
+        print(f"level   : {metrics['level']}")
+        print(f"edge_km : {metrics['edge_km']:.1f}")
+        print(f"area_km2: {metrics['area_km2']:.0f}")
     elif a.cmd == 'geom':
-        face, digits = decode64(addr)
-        tri = cell_triangle(face, digits)
-        ring, pole = build_export_ring(
-            densified_ring_xyz(tri, level=len(digits)), tri)
-        ring = [[round(x, 6), round(y, 6)] for x, y in ring]
-        ring.append(ring[0])
-        json.dump({'type': 'Feature',
-                   'properties': {'compact': to_compact(addr),
-                                  'path': to_path(addr),
-                                  'level': len(digits), 'pole': pole},
-                   'geometry': {'type': 'Polygon', 'coordinates': [ring]}},
-                  sys.stdout)
+        json.dump(cell_feature(addr), sys.stdout)
         print()
     elif a.cmd == 'parent':
         print(to_compact(parent64(addr)))
