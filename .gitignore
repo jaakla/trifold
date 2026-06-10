@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+*.egg-info/
+natural-earth-vector/
+data/*.geojson
+data/*.topojson
+data/*.pmtiles
+data/*.pkl
+!data/sample_*.geojson
+.venv/
