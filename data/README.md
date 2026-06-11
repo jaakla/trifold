@@ -11,7 +11,8 @@ python scripts/build_grids.py --levels 4 5 6      # trigrid products (required b
 python scripts/build_comparison_dggs.py           # H3 / cube / rect layers
 python scripts/build_a5_layer.py                  # A5 pentagon layer
 python scripts/build_more_dggs.py                 # S2 / rHEALPix / HTM layers
-bash   scripts/make_pmtiles.sh                    # L6 PMTiles in data/ + docs/data/
+bash   scripts/make_pmtiles.sh                    # PMTiles for all global_tri_L* in data/ + docs/data/
+#      scripts/make_pmtiles.sh --levels 6 --force  # restrict levels (N, N-M, N-, -M); --force rebuilds existing
 python scripts/make_site.py                       # prefers matching PMTiles, embeds fallbacks
 ```
 

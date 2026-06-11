@@ -11,3 +11,4 @@ data/*.pkl
 poetry.lock
 .DS_Store
 docs/data/
+.wrangler/

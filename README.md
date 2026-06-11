@@ -395,13 +395,25 @@ brew install tippecanoe
 # Linux: build from source or use the docker image; the script assumes `tippecanoe` is on PATH
 ```
 
-PMTiles are built from generated level-6 GeoJSON files. Generate those
-files first, then run `tippecanoe` through the wrapper:
+PMTiles are built from generated GeoJSON files. Generate those files
+first, then run `tippecanoe` through the wrapper:
 
 ```bash
 python scripts/build_grids.py --levels 6
-./scripts/make_pmtiles.sh
+./scripts/make_pmtiles.sh                 # all discovered global_tri_L*; skips existing archives
 python scripts/make_site.py
+```
+
+The wrapper auto-discovers every `data/global_tri_L*_*.geojson` product —
+nothing is hardcoded. By default it skips grids whose `.pmtiles` already
+exists; pass `--force` to rebuild. Restrict to specific levels with
+`--levels` (accepts `N`, `N-M`, `N-`, or `-M`):
+
+```bash
+./scripts/make_pmtiles.sh --levels 7      # just L7
+./scripts/make_pmtiles.sh -l 4-8          # L4 through L8
+./scripts/make_pmtiles.sh -l 6- --force   # L6 and up, rebuild even if present
+./scripts/make_pmtiles.sh --help          # full usage
 ```
 
 The wrapper writes archives under both `data/` and `docs/data/`. The site
