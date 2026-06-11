@@ -90,7 +90,7 @@ html = """<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Trifold (T3) — exact-nesting triangular DGGS</title>
+<title>Trifold (T3): a triangular DGGS with exact nesting</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="Trifold (T3): a hierarchical triangular discrete global grid system with exact aperture-4 nesting, compact base32 addressing, and an interactive 7-system DGGS comparison.">
 <script src="https://unpkg.com/maplibre-gl@5.6.0/dist/maplibre-gl.js"></script>
@@ -202,8 +202,8 @@ html = """<!doctype html>
 <section class="hero">
   <h1>Trifold <span class="t3">(T3)</span><br>triangles that nest <em>exactly</em></h1>
   <p class="lede">A hierarchical triangular discrete global grid system on the icosahedron.
-  Every parent cell is <b>bit-for-bit the union of its four children</b> — something neither
-  hexagons nor pentagons can offer — with a 6-character address for a ~110&nbsp;km cell.</p>
+  Every parent cell is <b>bit-for-bit the union of its four children</b>, something neither
+  hexagons nor pentagons can offer. A ~110&nbsp;km cell has a 6-character address.</p>
   <a class="cta primary" href="#demo">Launch the comparison demo</a>
 </section>
 
@@ -211,17 +211,17 @@ html = """<!doctype html>
   <h2>Built on Trifold: ready-to-use libraries</h2>
   <div class="twocol" style="align-items:center">
     <div>
-      <h3 style="margin-top:0">▲ landcheck — offline land/sea lookup</h3>
+      <h3 style="margin-top:0">▲ landcheck: offline land/sea lookup</h3>
       <p>The first practical proof of concept of exact nesting: the level-10 land
       classification (~6.15M land-touching cells) collapses into 153,884
-      run-length intervals — a <b>182&nbsp;KB</b> dataset that answers
+      run-length intervals: a <b>182&nbsp;KB</b> dataset that answers
       <i>"is this point on land?"</i> in microseconds, fully offline, in Python
       and JavaScript, with a confidence value for every answer. Optional OSM
       refinement sharpens coastal answers to a near-exact polygon test.</p>
       <p><a class="cta primary" style="padding:9px 18px;font-size:14px"
         href="landcheck.html">Try the interactive demo</a></p>
-      <p class="muted">Next on the roadmap: <b>countrycheck</b> — offline country
-      lookup, same run-length approach with border-cell polygons.</p>
+      <p class="muted">Next on the roadmap is <b>countrycheck</b>, an offline country
+      lookup using the same run-length approach with border-cell polygons.</p>
     </div>
     <a href="landcheck.html" style="display:block">
       <img src="img/landcheck_demo.jpg" alt="landcheck demo: points classified as land, coast and sea on a world map"
@@ -257,7 +257,7 @@ html = """<!doctype html>
       as they stay wholly on land; coastlines stay fine. 27,614 → 10,046 cells at level 6,
       identical 171.1M km² coverage.</p></div>
     <div class="card"><b>Three address forms</b><p>One identity: compact base32 for humans,
-      digit path for teaching, sortable uint64 for compute — subtree = contiguous range.</p></div>
+      digit path for teaching, and a sortable uint64 for compute where a subtree is one contiguous range.</p></div>
   </div>
 </section>
 
@@ -292,13 +292,13 @@ $ trifold show TF6958        # → path F15-102111 · edge ~117 km · area 5,864
 $ curl https://YOUR-WORKER.workers.dev/locate/-0.1276,51.5072?level=6
 {"id":"TF6958","path":"F15-102111","addr64":"8811996358392152070","level":6}</code></pre>
   <p class="muted">Why base32 instead of digits 0–3? A digit string spends 8 bits per character
-  to carry 2 bits. Crockford base32 packs 5 bits/char with no ambiguous I/L/O/U — same path
-  bits, 40% of the length, URL-safe.</p>
+  to carry 2 bits. Crockford base32 packs 5 bits/char with no ambiguous I/L/O/U: same path
+  bits at 40% of the length, URL-safe.</p>
 </section>
 
 <section id="demo">
   <div class="inner">
-    <h2>Live demo — 7 grid systems, one map</h2>
+    <h2>Live demo: 7 grid systems, one map</h2>
     <p>Trifold triangles vs <a href="https://a5geo.org" target="_blank">A5</a> pentagons,
     H3 hexagons, S2 quads, rHEALPix, HTM (a related octahedral grid) and a plain lon/lat
     grid. Each layer uses the same land mask and styling. Toggle <b>globe ↔ flat</b> to compare
@@ -385,22 +385,22 @@ $ curl https://YOUR-WORKER.workers.dev/locate/-0.1276,51.5072?level=6
   <h2>Suitable uses and limitations</h2>
   <div class="twocol">
     <div class="card"><b>Suitable uses</b><ul>
-      <li><b>Lossless multi-resolution aggregation</b> — level-9 sums roll into level-6 cells
+      <li><b>Lossless multi-resolution aggregation</b>: level-9 sums roll into level-6 cells
         exactly; no slivers, no overlap weighting.</li>
-      <li><b>Variable-resolution coverage</b> — compacted tilings retain shared boundaries; any subtree
+      <li><b>Variable-resolution coverage</b>: compacted tilings retain shared boundaries; any subtree
         is one uint64 range scan.</li>
-      <li><b>Simplicial pipelines</b> — FEM/FVM meshes, TINs, barycentric interpolation,
+      <li><b>Simplicial pipelines</b>: FEM/FVM meshes, TINs, barycentric interpolation,
         subdivision surfaces plug in directly.</li>
-      <li><b>Geodesic properties</b> — no polar singularity; ~±20% smooth area variation
+      <li><b>Geodesic properties</b>: no polar singularity; ~±20% smooth area variation
         worldwide vs 17× collapse for lon/lat at 80°N.</li>
       <li><b>Survey/sampling designs</b> where hierarchy beats neighbour traversal.</li>
     </ul></div>
     <div class="card"><b>Limitations</b><ul>
-      <li><b>Neighbour-heavy algorithms</b> — 3 edge + 9 vertex neighbours with alternating
+      <li><b>Neighbour-heavy algorithms</b>: 3 edge + 9 vertex neighbours with alternating
         orientation; hexagonal grids provide 6 uniform neighbours.</li>
-      <li><b>General-audience choropleths</b> — triangle boundaries can be visually prominent.</li>
-      <li><b>Orientation-sensitive statistics</b> — up/down cells are congruent but rotated 60°.</li>
-      <li><b>City-scale local work</b> — a projected CRS and planar grid may be simpler.</li>
+      <li><b>General-audience choropleths</b>: triangle boundaries can be visually prominent.</li>
+      <li><b>Orientation-sensitive statistics</b>: up/down cells are congruent but rotated 60°.</li>
+      <li><b>City-scale local work</b>: a projected CRS and planar grid may be simpler.</li>
     </ul></div>
   </div>
 </section>
@@ -414,7 +414,7 @@ $ curl https://YOUR-WORKER.workers.dev/locate/-0.1276,51.5072?level=6
     <div class="card"><b>PMTiles</b><p><code>scripts/make_pmtiles.sh</code> tiles any product
       with tippecanoe into a single static file; host on anything with HTTP Range support.
       Suitable for full-grid display at level 7 and above.</p></div>
-    <div class="card"><b>Cloudflare Worker</b><p><code>worker/cell-server.js</code> — zero
+    <div class="card"><b>Cloudflare Worker</b><p><code>worker/cell-server.js</code> serves with zero
       stored data, cells regenerated from geometry and edge-cached. Suitable for retrieving
       selected cells, including addresses produced by a database join on addr64.</p></div>
   </div>
@@ -449,7 +449,7 @@ const SYS_NOTES={
  s2:'Google S2 (via s2sphere), level 6 (~20,750 km²). Cube-sphere quadtree with exact '+
     'aperture-4 nesting and Hilbert indexing; cell areas vary ~2× face-centre to '+
     'corner. The pole sits at a cube-face centre = shared corner of 4 cells.',
- rhpx:'rHEALPix res 4 (~12,950 km², aperture 9 — 3×3 children, exact nesting). Near-exact '+
+ rhpx:'rHEALPix res 4 (~12,950 km², aperture 9: 3×3 children with exact nesting). Near-exact '+
     'equal area with polar cap and dart cells. The grid is included in the OGC DGGS standard.',
  htm:'HTM-style octahedral triangles, level 6 (~15,570 km²), based on the astronomy grid '+
     'and generated here on an octahedron. Its 90° faces produce more shape deformation than '+
@@ -600,7 +600,7 @@ landcheck_html = """<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>landcheck — offline land/sea lookup (Trifold application)</title>
+<title>landcheck: offline land/sea lookup (a Trifold library)</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="landcheck: offline land/sea point lookup built on the Trifold (T3) triangular DGGS. 182 KB dataset, microsecond lookups, confidence per answer. Interactive in-browser demo.">
 <script src="https://unpkg.com/maplibre-gl@5.6.0/dist/maplibre-gl.js"></script>
@@ -683,7 +683,7 @@ landcheck_html = """<!doctype html>
 
 <nav>
   <span class="brand">▲ landcheck
-    <span class="sub">offline land/sea lookup — a
+    <span class="sub">offline land/sea lookup, a
       <a href="index.html">Trifold <span class="t3">(T3)</span></a> library</span>
   </span>
   <a href="#demo">Demo</a>
@@ -694,13 +694,13 @@ landcheck_html = """<!doctype html>
 </nav>
 
 <section class="hero">
-  <h1>landcheck — is this point on <span style="color:var(--land)">land</span> or in the <span style="color:var(--sea)">sea</span>?</h1>
-  <p class="lede">An offline lookup library built on the Trifold grid. The level-10
-  triangular grid (~7&nbsp;km cells) classified against Natural Earth collapses — thanks to
-  exact aperture-4 nesting — into a <b>182&nbsp;KB</b> dataset answering anywhere on Earth in
-  microseconds, with a confidence value for every answer. Python and JavaScript, identical
-  results. <b>This page runs the real JS library in your browser</b> — the dataset is embedded
-  right in this HTML file.</p>
+  <h1>landcheck: is this point on <span style="color:var(--land)">land</span> or in the <span style="color:var(--sea)">sea</span>?</h1>
+  <p class="lede">An offline lookup library built on the Trifold grid. Thanks to exact
+  aperture-4 nesting, the level-10 grid (~7&nbsp;km cells) classified against Natural Earth
+  collapses into a <b>182&nbsp;KB</b> dataset that answers anywhere on Earth in microseconds,
+  with a confidence value for every answer. Python and JavaScript give identical results.
+  <b>This page runs the real JS library in your browser</b>; the dataset is embedded right
+  in this HTML file.</p>
   <a class="cta" href="#demo" style="display:inline-block;padding:11px 22px;border-radius:8px;
     background:var(--warm);color:#fff;text-decoration:none;font-weight:600">Try it on the map</a>
 </section>
@@ -709,10 +709,10 @@ landcheck_html = """<!doctype html>
   <div class="inner">
     <h2>Interactive demo</h2>
     <p>Load sample points or your own file (CSV <code>lon,lat</code> or GeoJSON points), and
-    every point is classified <b>in your browser</b> by the bundled library — no server, no
-    network call per lookup. The lookups-per-second figure is measured tightly around the
-    classification loop on <i>your</i> machine (map rendering and file parsing excluded), so
-    it is the real library throughput — use the 100k-random button for a stable number.</p>
+    every point is classified <b>in your browser</b> by the bundled library, with no server
+    and no network call per lookup. The lookups-per-second figure is measured tightly around
+    the classification loop on <i>your</i> machine (map rendering and file parsing excluded),
+    so it is the real library throughput. Use the 100k-random button for a stable number.</p>
   </div>
   <div class="viewerwrap">
     <div id="map"></div>
@@ -741,13 +741,13 @@ landcheck_html = """<!doctype html>
           <span>exact OSM polygon test inside coastal cells
             (downloads 7&nbsp;MB once)</span></label>
         <div class="note" id="refinenote">Off: coastal answers use the bundled
-        land-area fraction. On: near-exact coastline — watch how the coast
-        counts, confidence and lookup rate change.</div></div>
+        land-area fraction. On: near-exact coastline. Watch how the counts,
+        confidence and lookup rate change.</div></div>
       <div class="row"><label>Debug layers</label>
         <label style="display:flex;gap:7px;align-items:flex-start;cursor:pointer;font-size:12.5px;
             font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink)">
           <input type="checkbox" id="coastcb" style="margin-top:2px">
-          <span>source coastline (<b id="coastsrc">NE</b> — follows the
+          <span>source coastline (<b id="coastsrc">NE</b>, follows the
             refinement setting)</span></label>
         <div class="note" id="coastnote">Click anywhere on the map to see the
         level-10 triangle and its classification.</div></div>
@@ -758,20 +758,20 @@ landcheck_html = """<!doctype html>
         </div></div>
       <div id="perf"></div>
       <div class="legend">
-        <i style="background:#22c55e"></i>land — certain (confidence 1.0)<br>
-        <i style="background:#f59e0b"></i>coast — mixed cell<br>
-        <i style="background:#16277e"></i>sea — certain (confidence 1.0)<br>
+        <i style="background:#22c55e"></i>land: certain (confidence 1.0)<br>
+        <i style="background:#f59e0b"></i>coast: mixed cell<br>
+        <i style="background:#16277e"></i>sea: certain (confidence 1.0)<br>
         <i style="background:#fff;border:2px solid #c2185b"></i>answer flipped by OSM refinement
       </div>
       <div class="note" id="loadnote">Loading dataset…</div>
     </div>
   </div>
   <div class="inner">
-    <p class="muted" style="margin-top:10px">Click any classified point for its full answer —
+    <p class="muted" style="margin-top:10px">Click any classified point for its full answer:
     cell address (computed on the fly for sea points, whose cells are not stored), kind,
-    confidence, land fraction. Note the Natural Earth 1:50m caveats: lakes count as land and
-    islets below its resolution are missing; switching on the <b>OSM coastal refinement</b>
-    sharpens exactly those coastal cases with an exact polygon test — try the
+    confidence and land fraction. Note the Natural Earth 1:50m caveats: lakes count as land
+    and islets below its resolution are missing. Switching on the <b>OSM coastal
+    refinement</b> sharpens exactly those coastal cases with an exact polygon test. Try the
     cities sample with it on and off and compare the answers near coasts.</p>
   </div>
 </section>
@@ -817,8 +817,9 @@ lc.is_land_batch(lons, lats)</code></pre>
       <td>exact</td><td>0.99</td></tr>
   </table>
   <p class="muted">Measured accuracy: 99.82% agreement with exact polygon containment on
-  30,000 uniform random points; <code>land</code>/<code>sea</code> answers 100% correct — all
-  residual error lives in <code>coast</code> answers, which self-report lower confidence.
+  30,000 uniform random points. The <code>land</code> and <code>sea</code> answers were 100%
+  correct; all residual error lives in <code>coast</code> answers, which self-report lower
+  confidence.
   With the OSM refinement loaded, coastal answers reach 99.95%.</p>
   <h3>Command line</h3>
   <pre><code>$ python landcheck/python/landcheck.py 24.7536 59.4370
@@ -829,7 +830,7 @@ LAND  kind=land  confidence=1.000  land_fraction=1.0  cell=TFAVKGR  refined=Fals
   <h2>Technical info</h2>
   <div class="cards">
     <div class="card"><b>Canonical index</b><p>Any Trifold cell at level ≤ 10 maps to
-      <code>addr64 &gt;&gt; 39</code> — a 25-bit integer where a level-l cell covers exactly
+      <code>addr64 &gt;&gt; 39</code>, a 25-bit integer where a level-l cell covers exactly
       4<sup>10−l</sup> consecutive indices. The whole classification becomes run-length
       intervals.</p></div>
     <div class="card"><b>TFLS format · 182 KB</b><p>153,884 runs as
@@ -943,8 +944,8 @@ function show(pts,label){
     `<span style="color:${KIND_COLOR.coast}">■</span> ${nCoast.toLocaleString()} in coastal `+
     `cells (${coastLand.toLocaleString()} → land, ${(nCoast-coastLand).toLocaleString()} → sea)`+
     `${refineOn?`<br><span style="color:#c2185b">◉</span> <b>${nFlipped.toLocaleString()}</b> `+
-      `answer${nFlipped===1?'':'s'} flipped by the OSM polygon test — `+
-      `highlighted on the map, click one`:''}`;
+      `answer${nFlipped===1?'':'s'} flipped by the OSM polygon test `+
+      `(highlighted on the map, click one)`:''}`;
 }
 
 function parseCsv(text){
@@ -1022,7 +1023,7 @@ function describe(lon,lat,name){
   if(r.refined){
     const guess=r.landFraction!=null&&r.landFraction>=0.5;
     html+=(r.landFraction!=null&&guess!==r.land)
-      ?`<br><b style="color:#c2185b">flipped by OSM polygon test</b> — the bundled `+
+      ?`<br><b style="color:#c2185b">flipped by OSM polygon test</b>: the bundled `+
        `fraction (${r.landFraction.toFixed(2)}) would have guessed `+
        `<b>${guess?'LAND':'SEA'}</b>`
       :`<br>decided by OSM polygon test (agrees with the fraction guess)`;
@@ -1174,8 +1175,8 @@ async function updateCoastline(){
       }
     }
     map.getSource('coast').setData(neGeojson);
-    coastnote.textContent='Brown: Natural Earth 1:50m land outlines — the base '+
-      'dataset the grid was classified against. Click anywhere for the cell triangle.';
+    coastnote.textContent='Brown line: Natural Earth 1:50m land outlines, the base dataset '+
+      'the grid was classified against. Click anywhere for the cell triangle.';
   }else{
     coastsrc.textContent='OSM';
     map.setPaintProperty('coastline','line-color','#8e24aa');
@@ -1187,9 +1188,9 @@ async function updateCoastline(){
     }
     map.getSource('coast').setData({type:'Feature',properties:{},
       geometry:{type:'MultiLineString',coordinates:lines}});
-    coastnote.textContent=`Purple: OSM polygon rings decoded from the refinement `+
-      `dataset for ${lines.length.toLocaleString()} ring(s) in view — exactly the `+
-      `geometry the refined lookup tests against.`;
+    coastnote.textContent=`Purple line: ${lines.length.toLocaleString()} OSM coastline ring(s) `+
+      `in view, decoded from the refinement dataset. This is exactly the geometry `+
+      `the refined lookup tests against.`;
   }
 }
 coastcb.onchange=updateCoastline;
@@ -1220,7 +1221,7 @@ refinecb.onchange=async()=>{
     refinecb.disabled=false;
     if(!loaded){
       refinecb.checked=false;
-      refinenote.textContent='Could not download the refinement layer — staying on the bundled fractions.';
+      refinenote.textContent='Could not download the refinement layer, so the bundled fractions stay in use.';
       return;
     }
   }else{
