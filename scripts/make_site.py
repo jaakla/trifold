@@ -647,6 +647,14 @@ landcheck_html = """<!doctype html>
   @media(max-width:760px){.twocol{grid-template-columns:1fr}}
   ul{padding-left:20px}li{margin:4px 0;font-size:14px}
   .muted{color:var(--mut);font-size:13px}
+  /* benchmark bars */
+  .bench .brow{display:grid;grid-template-columns:104px 1fr 82px;gap:9px;align-items:center;
+    margin:7px 0;font-size:12.5px}
+  .bench .bname{text-align:right;white-space:nowrap;overflow:hidden}
+  .bench .btrack{min-width:0}
+  .bench .bfill{height:17px;border-radius:3px;background:#b9c2cc;min-width:2px}
+  .bench .bfill.tf{background:var(--warm)}
+  .bench .bval{font-size:11.5px;color:var(--mut);white-space:nowrap}
   /* demo */
   #demo{max-width:none;padding:38px 0 0}
   #demo .inner{max-width:1020px;margin:0 auto;padding:0 22px}
@@ -689,6 +697,7 @@ landcheck_html = """<!doctype html>
   <a href="#demo">Demo</a>
   <a href="#guide">User guide</a>
   <a href="#tech">Technical</a>
+  <a href="#benchmark">Benchmark</a>
   <a href="index.html">← Trifold home</a>
   <a class="gh" href="__GH__/tree/main/landcheck" target="_blank" aria-label="Source on GitHub" title="Source on GitHub">__GHICON__</a>
 </nav>
@@ -850,6 +859,56 @@ LAND  kind=land  confidence=1.000  land_fraction=1.0  cell=TFAVKGR  refined=Fals
   <a href="__GH__/tree/main/landcheck" target="_blank"><code>landcheck/</code> on GitHub</a>.
   Roadmap: country detection with the same run-length + clipped-border approach, an L12
   variant, published pip/npm packages.</p>
+</section>
+
+<section id="benchmark">
+  <h2>Benchmark: Trifold vs SQL spatial engines</h2>
+  <p>Same job for every engine: classify 100,000 sphere-uniform random points against the same
+  OSM simplified land polygons. Median of seven warm runs on an Apple M5 Pro laptop (June 2026);
+  BigQuery ran as a managed on-demand service. In batch mode the OSM-refined Trifold was
+  3&ndash;4&times; faster than BigQuery and PostGIS and ~30&times; faster than DuckDB Spatial;
+  called one point at a time it answered ~86,000 lookups per second, 40&times; the embedded
+  DuckDB rate.</p>
+  <div class="twocol">
+    <div class="bench">
+      <h3>Batch &middot; 100,000 points per call</h3>
+      <div class="brow"><span class="bname">Trifold base</span>
+        <div class="btrack"><div class="bfill tf" style="width:100%"></div></div>
+        <span class="bval">459,096 pts/s</span></div>
+      <div class="brow"><span class="bname">Trifold + OSM</span>
+        <div class="btrack"><div class="bfill tf" style="width:94.9%"></div></div>
+        <span class="bval">435,463</span></div>
+      <div class="brow"><span class="bname">BigQuery</span>
+        <div class="btrack"><div class="bfill" style="width:31.4%"></div></div>
+        <span class="bval">144,092</span></div>
+      <div class="brow"><span class="bname">PostGIS</span>
+        <div class="btrack"><div class="bfill" style="width:23.9%"></div></div>
+        <span class="bval">109,731</span></div>
+      <div class="brow"><span class="bname">DuckDB Spatial</span>
+        <div class="btrack"><div class="bfill" style="width:3.2%"></div></div>
+        <span class="bval">14,605</span></div>
+    </div>
+    <div class="bench">
+      <h3>Singular &middot; one point per call</h3>
+      <div class="brow"><span class="bname">Trifold base</span>
+        <div class="btrack"><div class="bfill tf" style="width:100%"></div></div>
+        <span class="bval">86,391 q/s</span></div>
+      <div class="brow"><span class="bname">Trifold + OSM</span>
+        <div class="btrack"><div class="bfill tf" style="width:99.2%"></div></div>
+        <span class="bval">85,666</span></div>
+      <div class="brow"><span class="bname">DuckDB Spatial</span>
+        <div class="btrack"><div class="bfill" style="width:2.5%"></div></div>
+        <span class="bval">2,146</span></div>
+      <div class="brow"><span class="bname">PostGIS</span>
+        <div class="btrack"><div class="bfill" style="width:1.0%"></div></div>
+        <span class="bval">826</span></div>
+    </div>
+  </div>
+  <p class="muted">The SQL engines compute exact polygon containment on the loaded OSM snapshot;
+  Trifold's compact dataset agrees with that result on 99.5% of points (refined). PostGIS singular
+  includes localhost TCP + Docker transport; DuckDB runs embedded in-process. BigQuery's singular
+  mode was not run. Full methodology, dataset manifest and caveats:
+  <a href="__GH__/blob/main/benchmark.md" target="_blank"><code>benchmark.md</code></a>.</p>
 </section>
 
 <footer>

@@ -25,6 +25,14 @@ runs after one unreported warm-up. Setup/load time is measured separately.
 | DuckDB 1.5.3 Spatial | 2.62 s | **6.847 s** | 6.695-6.987 s | 14,605 | 68.5 | 29,087 |
 | BigQuery on-demand, uncached | managed | **0.694 s** | 0.484-0.808 s | 144,092 | 6.94 | not recorded |
 
+```text
+Trifold base    459,096 pts/s  ████████████████████████████████████████
+Trifold + OSM   435,463 pts/s  ██████████████████████████████████████
+BigQuery        144,092 pts/s  ████████████▌
+PostGIS         109,731 pts/s  █████████▌
+DuckDB Spatial   14,605 pts/s  █▎
+```
+
 For this batch, refined Trifold was 3.02x faster than BigQuery, 3.97x faster
 than PostGIS, and 29.8x faster than DuckDB. BigQuery was 1.31x faster than
 PostGIS, and PostGIS was 7.51x faster than DuckDB. These ratios describe this
@@ -40,6 +48,13 @@ concurrent database service workloads.
 | DuckDB 1.5.3 Spatial | **0.466 s** | 0.462-0.469 s | 2,146 | 466 | 283 |
 | PostGIS 3.6.3 over localhost/Docker | **1.211 s** | 1.205-1.277 s | 826 | 1,211 | 283 |
 | BigQuery | not run | follow procedure below | | | |
+
+```text
+Trifold base     86,391 q/s  ████████████████████████████████████████
+Trifold + OSM    85,666 q/s  ███████████████████████████████████████▋
+DuckDB Spatial    2,146 q/s  █
+PostGIS             826 q/s  ▍
+```
 
 Refined Trifold was 39.9x faster than embedded DuckDB and 103.8x faster than
 PostGIS through the host-to-Docker TCP connection. DuckDB was 2.60x faster than
