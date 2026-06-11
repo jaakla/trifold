@@ -134,8 +134,8 @@ against the JavaScript Worker's public endpoint.
 |---|---|---|---|---|---|---|
 | Base solid | Icosahedron | Dodecahedron | Icosahedron | Cube | Cube (HEALPix) | Octahedron |
 | Cell shape | Triangle | Pentagon | Hexagon (+12 pentagons) | Quadrilateral | Quad (+caps/darts) | Triangle |
-| Aperture | **4, exact congruent** | 4 (logical only) | 7 (approximate) | 4, exact | 9, exact | 4, exact |
-| Equal area | ~±20%, smooth | **exact per level** | ~2× max/min | up to ~2× | near-exact | larger deformation (octahedron) |
+| Aperture | **4, exact** | 4 (logical only) | 7 (approximate) | 4, exact | 9, exact | 4, exact |
+| Equal area | *~±20%, smooth* | **exact per level** | ~2× max/min | up to ~2× | near-exact | larger deformation (octahedron) |
 | Edge neighbors | 3 (+9 vertex) | 5 | **6 uniform** | 4 | 4 | 3 (+vertex) |
 | Index | uint64, prefix=subtree | uint64, Hilbert | uint64 | uint64, Hilbert | string | quadtree string/int |
 | Ecosystem | this repo (2026) | young (2025), growing | **huge** | huge | niche/OGC | niche/astronomy |

@@ -39,7 +39,7 @@ EMBED = {
     'rect_compacted':     'cmp_rectquad_compacted.topojson',
     'rect_uncompacted':   'cmp_rectquad_uncompacted.topojson',
 }
-for level in range(4, 10):
+for level in range(4, 11):
     for mode in ('compacted', 'uncompacted'):
         for group in ('rhombus', 'hex'):
             key = f'tri_L{level}_{mode}_{group}'

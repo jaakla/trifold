@@ -31,9 +31,7 @@ count (*aperture 4*):
 Because children are built from the parent's own vertices plus edge
 midpoints, **a parent cell is bit-for-bit the union of its children**.
 Aggregating data up the hierarchy or drilling down loses nothing and
-double-counts nothing. That property — *exact congruent nesting* — is the
-central property of this project and is uncommon among global grids
-(see [§6](#6-comparison-with-other-dggs)).
+double-counts nothing. That property — *exact nesting* (with limited size variation, about ±20%) — is the central property of this project and is uncommon among global grids (see [§6](#6-comparison-with-other-dggs)).
 
 The repository contains the Python library, a three-form addressing codec,
 global grid products generated against Natural Earth land, generators for
@@ -268,7 +266,7 @@ geometry, and compact addressing.
 |---|---|---|---|---|---|---|
 | cell shape | spherical triangle | equilateral pentagon | hexagon (+12 pentagons) | curvilinear quad | quad (squashed at caps) | lon/lat rect |
 | aperture | 4 | 4 (logical) | 7 | 4 | 9 | 4 (slippy) / 32 (geohash) |
-| **exact parent⊃child nesting** | **yes, congruent** | no (logical only, index-exact) | **no** (≈7 children, ragged) | yes (within face) | yes | yes (but planar) |
+| **exact parent⊃child nesting** | **yes** | no (logical only, index-exact) | **no** (≈7 children, ragged) | yes (within face) | yes | yes (but planar) |
 | equal area | ~±20%, smooth | **exactly equal** per level | ~±35% across res; pentagons differ | up to ~2× corner/centre | **exactly equal-area** | varies with latitude |
 | neighbours | 3 edge + 9 vertex, mixed | 5, two distance classes | **6 uniform** | 4 + 4 | 4 + 4 | 4 + 4 |
 | pole handling | vertex wedges | regular cells | regular cells | face vertices | polar caps | **singular / degenerate** |
