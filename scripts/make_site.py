@@ -13,7 +13,7 @@ OUT = 'docs/index.html'
 JS_SDK = 'js/trifold.js'
 DOCS_SDK = 'docs/sdk/trifold.js'
 GH = 'https://github.com/jaakla/trifold'
-PMTILES_BASE_URL = os.environ.get('TRIFOLD_PMTILES_BASE_URL', 'data').rstrip('/')
+PMTILES_BASE_URL = os.environ.get('TRIFOLD_PMTILES_BASE_URL', 'https://maps.goplex.ee/data').rstrip('/')
 
 EMBED = {
     'tri_L4_compacted':   'global_tri_L4_compacted.topojson',
@@ -295,6 +295,8 @@ $ curl https://YOUR-WORKER.workers.dev/locate/-0.1276,51.5072?level=6
           <button data-v="6" class="on">~110 km</button>
           <button data-v="7">~55 km</button>
           <button data-v="8">~28 km</button>
+          <button data-v="9">~14 km</button>
+          <button data-v="10">~7 km</button>
         </div></div>
       <div class="row" id="row-group"><label>Group as</label>
         <div class="seg" id="seg-group">
