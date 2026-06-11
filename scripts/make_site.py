@@ -320,7 +320,7 @@ $ curl https://YOUR-WORKER.workers.dev/locate/-0.1276,51.5072?level=6
         <td>cube</td><td>cube (HEALPix)</td><td>octahedron</td></tr>
     <tr><td>cell shape</td><td>triangle</td><td>pentagon</td><td>hexagon (+12 pentagons)</td>
         <td>quad</td><td>quad (+caps/darts)</td><td>triangle</td></tr>
-    <tr><td>aperture / nesting</td><td class="good">4, exact congruent</td>
+    <tr><td>aperture / nesting</td><td class="good">4, exact</td>
         <td>4, logical only</td><td class="bad">7, approximate</td>
         <td class="good">4, exact</td><td class="good">9, exact</td><td class="good">4, exact</td></tr>
     <tr><td>equal area</td><td>~±20%, smooth</td><td class="good">exact per level</td>
