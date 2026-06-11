@@ -1040,11 +1040,20 @@ function show(pts,label){
       `(highlighted on the map, click one)`:''}`;
 }
 
+function splitCsvLine(l){
+  const out=[];let cur='',q=false;
+  for(let i=0;i<l.length;i++){const ch=l[i];
+    if(q){if(ch==='"'){if(l[i+1]==='"'){cur+='"';i++;}else q=false;}else cur+=ch;}
+    else if(ch==='"')q=true;
+    else if(ch===','||ch===';'||ch==='\\t'){out.push(cur.trim());cur='';}
+    else cur+=ch;}
+  out.push(cur.trim());return out;
+}
 function parseCsv(text){
   const lines=text.split(/\\r?\\n/).filter(l=>l.trim());
   if(!lines.length)throw new Error('empty file');
   let lonCol=0,latCol=1,nameCol=2,start=0;
-  const head=lines[0].toLowerCase().split(/[;,\\t]/).map(s=>s.trim());
+  const head=splitCsvLine(lines[0].toLowerCase());
   const latIdx=head.findIndex(h=>/^(lat|latitude|y)$/.test(h));
   const lonIdx=head.findIndex(h=>/^(lon|lng|long|longitude|x)$/.test(h));
   if(latIdx>=0&&lonIdx>=0){
@@ -1053,11 +1062,11 @@ function parseCsv(text){
   }
   const pts=[];
   for(let i=start;i<lines.length;i++){
-    const c=lines[i].split(/[;,\\t]/);
+    const c=splitCsvLine(lines[i]);
     const lon=parseFloat(c[lonCol]),lat=parseFloat(c[latCol]);
     if(!isFinite(lon)||!isFinite(lat))continue;
     if(lon<-180||lon>180||lat<-90||lat>90)continue;
-    pts.push([nameCol>=0&&c[nameCol]?c[nameCol].trim():'',lon,lat]);
+    pts.push([nameCol>=0&&c[nameCol]?c[nameCol]:'',lon,lat]);
   }
   if(!pts.length)throw new Error('no valid lon,lat rows found');
   return pts;
