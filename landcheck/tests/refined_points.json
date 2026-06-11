@@ -1,0 +1,4502 @@
+[
+ {
+  "lon": -5.23736109,
+  "lat": 51.89514449,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFA9MK7"
+ },
+ {
+  "lon": 3.77712155,
+  "lat": 51.74274114,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAF30K"
+ },
+ {
+  "lon": 148.29105153,
+  "lat": -41.77666216,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3AV16C"
+ },
+ {
+  "lon": -69.39488681,
+  "lat": 47.97377003,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TAAM3B1"
+ },
+ {
+  "lon": 23.88728965,
+  "lat": 39.20877015,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5APZE9"
+ },
+ {
+  "lon": 114.36001834,
+  "lat": -66.36736247,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T8ABVJR"
+ },
+ {
+  "lon": -74.06776349,
+  "lat": -70.90852377,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TJABEDB"
+ },
+ {
+  "lon": 67.20192319,
+  "lat": 70.44798323,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAQZ9J"
+ },
+ {
+  "lon": -71.56372045,
+  "lat": -30.26049081,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TCAX580"
+ },
+ {
+  "lon": 179.87233056,
+  "lat": -16.6216194,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T4AEYPP"
+ },
+ {
+  "lon": -66.88467534,
+  "lat": -46.88553547,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TDAE14J"
+ },
+ {
+  "lon": 137.21134245,
+  "lat": 55.88275504,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0AK4WG"
+ },
+ {
+  "lon": 12.06101526,
+  "lat": -5.13979147,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKA89X7"
+ },
+ {
+  "lon": -73.30453424,
+  "lat": -77.82616587,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TJACZ8F"
+ },
+ {
+  "lon": 123.86992669,
+  "lat": -9.44282522,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T2A1FNA"
+ },
+ {
+  "lon": 48.91453593,
+  "lat": 11.27976002,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKAH2MQ"
+ },
+ {
+  "lon": 132.65365608,
+  "lat": -12.01331988,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3A0TQA"
+ },
+ {
+  "lon": -66.42913362,
+  "lat": 81.22181843,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFA5VWQ"
+ },
+ {
+  "lon": 137.07563772,
+  "lat": 37.28112994,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0AYV4M"
+ },
+ {
+  "lon": 24.90333286,
+  "lat": 35.38701521,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AQQZB"
+ },
+ {
+  "lon": 34.9074142,
+  "lat": -24.69997012,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T9AKM1F"
+ },
+ {
+  "lon": -156.09510058,
+  "lat": 70.84265123,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AYWDD"
+ },
+ {
+  "lon": -2.079039,
+  "lat": 4.77952112,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TEAV5X4"
+ },
+ {
+  "lon": -176.17771687,
+  "lat": 52.05422379,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AF32B"
+ },
+ {
+  "lon": -165.36468633,
+  "lat": 60.51074568,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6ATE0Z"
+ },
+ {
+  "lon": -65.45095077,
+  "lat": 48.01286402,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TAAQDC6"
+ },
+ {
+  "lon": -132.31531218,
+  "lat": 69.744348,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AP1A0"
+ },
+ {
+  "lon": 34.6047173,
+  "lat": 36.79633828,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5APCHZ"
+ },
+ {
+  "lon": -108.19948249,
+  "lat": 73.04099128,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AQ17Q"
+ },
+ {
+  "lon": -81.65426461,
+  "lat": 25.94967689,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBAYFB7"
+ },
+ {
+  "lon": -51.00739845,
+  "lat": -79.79428486,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TJADZV9"
+ },
+ {
+  "lon": -4.53905552,
+  "lat": 47.96785245,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFA8XY1"
+ },
+ {
+  "lon": 64.10797778,
+  "lat": -67.51643556,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TJAQST4"
+ },
+ {
+  "lon": -156.15096422,
+  "lat": 20.61895783,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T7A44RD"
+ },
+ {
+  "lon": 166.52828183,
+  "lat": 54.99131985,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6A8B7G"
+ },
+ {
+  "lon": 162.23466907,
+  "lat": -66.32740432,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T8ARY64"
+ },
+ {
+  "lon": 148.11484033,
+  "lat": -40.53745667,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3AV3W9"
+ },
+ {
+  "lon": 138.59384308,
+  "lat": 54.24998964,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0AKX3K"
+ },
+ {
+  "lon": 120.50118896,
+  "lat": 18.21910215,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1A2F45"
+ },
+ {
+  "lon": -98.96242901,
+  "lat": 73.77330793,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AQEYA"
+ },
+ {
+  "lon": -51.56639975,
+  "lat": 67.62705652,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFA7YNR"
+ },
+ {
+  "lon": 103.22214637,
+  "lat": -65.97987582,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T8ABQC3"
+ },
+ {
+  "lon": -43.21462135,
+  "lat": -2.37805256,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TEA1KSX"
+ },
+ {
+  "lon": -3.59887796,
+  "lat": 36.76681011,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TAAB1BD"
+ },
+ {
+  "lon": 123.117488,
+  "lat": 0.46359921,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1A0BMG"
+ },
+ {
+  "lon": 159.2250747,
+  "lat": -8.97975566,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T4ASV0Z"
+ },
+ {
+  "lon": -126.85628336,
+  "lat": 51.69930964,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TGADV2M"
+ },
+ {
+  "lon": -165.05449565,
+  "lat": 62.50586249,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AT8SM"
+ },
+ {
+  "lon": -178.93793608,
+  "lat": 71.6194486,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AZ4SG"
+ },
+ {
+  "lon": 125.17949766,
+  "lat": -9.44092816,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T2A1225"
+ },
+ {
+  "lon": 64.44627208,
+  "lat": -67.59552531,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TJAQSF9"
+ },
+ {
+  "lon": -63.94180065,
+  "lat": 46.66927728,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TAAQE8G"
+ },
+ {
+  "lon": 27.22367177,
+  "lat": 36.81985954,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AQWWR"
+ },
+ {
+  "lon": 57.8846014,
+  "lat": 81.72207543,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAHJZ2"
+ },
+ {
+  "lon": -71.96948339,
+  "lat": 9.59233816,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBA4HH3"
+ },
+ {
+  "lon": -125.19856633,
+  "lat": 50.00825919,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TGAC9MR"
+ },
+ {
+  "lon": 121.90612874,
+  "lat": -18.41786401,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T2A4EPE"
+ },
+ {
+  "lon": -68.93369787,
+  "lat": 12.11855147,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBA6ZCX"
+ },
+ {
+  "lon": 64.21665518,
+  "lat": 81.12441177,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAHY6N"
+ },
+ {
+  "lon": -78.40524492,
+  "lat": 69.39491459,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFA1E7M"
+ },
+ {
+  "lon": 115.01311253,
+  "lat": -67.36582491,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T8ABTTZ"
+ },
+ {
+  "lon": 98.4596707,
+  "lat": 3.9976862,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1AXETZ"
+ },
+ {
+  "lon": -84.49227788,
+  "lat": 72.09194306,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AM3QP"
+ },
+ {
+  "lon": 116.2738747,
+  "lat": -1.7476496,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T2A0QN1"
+ },
+ {
+  "lon": 8.5019627,
+  "lat": 4.61190604,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKA2WHR"
+ },
+ {
+  "lon": 15.99679408,
+  "lat": 77.78249666,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAXH8V"
+ },
+ {
+  "lon": 142.5796092,
+  "lat": 44.91361466,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0AVCSS"
+ },
+ {
+  "lon": 84.68972655,
+  "lat": -67.09974954,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TJANHSY"
+ },
+ {
+  "lon": 123.17484978,
+  "lat": 39.67161252,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0AHHY6"
+ },
+ {
+  "lon": 131.53953455,
+  "lat": 32.03471935,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0AXYHV"
+ },
+ {
+  "lon": 98.7542953,
+  "lat": 8.12032478,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1AXSVA"
+ },
+ {
+  "lon": -83.71177072,
+  "lat": 77.58035949,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AH87C"
+ },
+ {
+  "lon": -40.98773522,
+  "lat": 64.24061554,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFA2BBF"
+ },
+ {
+  "lon": 85.82815015,
+  "lat": -66.95827734,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TJANHFX"
+ },
+ {
+  "lon": 93.74964238,
+  "lat": 7.21003692,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1AX5SN"
+ },
+ {
+  "lon": 43.38864615,
+  "lat": 0.51257429,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKAPFD2"
+ },
+ {
+  "lon": 135.5568191,
+  "lat": -66.14979192,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T8AEAYF"
+ },
+ {
+  "lon": -127.73393672,
+  "lat": 50.17062276,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TGADTYJ"
+ },
+ {
+  "lon": 34.08881084,
+  "lat": 66.25264067,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAVD00"
+ },
+ {
+  "lon": -115.98352692,
+  "lat": 77.02399034,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AHQ6C"
+ },
+ {
+  "lon": 11.95029382,
+  "lat": 57.52900133,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAC3KV"
+ },
+ {
+  "lon": 121.62028671,
+  "lat": -4.76312706,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T2A1ZXD"
+ },
+ {
+  "lon": -78.34877465,
+  "lat": 8.03055947,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBAXTQD"
+ },
+ {
+  "lon": 166.8970105,
+  "lat": -45.26765019,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3AKC9P"
+ },
+ {
+  "lon": -86.94337932,
+  "lat": 67.97199638,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AMBS3"
+ },
+ {
+  "lon": -73.65886952,
+  "lat": -16.19986911,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TCAZATX"
+ },
+ {
+  "lon": -75.39396046,
+  "lat": 39.38824854,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBA8TEV"
+ },
+ {
+  "lon": 102.86362221,
+  "lat": 0.99009815,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1A53DA"
+ },
+ {
+  "lon": -72.2161588,
+  "lat": 71.59868944,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFA7843"
+ },
+ {
+  "lon": -136.16155152,
+  "lat": 68.86835517,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AJ2A7"
+ },
+ {
+  "lon": 173.19156806,
+  "lat": -35.08120766,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3ANG2Y"
+ },
+ {
+  "lon": 117.76914581,
+  "lat": 38.3394161,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0AHVXQ"
+ },
+ {
+  "lon": 44.39997612,
+  "lat": 66.68696725,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAJF28"
+ },
+ {
+  "lon": -82.05591956,
+  "lat": 67.86080256,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFA10MJ"
+ },
+ {
+  "lon": 120.46859012,
+  "lat": -8.2650867,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T2A172A"
+ },
+ {
+  "lon": -63.9110131,
+  "lat": 10.58513092,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBA7YVK"
+ },
+ {
+  "lon": -87.03110043,
+  "lat": 80.68497567,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AH0V4"
+ },
+ {
+  "lon": 141.07996216,
+  "lat": 76.01513654,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6A4HNC"
+ },
+ {
+  "lon": -96.89247347,
+  "lat": 75.51886509,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AHDBF"
+ },
+ {
+  "lon": 114.95058774,
+  "lat": -29.87868164,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T2AX9HP"
+ },
+ {
+  "lon": -44.13233492,
+  "lat": -2.72413337,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TEA1GK8"
+ },
+ {
+  "lon": -71.61564615,
+  "lat": 80.05387127,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFA4B8W"
+ },
+ {
+  "lon": 111.41379703,
+  "lat": 21.50375671,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1A35K5"
+ },
+ {
+  "lon": -101.92164989,
+  "lat": -75.11991588,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T8APHRE"
+ },
+ {
+  "lon": 96.97195301,
+  "lat": 17.31264692,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1AZN5Z"
+ },
+ {
+  "lon": -124.3542197,
+  "lat": 69.71112791,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AP626"
+ },
+ {
+  "lon": 44.1889465,
+  "lat": -18.63651403,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T9ADE3Z"
+ },
+ {
+  "lon": 77.03068523,
+  "lat": 68.64844819,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAQ5SW"
+ },
+ {
+  "lon": -69.68702692,
+  "lat": -53.35156499,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TDABJCT"
+ },
+ {
+  "lon": 174.07109084,
+  "lat": -39.5308843,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3AMW29"
+ },
+ {
+  "lon": 165.08211015,
+  "lat": -78.24258201,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T8AT7KF"
+ },
+ {
+  "lon": -72.5041034,
+  "lat": -42.29624541,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TCAQ85A"
+ },
+ {
+  "lon": -80.07632165,
+  "lat": 26.82000591,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBAY86Z"
+ },
+ {
+  "lon": -9.64762983,
+  "lat": 30.08445248,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TAAEC55"
+ },
+ {
+  "lon": -84.77055372,
+  "lat": 80.51145844,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AH0QW"
+ },
+ {
+  "lon": -51.00706543,
+  "lat": 3.20280781,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TAA02D0"
+ },
+ {
+  "lon": 5.18212472,
+  "lat": 36.73028176,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAAKFJ"
+ },
+ {
+  "lon": -16.38826381,
+  "lat": 19.48311943,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TEAHRPK"
+ },
+ {
+  "lon": 179.6397679,
+  "lat": -87.03048298,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T8ATQG6"
+ },
+ {
+  "lon": -161.03705499,
+  "lat": -81.5681345,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T8AVMC6"
+ },
+ {
+  "lon": 151.9944824,
+  "lat": 59.12250859,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6A2ZBR"
+ },
+ {
+  "lon": 133.58453415,
+  "lat": -0.76268288,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T4A0F73"
+ },
+ {
+  "lon": 114.53042155,
+  "lat": 22.54170334,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1A3Q0D"
+ },
+ {
+  "lon": -164.01595131,
+  "lat": 67.41549935,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AZGCK"
+ },
+ {
+  "lon": 17.83296616,
+  "lat": -32.90059251,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T9ANWRN"
+ },
+ {
+  "lon": -16.04303984,
+  "lat": 11.20385051,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TEAWRNY"
+ },
+ {
+  "lon": 21.9381486,
+  "lat": 70.57073018,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAYZQ0"
+ },
+ {
+  "lon": 141.02486011,
+  "lat": -38.10479659,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3AY6KW"
+ },
+ {
+  "lon": 160.89520334,
+  "lat": -79.04665756,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T8AT7RA"
+ },
+ {
+  "lon": 69.00310234,
+  "lat": 72.65684081,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAQSH9"
+ },
+ {
+  "lon": 128.20613905,
+  "lat": 26.78551939,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0A5NS2"
+ },
+ {
+  "lon": -43.68380775,
+  "lat": 83.21751571,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFA54WW"
+ },
+ {
+  "lon": -78.02025138,
+  "lat": 62.33772136,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFA0FE5"
+ },
+ {
+  "lon": 148.63397279,
+  "lat": -20.18416182,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3A57RH"
+ },
+ {
+  "lon": 129.87767847,
+  "lat": 41.84936815,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0AGMDY"
+ },
+ {
+  "lon": 153.61848389,
+  "lat": -4.12031148,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T4A3FF3"
+ },
+ {
+  "lon": -75.20129639,
+  "lat": 23.37739431,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBAS501"
+ },
+ {
+  "lon": 35.41989749,
+  "lat": 33.65668848,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AGPMG"
+ },
+ {
+  "lon": 7.0222286,
+  "lat": 4.40950814,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TEAJSFK"
+ },
+ {
+  "lon": 120.84337487,
+  "lat": 33.0456743,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0AG18R"
+ },
+ {
+  "lon": -71.22020681,
+  "lat": 10.10895175,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBA4H3D"
+ },
+ {
+  "lon": 117.53367622,
+  "lat": -8.31247693,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T2A7TY9"
+ },
+ {
+  "lon": -77.20551323,
+  "lat": 20.33167092,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBAZ3D7"
+ },
+ {
+  "lon": -6.77460057,
+  "lat": 55.21446335,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFA9SQX"
+ },
+ {
+  "lon": 48.6447145,
+  "lat": 5.44569248,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKAQ2RH"
+ },
+ {
+  "lon": 28.98608598,
+  "lat": 78.97827277,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAWVHS"
+ },
+ {
+  "lon": 51.54286061,
+  "lat": 24.30770183,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AWEKJ"
+ },
+ {
+  "lon": -67.94861658,
+  "lat": 77.54472515,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFA4F29"
+ },
+ {
+  "lon": 150.78828606,
+  "lat": -10.18884428,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T4A3WMJ"
+ },
+ {
+  "lon": -53.79771176,
+  "lat": 69.43633311,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFA7ZBP"
+ },
+ {
+  "lon": -71.12781293,
+  "lat": 62.87649569,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFA1JRX"
+ },
+ {
+  "lon": -50.64428387,
+  "lat": 64.19654137,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFA6CJX"
+ },
+ {
+  "lon": -64.83946204,
+  "lat": -43.21416501,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TDA8X7M"
+ },
+ {
+  "lon": 143.4342105,
+  "lat": 46.84669019,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0AV4BN"
+ },
+ {
+  "lon": -161.17842655,
+  "lat": -81.55109662,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T8AVMCD"
+ },
+ {
+  "lon": -53.72955996,
+  "lat": 5.65751584,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBA0558"
+ },
+ {
+  "lon": -130.342896,
+  "lat": 53.91441337,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TGADCSK"
+ },
+ {
+  "lon": 68.28278774,
+  "lat": -72.57610991,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TJAQK3J"
+ },
+ {
+  "lon": -120.32650051,
+  "lat": 69.41989415,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AQJWE"
+ },
+ {
+  "lon": -114.2892186,
+  "lat": 27.77534254,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TGAS040"
+ },
+ {
+  "lon": 124.25648151,
+  "lat": 14.09588002,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1A0NR3"
+ },
+ {
+  "lon": 22.06883462,
+  "lat": 79.41250033,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAXMRW"
+ },
+ {
+  "lon": 145.11168659,
+  "lat": -41.84747187,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3AVT6T"
+ },
+ {
+  "lon": 99.59620686,
+  "lat": 75.79546843,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6A43HB"
+ },
+ {
+  "lon": 21.62241839,
+  "lat": 60.54475897,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAT6VD"
+ },
+ {
+  "lon": -123.52808537,
+  "lat": 71.25310082,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6APDYV"
+ },
+ {
+  "lon": 23.78549055,
+  "lat": 64.27598367,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAVVRT"
+ },
+ {
+  "lon": -48.09468237,
+  "lat": 61.03812327,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFA23KY"
+ },
+ {
+  "lon": -7.18095861,
+  "lat": 4.47096025,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TEAVEGH"
+ },
+ {
+  "lon": 43.99301644,
+  "lat": 10.61559506,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKAHRBV"
+ },
+ {
+  "lon": 121.60889457,
+  "lat": 39.37039706,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0AHWMR"
+ },
+ {
+  "lon": 43.88464803,
+  "lat": 68.44019205,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAJFN9"
+ },
+ {
+  "lon": -134.82000481,
+  "lat": 56.25742481,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AJSA7"
+ },
+ {
+  "lon": 123.48496386,
+  "lat": 10.58977635,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1A0Z50"
+ },
+ {
+  "lon": 120.6053818,
+  "lat": 37.78672951,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0AHJKS"
+ },
+ {
+  "lon": 126.84131806,
+  "lat": 34.41225612,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0AXP9H"
+ },
+ {
+  "lon": 4.21812536,
+  "lat": 52.06623802,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAF14A"
+ },
+ {
+  "lon": -64.32563649,
+  "lat": 45.11896045,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TAAQ86E"
+ },
+ {
+  "lon": -151.62857555,
+  "lat": 60.02219782,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AVHZR"
+ },
+ {
+  "lon": -4.62039923,
+  "lat": 51.67639109,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFA9Q59"
+ },
+ {
+  "lon": 8.90141865,
+  "lat": 4.36544905,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKA2WJF"
+ },
+ {
+  "lon": -54.76446866,
+  "lat": 69.95802893,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFA7XQQ"
+ },
+ {
+  "lon": 99.36976566,
+  "lat": 7.43396448,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1AX11P"
+ },
+ {
+  "lon": -78.2523821,
+  "lat": 2.47474066,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBA5FWM"
+ },
+ {
+  "lon": 100.26673789,
+  "lat": 7.7395499,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1AXTEQ"
+ },
+ {
+  "lon": -109.22636301,
+  "lat": 26.29563687,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TGA2YTC"
+ },
+ {
+  "lon": 32.77464251,
+  "lat": -26.16529346,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T9AKX34"
+ },
+ {
+  "lon": 127.87845976,
+  "lat": -3.25353839,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T2A02QB"
+ },
+ {
+  "lon": 89.46351184,
+  "lat": 77.13713275,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAHEAB"
+ },
+ {
+  "lon": 122.89976553,
+  "lat": 11.06265898,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1A0X14"
+ },
+ {
+  "lon": 153.55383096,
+  "lat": -68.76950578,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T8A98T9"
+ },
+ {
+  "lon": -16.53626106,
+  "lat": 13.36769176,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TEAXNEY"
+ },
+ {
+  "lon": -70.97593085,
+  "lat": -54.206018,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TDABHQP"
+ },
+ {
+  "lon": 13.14096282,
+  "lat": -70.15742132,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TJAZW1Q"
+ },
+ {
+  "lon": -41.99110739,
+  "lat": -22.57238649,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TDA6PF2"
+ },
+ {
+  "lon": 23.00587355,
+  "lat": 70.26299533,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAYWPG"
+ },
+ {
+  "lon": -21.15990067,
+  "lat": 81.72155662,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAX06W"
+ },
+ {
+  "lon": 130.91956412,
+  "lat": 34.0304446,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0AXWQB"
+ },
+ {
+  "lon": 122.79039643,
+  "lat": 7.38769009,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1A1HBV"
+ },
+ {
+  "lon": -62.53945179,
+  "lat": 56.76933527,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TAAMYZC"
+ },
+ {
+  "lon": -78.07435069,
+  "lat": 26.72514614,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBARS5E"
+ },
+ {
+  "lon": -52.95990306,
+  "lat": 82.1235346,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFA5XEQ"
+ },
+ {
+  "lon": 144.22924252,
+  "lat": -7.7930484,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T4A224E"
+ },
+ {
+  "lon": 113.93329503,
+  "lat": -67.23949265,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T8ABTFQ"
+ },
+ {
+  "lon": -50.19144639,
+  "lat": -1.90324964,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TDA03YX"
+ },
+ {
+  "lon": -5.73359389,
+  "lat": 56.54905358,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFA93XT"
+ },
+ {
+  "lon": 138.13844695,
+  "lat": 46.27548289,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0AVDBM"
+ },
+ {
+  "lon": -2.06065451,
+  "lat": 4.78708683,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TEAV5XQ"
+ },
+ {
+  "lon": 33.55195775,
+  "lat": 27.94844837,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AHWBG"
+ },
+ {
+  "lon": 163.52815051,
+  "lat": -74.69857246,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T8AT2E2"
+ },
+ {
+  "lon": 78.69867627,
+  "lat": 72.39222618,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAQFX2"
+ },
+ {
+  "lon": 124.79329894,
+  "lat": 11.85701463,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1A0M3C"
+ },
+ {
+  "lon": 173.73520773,
+  "lat": -40.99325959,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3AMM8P"
+ },
+ {
+  "lon": 137.94762388,
+  "lat": -5.35434174,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T4A0HXF"
+ },
+ {
+  "lon": 144.53467889,
+  "lat": -38.28992589,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3AZGCZ"
+ },
+ {
+  "lon": 137.91623101,
+  "lat": -32.69358256,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3AZ34P"
+ },
+ {
+  "lon": 100.15111474,
+  "lat": 7.61278102,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1AX0AC"
+ },
+ {
+  "lon": -8.86503488,
+  "lat": 37.52972547,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TAAEKT3"
+ },
+ {
+  "lon": 158.94288102,
+  "lat": -54.61282823,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T8A2NM8"
+ },
+ {
+  "lon": -67.42542943,
+  "lat": 68.53198777,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFA17RC"
+ },
+ {
+  "lon": -18.76104223,
+  "lat": 76.2800899,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAWEW4"
+ },
+ {
+  "lon": -56.53181253,
+  "lat": 51.38465507,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TAAQW2M"
+ },
+ {
+  "lon": 174.23822111,
+  "lat": -35.2759377,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3ANGB2"
+ },
+ {
+  "lon": 135.59331066,
+  "lat": -3.17516584,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T4A1GHZ"
+ },
+ {
+  "lon": -113.90849404,
+  "lat": 75.25418588,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AHNAW"
+ },
+ {
+  "lon": 34.9387647,
+  "lat": 32.67440961,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AGS86"
+ },
+ {
+  "lon": 50.22504596,
+  "lat": 45.03367844,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AVJNP"
+ },
+ {
+  "lon": 77.26389554,
+  "lat": 68.00892514,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAQ5AA"
+ },
+ {
+  "lon": -80.93319114,
+  "lat": 69.81975741,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFA1EHD"
+ },
+ {
+  "lon": 125.36053917,
+  "lat": 5.63513487,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1A07AK"
+ },
+ {
+  "lon": -91.89495053,
+  "lat": 78.22772824,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AHE60"
+ },
+ {
+  "lon": 9.10708905,
+  "lat": -1.46867649,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKA83NM"
+ },
+ {
+  "lon": 148.09505245,
+  "lat": -42.75231069,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3AVSZ5"
+ },
+ {
+  "lon": -81.9075356,
+  "lat": 53.15527933,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBAAY6Y"
+ },
+ {
+  "lon": 149.12090019,
+  "lat": -10.2489825,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T4A3JWK"
+ },
+ {
+  "lon": 115.1511907,
+  "lat": -67.06734284,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T8ABTYG"
+ },
+ {
+  "lon": -54.33717745,
+  "lat": 71.35344632,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFA7P52"
+ },
+ {
+  "lon": 35.49176552,
+  "lat": 33.85232617,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AGPPQ"
+ },
+ {
+  "lon": 13.4926651,
+  "lat": -10.16651492,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKA9QP9"
+ },
+ {
+  "lon": 6.90795816,
+  "lat": 4.43361683,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TEAJSE9"
+ },
+ {
+  "lon": 18.64574538,
+  "lat": 57.90080847,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAT48Y"
+ },
+ {
+  "lon": -127.13383419,
+  "lat": 52.39376146,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TGADSSC"
+ },
+ {
+  "lon": 46.88377593,
+  "lat": 3.3357891,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKAQTEA"
+ },
+ {
+  "lon": -84.66289508,
+  "lat": 72.15562118,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AM3Q1"
+ },
+ {
+  "lon": 155.89321554,
+  "lat": 71.07265252,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6ASAG9"
+ },
+ {
+  "lon": 128.29447095,
+  "lat": -3.24217207,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3A01F1"
+ },
+ {
+  "lon": 94.91609699,
+  "lat": 16.17977664,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1AYVFP"
+ },
+ {
+  "lon": 129.73354227,
+  "lat": -2.86632255,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3A01M8"
+ },
+ {
+  "lon": 119.90786381,
+  "lat": 35.64047835,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0AGD5G"
+ },
+ {
+  "lon": -61.09460999,
+  "lat": 46.49318263,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TAAQ38R"
+ },
+ {
+  "lon": 125.52023322,
+  "lat": 9.13708143,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1A0K15"
+ },
+ {
+  "lon": -9.14465753,
+  "lat": 43.16583934,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TAACMF2"
+ },
+ {
+  "lon": 40.46308439,
+  "lat": -68.71482272,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TJAGMYD"
+ },
+ {
+  "lon": 157.59715767,
+  "lat": -8.80680685,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T4AST9G"
+ },
+ {
+  "lon": 128.39651182,
+  "lat": 38.49597747,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0AWSXE"
+ },
+ {
+  "lon": -44.53991494,
+  "lat": 82.26651983,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFA5PJH"
+ },
+ {
+  "lon": -62.35649357,
+  "lat": 46.42459897,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TAAQE1T"
+ },
+ {
+  "lon": -179.74104604,
+  "lat": 65.85104467,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AYAFJ"
+ },
+ {
+  "lon": -60.48261629,
+  "lat": -70.51462571,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TJAEJWE"
+ },
+ {
+  "lon": -80.46048502,
+  "lat": -0.3881228,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TCA2MB9"
+ },
+ {
+  "lon": 51.76257784,
+  "lat": 15.4273376,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5A46SN"
+ },
+ {
+  "lon": 124.76490757,
+  "lat": 12.52705939,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1A0M8Y"
+ },
+ {
+  "lon": 37.9580255,
+  "lat": 24.20575803,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AG7G4"
+ },
+ {
+  "lon": 141.10854225,
+  "lat": -9.17174623,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3A1AP1"
+ },
+ {
+  "lon": -114.41417797,
+  "lat": 72.61710714,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AQVYQ"
+ },
+ {
+  "lon": -42.51503061,
+  "lat": 62.74934473,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFA291V"
+ },
+ {
+  "lon": -77.22301339,
+  "lat": -73.51303634,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TJAEN4H"
+ },
+ {
+  "lon": 145.59486903,
+  "lat": 43.39677011,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0AVSXP"
+ },
+ {
+  "lon": -61.20065978,
+  "lat": 8.50399679,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBA6AGH"
+ },
+ {
+  "lon": -135.08380951,
+  "lat": 58.93173901,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AJYFF"
+ },
+ {
+  "lon": -69.7059176,
+  "lat": 58.70737977,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TAAN56P"
+ },
+ {
+  "lon": 38.94928134,
+  "lat": -17.04806061,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKATNDF"
+ },
+ {
+  "lon": -7.65689094,
+  "lat": -71.26369371,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TJAYFZW"
+ },
+ {
+  "lon": 61.92805181,
+  "lat": 25.10176465,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5A3DG6"
+ },
+ {
+  "lon": -37.38654415,
+  "lat": -11.43962268,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TDA43S5"
+ },
+ {
+  "lon": -66.64257719,
+  "lat": -67.5870218,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TJAB0A2"
+ },
+ {
+  "lon": -12.95347814,
+  "lat": 8.13194673,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TEAWWZM"
+ },
+ {
+  "lon": 129.43064577,
+  "lat": -14.30507581,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3A68R3"
+ },
+ {
+  "lon": 119.36019112,
+  "lat": 39.63552556,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0AHXQB"
+ },
+ {
+  "lon": -6.1080997,
+  "lat": 53.64503253,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFA9XY7"
+ },
+ {
+  "lon": 166.7856193,
+  "lat": -78.50334939,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T8AT6RA"
+ },
+ {
+  "lon": -61.23243844,
+  "lat": 14.80456651,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBA64S9"
+ },
+ {
+  "lon": 17.39844568,
+  "lat": 77.29307803,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAWJGW"
+ },
+ {
+  "lon": 25.27611996,
+  "lat": 37.39803218,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5APR4G"
+ },
+ {
+  "lon": -76.64554564,
+  "lat": 34.93047672,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBA9CA4"
+ },
+ {
+  "lon": -61.0748181,
+  "lat": 13.84941104,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBA6C8V"
+ },
+ {
+  "lon": -61.03821448,
+  "lat": -73.92775074,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TJAEV3R"
+ },
+ {
+  "lon": -93.29106199,
+  "lat": 78.60945771,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AHCN6"
+ },
+ {
+  "lon": 129.61961128,
+  "lat": 33.05053356,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0AXZYD"
+ },
+ {
+  "lon": -7.8457922,
+  "lat": 36.97985104,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TAAEK7B"
+ },
+ {
+  "lon": -105.28421568,
+  "lat": 21.56631335,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBAKNPE"
+ },
+ {
+  "lon": -71.55693139,
+  "lat": 10.82135014,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBA4HFM"
+ },
+ {
+  "lon": 56.80106278,
+  "lat": 24.34150621,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5A6NDV"
+ },
+ {
+  "lon": 35.83047397,
+  "lat": 46.67134084,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AJJ46"
+ },
+ {
+  "lon": -79.49089399,
+  "lat": 56.24296141,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TAAN8GY"
+ },
+ {
+  "lon": 42.16404379,
+  "lat": 13.62499535,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKAGFBS"
+ },
+ {
+  "lon": 164.95148951,
+  "lat": -70.58214665,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T8AY2ZB"
+ },
+ {
+  "lon": -24.13039633,
+  "lat": 16.57685055,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TEAXA4J"
+ },
+ {
+  "lon": -26.26710799,
+  "lat": 70.49203034,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFA3ARK"
+ },
+ {
+  "lon": 27.09086401,
+  "lat": -70.90082486,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TJAYP44"
+ },
+ {
+  "lon": -92.44601085,
+  "lat": 57.24938451,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TGAARA2"
+ },
+ {
+  "lon": -39.02647687,
+  "lat": -14.1021409,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TDA443N"
+ },
+ {
+  "lon": 27.50634972,
+  "lat": 37.11566555,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AQHJV"
+ },
+ {
+  "lon": -68.29395319,
+  "lat": 58.20157495,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TAANNGJ"
+ },
+ {
+  "lon": -72.6952929,
+  "lat": 11.68907626,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBA4MGR"
+ },
+ {
+  "lon": -59.07637467,
+  "lat": -62.3340518,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TJAAFPH"
+ },
+ {
+  "lon": 129.42052656,
+  "lat": -66.75861562,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T8AE98T"
+ },
+ {
+  "lon": 39.65052827,
+  "lat": 15.48155618,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKAG326"
+ },
+ {
+  "lon": -63.21724429,
+  "lat": -64.44671275,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TJAA9ZN"
+ },
+ {
+  "lon": -4.68885347,
+  "lat": 58.50905018,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFARH5C"
+ },
+ {
+  "lon": -109.35656743,
+  "lat": 25.9303586,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TGA2YJ1"
+ },
+ {
+  "lon": 177.10697937,
+  "lat": -37.99828095,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3AMYCV"
+ },
+ {
+  "lon": 115.08157021,
+  "lat": -67.32660925,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T8ABTTR"
+ },
+ {
+  "lon": 123.53919369,
+  "lat": -5.30218842,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T2A1RE9"
+ },
+ {
+  "lon": 174.27923946,
+  "lat": -41.00607294,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3AMMDK"
+ },
+ {
+  "lon": -105.77464723,
+  "lat": 68.59362733,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AQNGJ"
+ },
+ {
+  "lon": -67.160168,
+  "lat": -72.45972897,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TJAEZ51"
+ },
+ {
+  "lon": 22.39523973,
+  "lat": -70.70276628,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TJAYZ9P"
+ },
+ {
+  "lon": -37.47639801,
+  "lat": 83.43643886,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFA57HM"
+ },
+ {
+  "lon": 25.72208024,
+  "lat": 79.58321587,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAXMA6"
+ },
+ {
+  "lon": 120.82081897,
+  "lat": -19.68393861,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T2A4B4J"
+ },
+ {
+  "lon": -66.07574534,
+  "lat": 64.83034433,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFA1MZD"
+ },
+ {
+  "lon": 174.9447673,
+  "lat": -36.86544599,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3AMJR4"
+ },
+ {
+  "lon": 22.50548263,
+  "lat": 38.10463888,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5APSXW"
+ },
+ {
+  "lon": 122.04808864,
+  "lat": 29.69965683,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0AX8XH"
+ },
+ {
+  "lon": -47.89299329,
+  "lat": 60.94212527,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFA23V5"
+ },
+ {
+  "lon": -46.26381131,
+  "lat": 60.89718443,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFA23BS"
+ },
+ {
+  "lon": 29.60235049,
+  "lat": 69.96532538,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAYM2Y"
+ },
+ {
+  "lon": 123.51076891,
+  "lat": 13.92085895,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1A0NVX"
+ },
+ {
+  "lon": -58.2174846,
+  "lat": 49.03861821,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TAAQXYJ"
+ },
+ {
+  "lon": 82.64199968,
+  "lat": 71.75244647,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAQDZ0"
+ },
+ {
+  "lon": 125.32250137,
+  "lat": 9.01343752,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1A0K7N"
+ },
+ {
+  "lon": 52.90565537,
+  "lat": 70.95877639,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAPF5M"
+ },
+ {
+  "lon": -43.0751752,
+  "lat": -22.89120691,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TDA6QYW"
+ },
+ {
+  "lon": 126.31817593,
+  "lat": 35.06657332,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0AXQA3"
+ },
+ {
+  "lon": -159.58877072,
+  "lat": 55.74895927,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AC9QE"
+ },
+ {
+  "lon": 141.61898965,
+  "lat": -9.20687657,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3A1ANZ"
+ },
+ {
+  "lon": -74.66275561,
+  "lat": -78.15391108,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TJACXPA"
+ },
+ {
+  "lon": 165.95182557,
+  "lat": -82.65447406,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T8ATKHY"
+ },
+ {
+  "lon": 5.83681692,
+  "lat": 60.04816109,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAY0PT"
+ },
+ {
+  "lon": 11.03959481,
+  "lat": 37.03836894,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAAVDQ"
+ },
+ {
+  "lon": -172.33791093,
+  "lat": 66.94886541,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AZYQF"
+ },
+ {
+  "lon": -114.75763303,
+  "lat": 76.79549978,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AHN5X"
+ },
+ {
+  "lon": -61.3488897,
+  "lat": 56.13400081,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TAAMJAZ"
+ },
+ {
+  "lon": 136.34758643,
+  "lat": -34.16748202,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3AZ00N"
+ },
+ {
+  "lon": -88.97882339,
+  "lat": 78.20422272,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AHEW8"
+ },
+ {
+  "lon": -89.08536425,
+  "lat": 70.62918499,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AMCN4"
+ },
+ {
+  "lon": -116.13984577,
+  "lat": 68.97216906,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AQWN1"
+ },
+ {
+  "lon": -114.6965115,
+  "lat": 30.44487182,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TGASVRW"
+ },
+ {
+  "lon": -65.39974559,
+  "lat": 59.77338128,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TAAMTD3"
+ },
+ {
+  "lon": 33.73453174,
+  "lat": -25.06532352,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T9AKMQX"
+ },
+ {
+  "lon": -2.12843322,
+  "lat": 4.79654577,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TEAV5X7"
+ },
+ {
+  "lon": -138.88203983,
+  "lat": -9.80048959,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T7AKK6C"
+ },
+ {
+  "lon": 98.20856986,
+  "lat": 4.40090384,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1AXERP"
+ },
+ {
+  "lon": 125.773951,
+  "lat": -32.41361319,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3ARD95"
+ },
+ {
+  "lon": -85.52732786,
+  "lat": 82.27881899,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AGAMQ"
+ },
+ {
+  "lon": 76.82747692,
+  "lat": 71.4293162,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAQC8G"
+ },
+ {
+  "lon": -94.84832361,
+  "lat": 59.01981611,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TGAAT9Y"
+ },
+ {
+  "lon": 151.65723188,
+  "lat": -3.20837395,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T4A32WW"
+ },
+ {
+  "lon": 41.47319391,
+  "lat": 42.67798205,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AV7X5"
+ },
+ {
+  "lon": 47.90536046,
+  "lat": 4.49219719,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKAQ3W1"
+ },
+ {
+  "lon": -77.99124549,
+  "lat": 25.07332929,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBARTCC"
+ },
+ {
+  "lon": -51.46291667,
+  "lat": -1.25012723,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TCA00HF"
+ },
+ {
+  "lon": 35.49469829,
+  "lat": -22.72919628,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T9AJYB3"
+ },
+ {
+  "lon": -96.30370365,
+  "lat": -72.18083679,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T8APXS2"
+ },
+ {
+  "lon": -53.26073518,
+  "lat": 71.97196793,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFA7P3W"
+ },
+ {
+  "lon": -179.95611276,
+  "lat": 66.50001391,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AZT7V"
+ },
+ {
+  "lon": 17.22513122,
+  "lat": 43.16198588,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFABBTD"
+ },
+ {
+  "lon": 109.2056146,
+  "lat": 0.00526385,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1A42NA"
+ },
+ {
+  "lon": 124.03847552,
+  "lat": 11.76344884,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1A0MP3"
+ },
+ {
+  "lon": 55.42970587,
+  "lat": 17.74849166,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5A6TGJ"
+ },
+ {
+  "lon": 99.65949613,
+  "lat": 11.49951267,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1AXYNB"
+ },
+ {
+  "lon": -38.93471476,
+  "lat": -15.75836452,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TDA455S"
+ },
+ {
+  "lon": 133.30376014,
+  "lat": 34.41326968,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0AXK42"
+ },
+ {
+  "lon": -65.6503602,
+  "lat": 80.73283552,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFA5RJV"
+ },
+ {
+  "lon": -8.79384257,
+  "lat": 70.90795772,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAZFTH"
+ },
+ {
+  "lon": 113.52942773,
+  "lat": 72.96701023,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6A7F91"
+ },
+ {
+  "lon": -127.57026395,
+  "lat": 51.03095723,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TGADVCH"
+ },
+ {
+  "lon": 68.99621581,
+  "lat": 76.72343068,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAHNPV"
+ },
+ {
+  "lon": -20.82730854,
+  "lat": 73.97569001,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAW3HG"
+ },
+ {
+  "lon": 40.06132444,
+  "lat": -10.14926826,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKAJGP9"
+ },
+ {
+  "lon": -23.80344032,
+  "lat": 82.26876427,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAX0GF"
+ },
+ {
+  "lon": -112.35806579,
+  "lat": 29.26105701,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TGARARG"
+ },
+ {
+  "lon": -69.75441308,
+  "lat": -53.36703744,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TDABJCV"
+ },
+ {
+  "lon": -15.00218776,
+  "lat": 66.06812196,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFASCR5"
+ },
+ {
+  "lon": -27.00380139,
+  "lat": 70.51829455,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFA3A2T"
+ },
+ {
+  "lon": -55.10726279,
+  "lat": -63.27639575,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TJAE1FS"
+ },
+ {
+  "lon": -118.33657514,
+  "lat": -74.35487792,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T8AP5ZB"
+ },
+ {
+  "lon": 61.05484168,
+  "lat": 80.96843031,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAHY18"
+ },
+ {
+  "lon": -83.60841371,
+  "lat": 10.7850493,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBAXWVX"
+ },
+ {
+  "lon": 122.35491526,
+  "lat": 8.03815023,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1A0R0N"
+ },
+ {
+  "lon": 134.56032952,
+  "lat": -5.45021904,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3A1TYR"
+ },
+ {
+  "lon": -83.07953206,
+  "lat": 55.27268905,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBAAP1G"
+ },
+ {
+  "lon": -112.96804164,
+  "lat": 74.37168462,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AQTKS"
+ },
+ {
+  "lon": 138.33839163,
+  "lat": -7.41398812,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3A1EPY"
+ },
+ {
+  "lon": 16.30185195,
+  "lat": 79.98351815,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAXMM7"
+ },
+ {
+  "lon": -76.47698839,
+  "lat": 65.39871845,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFA1VWJ"
+ },
+ {
+  "lon": -119.55371609,
+  "lat": 74.21993849,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6APA3R"
+ },
+ {
+  "lon": 0.23832262,
+  "lat": 49.69759984,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAEA88"
+ },
+ {
+  "lon": -18.56012209,
+  "lat": -75.12739083,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TJAT1QA"
+ },
+ {
+  "lon": 32.62528083,
+  "lat": -25.89644199,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T9AKP5T"
+ },
+ {
+  "lon": 47.31065752,
+  "lat": 44.15710172,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AVZBP"
+ },
+ {
+  "lon": 11.82322213,
+  "lat": -18.07901759,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKAEC2B"
+ },
+ {
+  "lon": 150.37465747,
+  "lat": -9.370755,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T4A3Y2J"
+ },
+ {
+  "lon": -133.09411199,
+  "lat": 53.96359504,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TGADFRK"
+ },
+ {
+  "lon": 145.14953904,
+  "lat": -4.39550218,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T4A6D11"
+ },
+ {
+  "lon": -74.16670685,
+  "lat": -49.90188726,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TCAMBMT"
+ },
+ {
+  "lon": -99.70278765,
+  "lat": 71.80650273,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AQD1A"
+ },
+ {
+  "lon": -71.71051092,
+  "lat": -72.26128722,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TJAEMW5"
+ },
+ {
+  "lon": 29.955543,
+  "lat": 41.14573215,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AK03J"
+ },
+ {
+  "lon": 47.32023337,
+  "lat": 3.78338541,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKAQ0BY"
+ },
+ {
+  "lon": -72.75830943,
+  "lat": -35.97574131,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TCAHWEG"
+ },
+ {
+  "lon": -84.96897121,
+  "lat": 29.57950671,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBAT226"
+ },
+ {
+  "lon": -21.83119256,
+  "lat": 64.16304484,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAS0CC"
+ },
+ {
+  "lon": 126.18219705,
+  "lat": 37.80518832,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0AWTD2"
+ },
+ {
+  "lon": -93.75528327,
+  "lat": 29.78095973,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBAVG97"
+ },
+ {
+  "lon": -91.47098602,
+  "lat": -0.03756183,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TCA8G2H"
+ },
+ {
+  "lon": -160.21059277,
+  "lat": 56.39727833,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6ACBY8"
+ },
+ {
+  "lon": 153.51943818,
+  "lat": -27.5632159,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3AXN72"
+ },
+ {
+  "lon": 12.34991615,
+  "lat": 55.05996006,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFACC7Y"
+ },
+ {
+  "lon": 101.08990932,
+  "lat": 76.60068048,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6A42RF"
+ },
+ {
+  "lon": -109.10311814,
+  "lat": 26.25786949,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TGA2YY1"
+ },
+ {
+  "lon": -86.60651024,
+  "lat": 70.39439927,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AME5K"
+ },
+ {
+  "lon": -111.1231728,
+  "lat": -74.19433977,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T8APGG5"
+ },
+ {
+  "lon": 67.9551422,
+  "lat": -69.89353786,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TJAQZ46"
+ },
+ {
+  "lon": -55.35915101,
+  "lat": 47.59999039,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TAAQRW5"
+ },
+ {
+  "lon": 108.14707885,
+  "lat": -3.10668087,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T2A2D9T"
+ },
+ {
+  "lon": 22.62592489,
+  "lat": 40.33850937,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5APX24"
+ },
+ {
+  "lon": -69.20696533,
+  "lat": 48.57330354,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TAAMFNF"
+ },
+ {
+  "lon": 140.5416277,
+  "lat": -8.66584781,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3A1A7M"
+ },
+ {
+  "lon": -63.8041304,
+  "lat": 45.90056744,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TAAQEYK"
+ },
+ {
+  "lon": 171.6339773,
+  "lat": 7.01338167,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T4AYQ0D"
+ },
+ {
+  "lon": 68.87545108,
+  "lat": 72.55230268,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAQSH4"
+ },
+ {
+  "lon": 72.55903557,
+  "lat": 70.09716914,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAQPY6"
+ },
+ {
+  "lon": -135.38529008,
+  "lat": 68.87003024,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AJ2EW"
+ },
+ {
+  "lon": -132.12413408,
+  "lat": 55.23372915,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TGAD67R"
+ },
+ {
+  "lon": 110.27835419,
+  "lat": -2.86471142,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T2A2ERA"
+ },
+ {
+  "lon": 136.0006274,
+  "lat": 33.61773256,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0AZ5CX"
+ },
+ {
+  "lon": 143.10050538,
+  "lat": 47.18484242,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0AV70W"
+ },
+ {
+  "lon": 127.72468196,
+  "lat": 26.11214867,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0A5Q2T"
+ },
+ {
+  "lon": 167.11312762,
+  "lat": -15.10888559,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T4A91F2"
+ },
+ {
+  "lon": -4.33055559,
+  "lat": 5.30087233,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TEAVD63"
+ },
+ {
+  "lon": -88.91276712,
+  "lat": 64.00880081,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AN12P"
+ },
+ {
+  "lon": -77.90069562,
+  "lat": 59.47253428,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFA01S9"
+ },
+ {
+  "lon": -47.44506324,
+  "lat": -0.73259889,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TEA0CPF"
+ },
+ {
+  "lon": 118.29944991,
+  "lat": 4.97590317,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1A17W9"
+ },
+ {
+  "lon": 118.25272371,
+  "lat": 4.77280798,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1A17X5"
+ },
+ {
+  "lon": 28.7109271,
+  "lat": 40.98633971,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AK0GA"
+ },
+ {
+  "lon": -87.8556782,
+  "lat": 30.39481609,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBATCZ7"
+ },
+ {
+  "lon": -86.5420124,
+  "lat": 16.33476264,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBAYSSC"
+ },
+ {
+  "lon": 176.09830848,
+  "lat": 62.2736356,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6ARRFM"
+ },
+ {
+  "lon": -6.27900968,
+  "lat": 36.93757443,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TAAB3GN"
+ },
+ {
+  "lon": -24.57297874,
+  "lat": 69.36371523,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFA39MR"
+ },
+ {
+  "lon": 28.85877228,
+  "lat": 59.80960229,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAVHSG"
+ },
+ {
+  "lon": 143.67135383,
+  "lat": -7.50739104,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T4A6320"
+ },
+ {
+  "lon": 19.35170668,
+  "lat": 74.38925292,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAWH3Z"
+ },
+ {
+  "lon": -132.12300668,
+  "lat": 69.4411456,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AJ2NZ"
+ },
+ {
+  "lon": -67.12751025,
+  "lat": 49.68324838,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TAAMC9H"
+ },
+ {
+  "lon": 121.4862844,
+  "lat": 15.06833176,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1A610Y"
+ },
+ {
+  "lon": -48.56542932,
+  "lat": -27.70273969,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TDAS23V"
+ },
+ {
+  "lon": 79.9323657,
+  "lat": 8.94847669,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1AQXZE"
+ },
+ {
+  "lon": -84.98281639,
+  "lat": 82.00981318,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AHTNZ"
+ },
+ {
+  "lon": 130.82968764,
+  "lat": -3.68465289,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3A0FDA"
+ },
+ {
+  "lon": -52.78988674,
+  "lat": 47.78658449,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TAAPD9F"
+ },
+ {
+  "lon": 136.30523472,
+  "lat": 55.49744493,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0AKC3H"
+ },
+ {
+  "lon": 121.60102508,
+  "lat": -18.91267741,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T2A48R0"
+ },
+ {
+  "lon": -84.64336962,
+  "lat": 72.13699925,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AM3Q1"
+ },
+ {
+  "lon": -79.73894889,
+  "lat": 32.79398263,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBA9BW4"
+ },
+ {
+  "lon": 127.25112209,
+  "lat": -32.25744213,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3ASR0P"
+ },
+ {
+  "lon": -87.791189,
+  "lat": 56.20275896,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TGAAW8D"
+ },
+ {
+  "lon": -94.51560568,
+  "lat": 80.12578848,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AH179"
+ },
+ {
+  "lon": 3.54250784,
+  "lat": 51.58661978,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAF30F"
+ },
+ {
+  "lon": 2.55347829,
+  "lat": 6.38838068,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TEAKH99"
+ },
+ {
+  "lon": -62.08851006,
+  "lat": 57.57885239,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TAAMYE3"
+ },
+ {
+  "lon": -71.6863073,
+  "lat": -33.16109024,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TCAHKWT"
+ },
+ {
+  "lon": -53.46737683,
+  "lat": 5.53970918,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBA072E"
+ },
+ {
+  "lon": -59.93560699,
+  "lat": 53.42204967,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TAAPT91"
+ },
+ {
+  "lon": 55.30381604,
+  "lat": 71.94201086,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAPFE1"
+ },
+ {
+  "lon": -100.57155732,
+  "lat": 78.78829056,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AHC7F"
+ },
+ {
+  "lon": -75.02277157,
+  "lat": -49.8389638,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TCAMBKZ"
+ },
+ {
+  "lon": 105.81591091,
+  "lat": 9.22633794,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1A4YFX"
+ },
+ {
+  "lon": 60.07875645,
+  "lat": 80.45513702,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAHWNA"
+ },
+ {
+  "lon": -96.25885257,
+  "lat": -72.14613696,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T8APXS3"
+ },
+ {
+  "lon": -38.77570417,
+  "lat": -3.5281535,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TEA0SS9"
+ },
+ {
+  "lon": 133.34189255,
+  "lat": -3.98921877,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3A0BQJ"
+ },
+ {
+  "lon": 40.46054769,
+  "lat": -11.51974587,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKAJKC8"
+ },
+ {
+  "lon": -123.32614827,
+  "lat": 49.46174787,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TGAC937"
+ },
+ {
+  "lon": -16.45946116,
+  "lat": 63.90036622,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFASSYE"
+ },
+ {
+  "lon": 137.10516009,
+  "lat": -15.7652011,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3A7PTB"
+ },
+ {
+  "lon": 45.14686784,
+  "lat": -16.01767843,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T9AD7WW"
+ },
+ {
+  "lon": 118.37607081,
+  "lat": 24.38893045,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1A2KAX"
+ },
+ {
+  "lon": 125.50576015,
+  "lat": 9.74853575,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1A0H7Y"
+ },
+ {
+  "lon": -67.10951478,
+  "lat": 62.07312122,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFA1K0K"
+ },
+ {
+  "lon": 175.508182,
+  "lat": -41.47155855,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3AMQT9"
+ },
+ {
+  "lon": 42.933971,
+  "lat": 14.87230984,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKAG8S6"
+ },
+ {
+  "lon": -5.11602871,
+  "lat": 5.15046379,
+  "land": true,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TEAVF2W"
+ },
+ {
+  "lon": -127.80974198,
+  "lat": 51.55575912,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TGADSQA"
+ },
+ {
+  "lon": -80.44950093,
+  "lat": 8.14097212,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBAXVA8"
+ },
+ {
+  "lon": -83.2728169,
+  "lat": 77.60049031,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AH87E"
+ },
+ {
+  "lon": -71.63699316,
+  "lat": -31.26371132,
+  "land": false,
+  "kind": "coast",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TCAG5A1"
+ }
+]

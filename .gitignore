@@ -12,3 +12,4 @@ poetry.lock
 .DS_Store
 docs/data/
 .wrangler/
+osm-vector/osm_simplified_land_polygons.geojson.zip

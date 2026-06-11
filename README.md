@@ -323,12 +323,28 @@ interactive lookup.
 
 ---
 
-## 8. Repository layout
+## 8. Subproject: landcheck — offline land/sea lookup
+
+A practical demonstration of exact nesting: the level-10 land
+classification (~6.15M land-touching cells) collapses into 153,884
+run-length intervals over the canonical cell index space — a **182 KB**
+bundled dataset that answers *"is this point on land?"* in ~1–13 µs,
+offline, in Python and JavaScript with identical results and a
+calibrated confidence per answer (measured 99.82% agreement with exact
+polygon containment; all residual error confined to self-flagged
+`coast` answers). An optional second file refines coastal answers with
+OSM simplified land polygons clipped per cell. See
+[landcheck/](landcheck/).
+
+---
+
+## 9. Repository layout
 
 ```
 src/trifold/        library: address.py · core.py · classify.py · grid.py · cli.py
 scripts/            build_grids.py · build_comparison_dggs.py · build_a5_layer.py · build_more_dggs.py · make_site.py · make_pmtiles.sh
 worker/             cell-server.js (Cloudflare Worker, zero-data cell API)
+landcheck/          offline land/sea point lookup (Python + JS + 182 KB data)
 docs/               index.html (landing page + demo — GitHub Pages ready) ·
                     t3-technical-reference.md · img/
 data/               generated products (gitignored; see data/README.md)
@@ -423,7 +439,7 @@ Natural Earth 1:50m land data. The default build downloads and verifies the
 pinned v5.1.2 GeoJSON automatically. Use `--land PATH` to supply another
 local dataset instead.
 
-## 9. Roadmap
+## 10. Roadmap
 
 * neighbour traversal across face boundaries (edge-adjacency tables)
 * level 7–9 products + PMTiles in CI
