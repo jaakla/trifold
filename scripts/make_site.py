@@ -186,7 +186,7 @@ html = """<!doctype html>
   <a href="#compare">Comparison</a>
   <a href="#usecases">Use cases</a>
   <a href="#serving">Serving</a>
-  <a href="t3-technical-reference.md">Tech reference</a>
+  <a href="https://github.com/jaakla/trifold/blob/main/docs/t3-technical-reference.md" target="_blank" rel="noopener">Tech reference</a>
   <a class="gh" href="__GH__" target="_blank">GitHub ↗</a>
 </nav>
 

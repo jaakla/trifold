@@ -6,7 +6,7 @@ square systems can offer — with a 6-character address for a ~110 km cell.**
 
 **[Live demo & intro site](https://jaakla.github.io/trifold/)** · globe ↔ flat ·
 7 grid systems side by side · click any cell for its address ·
-[technical reference](docs/t3-technical-reference.md)
+[![Technical reference](https://img.shields.io/badge/Technical%20Reference-Docs-blue?logo=github)](https://github.com/jaakla/trifold/blob/main/docs/t3-technical-reference.md)
 
 ![global overview](docs/img/global_overview.png)
 
