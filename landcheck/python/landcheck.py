@@ -19,9 +19,9 @@ kind='sea'    cell absent from the dataset           -> sea,  confidence 1.0
 kind='coast'  mixed cell; the bundled land fraction of the cell is used:
               land = fraction >= 0.5, confidence = max(f, 1 - f).
 
-Confidence is relative to the source dataset (Natural Earth 1:50m).
-Features smaller than its resolution — islets, narrow fjords — can be
-misrepresented; 'coast' answers flag exactly where that risk lives.
+With optional OSM refinement loaded, cells crossed by either source's
+coastline are decided by a clipped OSM polygon before the Natural Earth base
+classification is accepted.
 """
 from __future__ import annotations
 
@@ -89,9 +89,8 @@ class LandCheck:
     """Offline land/sea point lookup. Thread-safe after construction.
 
     ``refine_path`` optionally loads a TFLR coastal-refinement dataset
-    (see refine_build.py): 'coast' answers are then decided by an exact
-    point-in-polygon test against clipped land polygons instead of the
-    cell's bulk land fraction.
+    (see refine_build.py). Covered cells are decided by a point-in-polygon
+    test against clipped OSM land polygons before the base classification.
     """
 
     def __init__(self, data_path: str | Path = _DEFAULT_DATA,
@@ -236,16 +235,21 @@ class LandCheck:
             raise ValueError("latitude must be in [-90, 90]")
         index = _locate_index(lon, lat, self.level)
         run = bisect_right(self._starts, index) - 1
-        if run < 0 or index >= self._ends[run]:
+        hit = run >= 0 and index < self._ends[run]
+        refined = self._refined_land(index, lon, lat)
+        if refined is not None:
+            fraction = (self._fraction_at(run, index)
+                        if hit and self._coastal[run]
+                        else (1.0 if hit else 0.0))
+            return LandResult(refined, _KIND_COAST, _REFINED_CONFIDENCE,
+                              fraction, _index_to_compact(index, self.level),
+                              refined=True)
+        if not hit:
             return LandResult(False, _KIND_SEA, 1.0, 0.0, None)
         cell = _index_to_compact(index, self.level)
         if not self._coastal[run]:
             return LandResult(True, _KIND_LAND, 1.0, 1.0, cell)
         fraction = self._fraction_at(run, index)
-        refined = self._refined_land(index, lon, lat)
-        if refined is not None:
-            return LandResult(refined, _KIND_COAST, _REFINED_CONFIDENCE,
-                              fraction, cell, refined=True)
         if fraction is None:
             return LandResult(True, _KIND_COAST, 0.5, None, cell)
         return LandResult(fraction >= 0.5, _KIND_COAST,
@@ -254,14 +258,14 @@ class LandCheck:
     def is_land(self, lon: float, lat: float) -> bool:
         """Best land/sea bool for one point."""
         index = _locate_index(lon, lat, self.level)
+        refined = self._refined_land(index, lon, lat)
+        if refined is not None:
+            return refined
         run = bisect_right(self._starts, index) - 1
         if run < 0 or index >= self._ends[run]:
             return False
         if not self._coastal[run]:
             return True
-        refined = self._refined_land(index, lon, lat)
-        if refined is not None:
-            return refined
         fraction = self._fraction_at(run, index)
         return True if fraction is None else fraction >= 0.5
 
@@ -296,6 +300,14 @@ class LandCheck:
         else:
             land = land | is_coast  # no fractions: coast counts as land
         out[hit] = land
+        if self._refine:
+            for pos, cell_index in enumerate(index):
+                idx = int(cell_index)
+                if idx in self._refine:
+                    refined = self._refined_land(
+                        idx, float(lons[pos]), float(lats[pos]))
+                    if refined is not None:
+                        out[pos] = refined
         return out
 
     # ------------------------------------------------------------- helpers

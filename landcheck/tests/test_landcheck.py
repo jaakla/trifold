@@ -100,6 +100,32 @@ def test_refined_fixture():
     assert n_refined > len(points) * 0.9
 
 
+def test_refinement_overrides_base_land_near_tallinn():
+    """OSM coastline cells can override a Natural Earth interior-land cell."""
+    tflr = Path(__file__).resolve().parent.parent / "data" / "coastal_osm_L10.tflr"
+    if not tflr.exists():
+        pytest.skip("coastal refinement dataset not built")
+    lc = LandCheck(refine_path=tflr)
+    result = lc.check(24.8156, 59.4756)
+    assert result.kind == "coast"
+    assert result.refined
+    assert not result.land
+    assert result.cell == "TFAVKGZ"
+
+
+def test_refined_batch_matches_scalar():
+    np = pytest.importorskip("numpy")
+    pytest.importorskip("trifold.api")
+    tflr = Path(__file__).resolve().parent.parent / "data" / "coastal_osm_L10.tflr"
+    if not tflr.exists():
+        pytest.skip("coastal refinement dataset not built")
+    lc = LandCheck(refine_path=tflr)
+    points = [(24.8156, 59.4756), (24.7536, 59.4370), (-30.0, 30.0)]
+    lons = np.array([p[0] for p in points])
+    lats = np.array([p[1] for p in points])
+    assert list(lc.is_land_batch(lons, lats)) == [lc.is_land(*p) for p in points]
+
+
 def test_batch_matches_scalar(lc):
     np = pytest.importorskip("numpy")
     pytest.importorskip("trifold.api")

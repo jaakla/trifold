@@ -17,9 +17,9 @@
  *   kind 'coast' — mixed cell; bundled land fraction:
  *                  land = fraction >= 0.5, confidence = max(f, 1 - f).
  *
- * Confidence is relative to Natural Earth 1:50m: features below its
- * resolution (islets, narrow fjords) can be misrepresented, and 'coast'
- * answers flag exactly where that risk lives.
+ * With optional OSM refinement loaded, cells crossed by either source's
+ * coastline are decided by a clipped OSM polygon before the Natural Earth
+ * base classification is accepted.
  */
 
 const EPS = -1e-14;
@@ -367,6 +367,13 @@ export class LandCheck {
     if (!(lat >= -90 && lat <= 90)) throw new RangeError("latitude must be in [-90, 90]");
     const index = locateIndex(lon, lat, this.level);
     const run = this._findRun(index);
+    const refined = this._refinedLand(index, lon, lat);
+    if (refined !== null) {
+      const fraction = run < 0 ? 0 :
+        (this._coastal[run] ? this._fractionAt(run, index) : 1);
+      return { land: refined, kind: "coast", confidence: REFINED_CONFIDENCE,
+               landFraction: fraction, cell: indexToCompact(index, this.level), refined: true };
+    }
     if (run < 0) {
       return { land: false, kind: "sea", confidence: 1, landFraction: 0, cell: null, refined: false };
     }
@@ -375,11 +382,6 @@ export class LandCheck {
       return { land: true, kind: "land", confidence: 1, landFraction: 1, cell, refined: false };
     }
     const fraction = this._fractionAt(run, index);
-    const refined = this._refinedLand(index, lon, lat);
-    if (refined !== null) {
-      return { land: refined, kind: "coast", confidence: REFINED_CONFIDENCE,
-               landFraction: fraction, cell, refined: true };
-    }
     if (fraction === null) {
       return { land: true, kind: "coast", confidence: 0.5, landFraction: null, cell, refined: false };
     }
@@ -396,11 +398,11 @@ export class LandCheck {
   /** Best land/sea bool for one point. */
   isLand(lon, lat) {
     const index = locateIndex(lon, lat, this.level);
+    const refined = this._refinedLand(index, lon, lat);
+    if (refined !== null) return refined;
     const run = this._findRun(index);
     if (run < 0) return false;
     if (!this._coastal[run]) return true;
-    const refined = this._refinedLand(index, lon, lat);
-    if (refined !== null) return refined;
     const fraction = this._fractionAt(run, index);
     return fraction === null ? true : fraction >= 0.5;
   }
@@ -418,6 +420,7 @@ export class LandCheck {
       interiorCells: interior,
       coastalCells: coast,
       hasFractions: !!this._fractions,
+      hasRefinement: !!this._refine,
     };
   }
 }

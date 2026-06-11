@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 """Build the optional coastal-refinement dataset (TFLR) for landcheck.
 
-For every coastal cell in a TFLS dataset, clips a land-polygon source —
-OSM simplified land polygons (https://osmdata.openstreetmap.de/data/land-polygons.html)
-are the intended one — to the cell triangle and stores the result as
-quantized, delta-encoded rings.  At lookup time a point-in-polygon test
-against the clipped rings replaces the coarse land-fraction guess with a
-near-exact answer for 'coast' cells.
+Finds every level-L cell crossed by the source coastline, unions those with
+the coastal cells in a TFLS dataset, then clips the land-polygon source to
+each cell. OSM simplified land polygons
+(https://osmdata.openstreetmap.de/data/land-polygons.html) are the intended
+source. At lookup time a point-in-polygon test against the clipped rings can
+override the Natural Earth base classification wherever OSM has coastline
+detail, including cells the base dataset considered wholly land or sea.
 
 TFLR v1 layout (little-endian)
 ------------------------------
@@ -37,12 +38,16 @@ import argparse
 import json
 import struct
 import sys
+import zipfile
 import zlib
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / "python"))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 from _fastloc import index_to_lonlat_ring  # noqa: E402
 from landcheck import LandCheck  # noqa: E402
+from trifold.classify import LandClassifier  # noqa: E402
+from trifold.core import icosahedron, subdivide  # noqa: E402
 
 MAGIC = b"TFLR"
 VERSION = 1
@@ -69,6 +74,62 @@ def coastal_indexes(lc: LandCheck):
     for start, end, coastal in zip(lc._starts, lc._ends, lc._coastal):
         if coastal:
             yield from range(start, end)
+
+
+def load_land(path: Path):
+    """Load a GeoJSON FeatureCollection, optionally from a zip archive."""
+    if path.suffix.lower() == ".zip":
+        with zipfile.ZipFile(path) as archive:
+            names = [n for n in archive.namelist()
+                     if n.lower().endswith((".geojson", ".json"))
+                     and not n.startswith("__MACOSX/")]
+            if len(names) != 1:
+                raise ValueError(f"{path}: expected one GeoJSON file, found {names}")
+            with archive.open(names[0]) as source:
+                return json.load(source)
+    with open(path) as source:
+        return json.load(source)
+
+
+def polygon_pieces(land):
+    """Flatten GeoJSON Polygon and MultiPolygon features to Shapely polygons."""
+    from shapely.geometry import shape
+
+    pieces = []
+    for feature in land["features"]:
+        geom = shape(feature["geometry"])
+        if geom.geom_type == "Polygon":
+            pieces.append(geom)
+        else:
+            pieces.extend(geom.geoms)
+    return pieces
+
+
+def osm_boundary_indexes(pieces, level: int):
+    """Return every canonical level-L cell crossed by the OSM land boundary."""
+    class GeometryCollection:
+        geometry = pieces
+
+    classifier = LandClassifier(GeometryCollection())
+    vertices, faces = icosahedron()
+    boundary = set()
+
+    def recurse(tri, face, path, depth):
+        state, _ = classifier.classify(tri)
+        if state != "mixed":
+            return
+        if depth == level:
+            boundary.add((face << (2 * level)) | path)
+            return
+        for digit, child in enumerate(subdivide(tri)):
+            recurse(child, face, (path << 2) | digit, depth + 1)
+
+    print(f"finding OSM boundary cells at level {level} ...", flush=True)
+    for face, indexes in enumerate(faces):
+        recurse(tuple(vertices[i] for i in indexes), face, 0, 0)
+        print(f"  face {face + 1}/{len(faces)}: {len(boundary)} boundary cells",
+              flush=True)
+    return boundary
 
 
 def encode_rings(geoms, bbox):
@@ -106,14 +167,14 @@ def main():
     repo = Path(__file__).resolve().parent.parent
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--land", required=True, type=Path,
-                    help="land polygons GeoJSON (OSM simplified recommended)")
+                    help="land polygons GeoJSON or zip (OSM simplified recommended)")
     ap.add_argument("--tfls", default=repo / "landcheck/data/landsea_L10.tfls",
                     type=Path)
     ap.add_argument("--out", default=repo / "landcheck/data/coastal_osm_L10.tflr",
                     type=Path)
     args = ap.parse_args()
 
-    from shapely.geometry import Polygon, shape
+    from shapely.geometry import Polygon
     from shapely.strtree import STRtree
     from shapely import affinity
 
@@ -121,15 +182,8 @@ def main():
     level = lc.level
 
     print(f"loading land polygons from {args.land} ...", flush=True)
-    with open(args.land) as f:
-        land = json.load(f)
-    pieces = []
-    for feature in land["features"]:
-        geom = shape(feature["geometry"])
-        if geom.geom_type == "Polygon":
-            pieces.append(geom)
-        else:
-            pieces.extend(geom.geoms)
+    land = load_land(args.land)
+    pieces = polygon_pieces(land)
     extended = []
     for dx in (-360.0, 0.0, 360.0):
         for p in pieces:
@@ -140,7 +194,11 @@ def main():
     body = bytearray()
     prev = 0
     n_cells = n_sea = n_land = n_mixed = 0
-    todo = list(coastal_indexes(lc))
+    base_coastal = set(coastal_indexes(lc))
+    osm_coastal = osm_boundary_indexes(pieces, level)
+    todo = sorted(base_coastal | osm_coastal)
+    print(f"  refinement coverage: {len(base_coastal)} base coastal + "
+          f"{len(osm_coastal)} OSM boundary = {len(todo)} cells", flush=True)
     for done, index in enumerate(todo):
         ring = index_to_lonlat_ring(index, level)
         tri = Polygon(ring)

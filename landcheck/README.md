@@ -64,13 +64,14 @@ Caveats inherited from the source data: Natural Earth 1:50m treats **lakes as la
 ## Optional coastal refinement (OSM)
 
 For applications that need near-exact coastlines, a second dataset
-(`coastal_osm_L10.tflr`, **7.1 MB**) stores OSM simplified land polygons
+(`coastal_osm_L10.tflr`, **12.7 MB**) stores OSM simplified land polygons
 ([osmdata.openstreetmap.de](https://osmdata.openstreetmap.de/data/land-polygons.html))
-clipped to each coastal triangle, quantized to a cell-local 16-bit grid
-(~0.1 m) with delta-varint rings: 134,527 cells carry polygon detail,
-the other 34,306 resolve to a single all-land/all-sea bit. When loaded,
-`coast` answers switch from the bulk land-fraction guess to an exact
-point-in-polygon test. This has **99.95% agreement** with full polygon containment on 4,000 random points inside coastal cells (~23 µs per refined lookup, Python):
+clipped to every triangle crossed by either the Natural Earth or OSM
+coastline, quantized to a cell-local 16-bit grid (~0.1 m) with delta-varint
+rings. When loaded, covered answers switch from the Natural Earth base or
+bulk land-fraction guess to an exact point-in-polygon test. This has
+**99.95% agreement** with full polygon containment on 4,000 random points inside the
+original coastal-cell sample (~23 µs per refined lookup, Python):
 
 ```python
 lc = LandCheck(refine_path="landcheck/data/coastal_osm_L10.tflr")
@@ -80,14 +81,15 @@ lc = LandCheck(refine_path="landcheck/data/coastal_osm_L10.tflr")
 await lc.loadRefinement("landcheck/data/coastal_osm_L10.tflr");
 ```
 
-Only coastal cells pay the (still tiny) polygon-test cost; `land`/`sea` answers are untouched.
+Only covered coastline cells pay the polygon-test cost. OSM can override a
+base `land` or `sea` answer when its coastline crosses a triangle that Natural
+Earth classified differently.
 
 Note on dataset semantics: the base layer keeps Natural Earth's view of
 the world for `land`/`sea` kinds. NE and OSM systematically disagree
 about Antarctica (OSM land polygons are clipped near the pole and draw
-ice-shelf edges differently); refinement only ever changes answers
-*inside* coastal cells, so that disagreement does not leak into the
-high-confidence kinds.
+ice-shelf edges differently). With refinement enabled, OSM is authoritative
+in every covered coastline cell.
 
 Command-line one-off checks (uses refinement automatically when the
 file is present):
@@ -137,7 +139,7 @@ Custom data format is used to ensure compactness.
 **TFLS** (land/sea runs): 16-byte header + zlib stream of
 `varint(gap), varint(length<<1 | coastal)` per run, then 4-bit land
 fractions for coastal cells. **TFLR** (refinement): 12-byte header +
-zlib stream of `varint(Δindex), varint(code)` per coastal cell, where
+zlib stream of `varint(Δindex), varint(code)` per covered cell, where
 code 0/1 = all sea/land and code n≥2 introduces n−1 quantized
 zigzag-delta rings combined by the even-odd rule. Both formats are
 level-agnostic (the level lives in the header), so the same tooling can

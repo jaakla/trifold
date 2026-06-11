@@ -738,8 +738,8 @@ landcheck_html = """<!doctype html>
         <label style="display:flex;gap:7px;align-items:flex-start;cursor:pointer;font-size:12.5px;
             font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink)">
           <input type="checkbox" id="refinecb" style="margin-top:2px">
-          <span>exact OSM polygon test inside coastal cells
-            (downloads 7&nbsp;MB once)</span></label>
+          <span>exact OSM polygon test wherever the coastline crosses a cell
+            (downloads once)</span></label>
         <div class="note" id="refinenote">Off: coastal answers use the bundled
         land-area fraction. On: near-exact coastline. Watch how the counts,
         confidence and lookup rate change.</div></div>
@@ -771,7 +771,7 @@ landcheck_html = """<!doctype html>
     cell address (computed on the fly for sea points, whose cells are not stored), kind,
     confidence and land fraction. Note the Natural Earth 1:50m caveats: lakes count as land
     and islets below its resolution are missing. Switching on the <b>OSM coastal
-    refinement</b> sharpens exactly those coastal cases with an exact polygon test. Try the
+    refinement</b> makes OSM authoritative in cells crossed by either source coastline. Try the
     cities sample with it on and off and compare the answers near coasts.</p>
   </div>
 </section>
@@ -813,7 +813,7 @@ lc.is_land_batch(lons, lats)</code></pre>
     <tr><td><b>sea</b></td><td>cell absent from the dataset</td><td>false</td><td>1.0</td></tr>
     <tr><td><b>coast</b></td><td>mixed cell; bundled land-area fraction decides</td>
       <td>fraction ≥ 0.5</td><td>max(f, 1−f)</td></tr>
-    <tr><td><b>coast</b> + refined</td><td>decided by OSM polygon test (optional 7 MB layer)</td>
+    <tr><td><b>coast</b> + refined</td><td>decided by the optional OSM polygon layer</td>
       <td>exact</td><td>0.99</td></tr>
   </table>
   <p class="muted">Measured accuracy: 99.82% agreement with exact polygon containment on
@@ -840,10 +840,10 @@ LAND  kind=land  confidence=1.000  land_fraction=1.0  cell=TFAVKGR  refined=Fals
     <div class="card"><b>Lookup path</b><p>Pure-float point location (no dependencies,
       bit-identical to the SDK) descends 10 subdivision levels, then one binary search over
       the run starts. ~0.8 µs in Node, ~13 µs in pure Python, ~2.8 µs batched with numpy.</p></div>
-    <div class="card"><b>OSM refinement · TFLR</b><p>Optional 7.1 MB layer: OSM simplified
-      land polygons clipped per coastal cell, quantized to a cell-local 16-bit grid (~0.1 m),
-      zigzag-varint rings, even-odd rule. Swaps the fraction guess for an exact polygon
-      test.</p></div>
+    <div class="card"><b>OSM refinement · TFLR</b><p>OSM simplified land polygons clipped
+      to every cell crossed by either source coastline, quantized to a cell-local 16-bit grid
+      (~0.1 m), with zigzag-varint rings and the even-odd rule. The OSM polygon test can
+      override Natural Earth land, sea or fraction answers in those cells.</p></div>
   </div>
   <p style="margin-top:14px">Full documentation, build scripts (<code>build.py</code>,
   <code>refine_build.py</code>) and the cross-language test suite live in
@@ -1040,6 +1040,7 @@ map.on('load',()=>{
   map.addSource('coast',{type:'geojson',
     data:{type:'FeatureCollection',features:[]}});
   map.addLayer({id:'coastline',type:'line',source:'coast',
+    layout:{'line-cap':'round','line-join':'round'},
     paint:{'line-color':'#7c4a03','line-width':1.4,'line-opacity':0.9}});
   map.addSource('cell',{type:'geojson',
     data:{type:'FeatureCollection',features:[]}});
@@ -1213,8 +1214,8 @@ refinecb.onchange=async()=>{
         await lc.loadRefinement(new Uint8Array(buf));
         refineCells=lc._refine;
         loaded=true;
-        refinenote.textContent=`Loaded: ${refineCells.size.toLocaleString()} coastal cells with `+
-          `OSM polygon detail. Coastal answers are now near-exact (confidence 0.99).`;
+        refinenote.textContent=`Loaded: ${refineCells.size.toLocaleString()} covered cells with `+
+          `OSM polygon detail. Covered answers are now near-exact (confidence 0.99).`;
         break;
       }catch(err){console.warn(url,err);}
     }
@@ -1227,7 +1228,7 @@ refinecb.onchange=async()=>{
   }else{
     lc._refine=refinecb.checked?refineCells:null;
     refinenote.textContent=refinecb.checked
-      ?'OSM polygon test active inside coastal cells.'
+      ?'OSM polygon test active in covered coastline cells.'
       :'Off: coastal answers use the bundled land-area fraction.';
   }
   if(lastPts)show(lastPts,lastLabel);   // re-classify so the effect is visible

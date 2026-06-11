@@ -60,6 +60,17 @@ test("refined fixture parity with Python", async (t) => {
   }
 });
 
+test("refinement overrides base land near Tallinn", async () => {
+  const refined = await LandCheck.fromFile();
+  const tflrUrl = new URL("../data/coastal_osm_L10.tflr", import.meta.url);
+  await refined.loadRefinement(tflrUrl.pathname);
+  const result = refined.check(24.8156, 59.4756);
+  assert.equal(result.kind, "coast");
+  assert.equal(result.refined, true);
+  assert.equal(result.land, false);
+  assert.equal(result.cell, "TFAVKGZ");
+});
+
 test("fixture parity with Python", () => {
   for (const p of points) {
     const r = lc.check(p.lon, p.lat);
