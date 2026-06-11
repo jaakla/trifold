@@ -22,8 +22,18 @@
   nav .brand .t3{color:var(--warm)}
   nav a{color:var(--mut);text-decoration:none;font-size:13.5px}
   nav a:hover{color:var(--acc)}
-  nav .gh{margin-left:auto;background:var(--ink);color:#fff;padding:5px 12px;border-radius:6px}
-  section{max-width:1020px;margin:0 auto;padding:44px 22px}
+  nav .libs{margin-left:auto;display:flex;align-items:center;gap:7px}
+  nav .libslabel{font-size:10px;font-weight:700;text-transform:uppercase;
+    letter-spacing:.08em;color:var(--mut)}
+  nav .applink{border:1.5px solid var(--acc);color:var(--acc);padding:3px 11px;
+    border-radius:999px;font-weight:600}
+  nav a.applink:hover{background:var(--acc);color:#fff}
+  nav .applink .tag{font-size:10px;font-weight:700;text-transform:uppercase;
+    letter-spacing:.06em;opacity:.7;margin-left:4px}
+  nav .applink.soon{border-style:dashed;opacity:.55;cursor:default;font-weight:500}
+  nav .gh{display:flex;align-items:center;gap:6px;background:var(--ink);color:#fff;
+    padding:6px 9px;border-radius:8px;line-height:0}
+  section{max-width:1020px;margin:0 auto;padding:44px 22px;scroll-margin-top:64px}
   .hero{text-align:center;padding-top:64px}
   .hero h1{font-size:clamp(28px,5vw,46px);margin:0 0 10px;letter-spacing:-.02em}
   .hero h1 .t3{color:var(--warm)}
@@ -94,7 +104,11 @@
   <a href="#usecases">Use cases</a>
   <a href="#serving">Serving</a>
   <a href="https://github.com/jaakla/trifold/blob/main/docs/t3-technical-reference.md" target="_blank" rel="noopener">Tech reference</a>
-  <a class="gh" href="https://github.com/jaakla/trifold" target="_blank">GitHub ↗</a>
+  <span class="libs"><span class="libslabel">libraries</span>
+    <a class="applink" href="landcheck.html">landcheck</a>
+    <span class="applink soon" title="on the roadmap: offline country lookup, same approach">countrycheck<span class="tag">soon</span></span>
+  </span>
+  <a class="gh" href="https://github.com/jaakla/trifold" target="_blank" aria-label="GitHub" title="GitHub"><svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg></a>
 </nav>
 
 <section class="hero">
@@ -103,8 +117,29 @@
   Every parent cell is <b>bit-for-bit the union of its four children</b> — something neither
   hexagons nor pentagons can offer — with a 6-character address for a ~110&nbsp;km cell.</p>
   <a class="cta primary" href="#demo">Launch the comparison demo</a>
-  <a class="cta ghost" href="https://github.com/jaakla/trifold" target="_blank">Source on GitHub</a>
-  <p class="muted">7 grid systems side by side · globe ↔ flat · click any cell for its address</p>
+</section>
+
+<section id="libraries">
+  <h2>Built on Trifold: ready-to-use libraries</h2>
+  <div class="twocol" style="align-items:center">
+    <div>
+      <h3 style="margin-top:0">▲ landcheck — offline land/sea lookup</h3>
+      <p>The first practical proof of concept of exact nesting: the level-10 land
+      classification (~6.15M land-touching cells) collapses into 153,884
+      run-length intervals — a <b>182&nbsp;KB</b> dataset that answers
+      <i>"is this point on land?"</i> in microseconds, fully offline, in Python
+      and JavaScript, with a confidence value for every answer. Optional OSM
+      refinement sharpens coastal answers to a near-exact polygon test.</p>
+      <p><a class="cta primary" style="padding:9px 18px;font-size:14px"
+        href="landcheck.html">Try the interactive demo</a></p>
+      <p class="muted">Next on the roadmap: <b>countrycheck</b> — offline country
+      lookup, same run-length approach with border-cell polygons.</p>
+    </div>
+    <a href="landcheck.html" style="display:block">
+      <img src="img/landcheck_demo.jpg" alt="landcheck demo: points classified as land, coast and sea on a world map"
+        style="width:100%;border:1px solid #e0dbd0;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,.08)">
+    </a>
+  </div>
 </section>
 
 <section id="concept">
@@ -236,7 +271,7 @@ $ curl https://YOUR-WORKER.workers.dev/locate/-0.1276,51.5072?level=6
         <td>cube</td><td>cube (HEALPix)</td><td>octahedron</td></tr>
     <tr><td>cell shape</td><td>triangle</td><td>pentagon</td><td>hexagon (+12 pentagons)</td>
         <td>quad</td><td>quad (+caps/darts)</td><td>triangle</td></tr>
-    <tr><td>aperture / nesting</td><td class="good">4, exact congruent</td>
+    <tr><td>aperture / nesting</td><td class="good">4, exact</td>
         <td>4, logical only</td><td class="bad">7, approximate</td>
         <td class="good">4, exact</td><td class="good">9, exact</td><td class="good">4, exact</td></tr>
     <tr><td>equal area</td><td>~±20%, smooth</td><td class="good">exact per level</td>

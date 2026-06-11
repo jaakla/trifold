@@ -6,6 +6,10 @@ This is created as Trifold application (also test and demonstration)
 Earth in ~1–13 µs, fully offline, from a small **182 KB** bundled dataset —
 with a confidence value for every answer. Works with Python and JavaScript.
 
+**[Live in-browser demo](https://jaakla.github.io/trifold/landcheck.html)** —
+classify sample or your own points (CSV / GeoJSON) on a map and watch the
+measured lookup rate; the page embeds the real JS library and dataset.
+
 ```python
 import sys; sys.path.insert(0, "landcheck/python")
 from landcheck import LandCheck

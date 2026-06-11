@@ -334,7 +334,9 @@ calibrated confidence per answer (measured 99.82% agreement with exact
 polygon containment; all residual error confined to self-flagged
 `coast` answers). An optional second file refines coastal answers with
 OSM simplified land polygons clipped per cell. See
-[landcheck/](landcheck/).
+[landcheck/](landcheck/) and the
+[live in-browser demo](https://jaakla.github.io/trifold/landcheck.html)
+(classify sample or your own points on a map, with measured lookup rate).
 
 ---
 
