@@ -1,0 +1,30 @@
+{
+  "name": "landcheck",
+  "version": "0.1.0",
+  "description": "Offline land/sea point lookup: 182 KB global dataset, microsecond answers with confidence, built on the Trifold T3 triangular DGGS",
+  "type": "module",
+  "exports": {
+    ".": "./js/landcheck.mjs"
+  },
+  "files": [
+    "js/landcheck.mjs",
+    "data/landsea_L10.tfls"
+  ],
+  "keywords": [
+    "land",
+    "sea",
+    "ocean",
+    "point-in-polygon",
+    "geospatial",
+    "offline",
+    "dggs",
+    "coastline"
+  ],
+  "homepage": "https://jaakla.github.io/trifold/landcheck.html",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jaakla/trifold.git",
+    "directory": "landcheck"
+  },
+  "license": "MIT"
+}

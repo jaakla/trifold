@@ -10,9 +10,12 @@ with a confidence value for every answer. Works with Python and JavaScript.
 classify sample or your own points (CSV / GeoJSON) on a map and watch the
 measured lookup rate; the page embeds the real JS library and dataset.
 
+Install: `pip install landcheck` / `npm install landcheck` (or use straight
+from a repo checkout, as below).
+
 ```python
-import sys; sys.path.insert(0, "landcheck/python")
-from landcheck import LandCheck
+from landcheck import LandCheck   # installed; from a checkout, first:
+                                  # import sys; sys.path.insert(0, "landcheck/python")
 
 lc = LandCheck()
 lc.is_land(24.7536, 59.4370)          # True   (lon, lat — Tallinn)
@@ -152,4 +155,5 @@ serve an L8 (~30 KB) or L12 (~3 MB) variant.
   border cells carry clipped boundary polygons like TFLR does for
   coastlines). Probably can use same formats, same lookup path, same confidence model.
 * Level-12 (~1.8 km trifolds) variant for higher-precision use.
-* Published packages (`pip install trifold-landcheck`, npm equivalent).
+* ~~Published packages~~ — packaged as `pip install landcheck` and
+  `npm install landcheck` (0.1.0); the core SDK is `pip/npm install t3grid`.

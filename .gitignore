@@ -13,3 +13,5 @@ poetry.lock
 docs/data/
 .wrangler/
 osm-vector/osm_simplified_land_polygons.geojson.zip
+dist/
+*.tgz

@@ -110,7 +110,6 @@
   <a href="#demo">Live demo</a>
   <a href="#compare">Comparison</a>
   <a href="#usecases">Use cases</a>
-  <a href="#serving">Serving</a>
   <a href="https://github.com/jaakla/trifold/blob/main/docs/t3-technical-reference.md" target="_blank" rel="noopener">Tech reference</a>
   <span class="libs"><span class="libslabel">libraries</span>
     <a class="applink" href="landcheck.html">landcheck</a>
@@ -347,21 +346,6 @@ $ curl https://YOUR-WORKER.workers.dev/locate/-0.1276,51.5072?level=6
       <li><b>Orientation-sensitive statistics</b>: up/down cells are congruent but rotated 60°.</li>
       <li><b>City-scale local work</b>: a projected CRS and planar grid may be simpler.</li>
     </ul></div>
-  </div>
-</section>
-
-<section id="serving">
-  <h2>Serving at scale</h2>
-  <div class="cards">
-    <div class="card"><b>Automatic source selection</b><p>This page uses PMTiles when a
-      matching archive exists in <code>data/</code> and falls back to embedded, gzip-compressed
-      TopoJSON for other datasets.</p></div>
-    <div class="card"><b>PMTiles</b><p><code>scripts/make_pmtiles.sh</code> tiles any product
-      with tippecanoe into a single static file; host on anything with HTTP Range support.
-      Suitable for full-grid display at level 7 and above.</p></div>
-    <div class="card"><b>Cloudflare Worker</b><p><code>worker/cell-server.js</code> serves with zero
-      stored data, cells regenerated from geometry and edge-cached. Suitable for retrieving
-      selected cells, including addresses produced by a database join on addr64.</p></div>
   </div>
 </section>
 

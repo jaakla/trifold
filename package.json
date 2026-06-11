@@ -1,14 +1,32 @@
 {
-  "name": "@trifold/grid",
+  "name": "t3grid",
   "version": "0.1.0",
-  "description": "Dependency-free JavaScript SDK for the Trifold triangular DGGS",
+  "description": "Trifold T3: dependency-free JavaScript SDK for a hierarchical triangular DGGS with exact aperture-4 nesting",
   "type": "module",
   "exports": {
-    ".": "./js/trifold.js"
+    ".": {
+      "types": "./js/trifold.d.ts",
+      "default": "./js/trifold.js"
+    }
   },
+  "types": "./js/trifold.d.ts",
   "files": [
     "js/trifold.js",
     "js/trifold.d.ts"
   ],
+  "keywords": [
+    "dggs",
+    "geospatial",
+    "triangular-grid",
+    "global-grid",
+    "icosahedron",
+    "h3-alternative",
+    "spatial-index"
+  ],
+  "homepage": "https://jaakla.github.io/trifold/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jaakla/trifold.git"
+  },
   "license": "MIT"
 }

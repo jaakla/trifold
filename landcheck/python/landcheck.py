@@ -64,7 +64,16 @@ def _index_to_compact(index: int, level: int) -> str:
     return "T" + _B32[face] + _B32[level] + "".join(chars)
 
 _MAGIC = b"TFLS"
-_DEFAULT_DATA = Path(__file__).resolve().parent.parent / "data" / "landsea_L10.tfls"
+
+def _find_default_data() -> Path:
+    here = Path(__file__).resolve().parent
+    for cand in (here / "data" / "landsea_L10.tfls",          # installed package
+                 here.parent / "data" / "landsea_L10.tfls"):  # repo checkout
+        if cand.is_file():
+            return cand
+    return cand
+
+_DEFAULT_DATA = _find_default_data()
 
 _KIND_LAND = "land"
 _KIND_COAST = "coast"

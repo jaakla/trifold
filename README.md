@@ -42,10 +42,15 @@ and a Cloudflare Worker that computes cells on demand from the grid geometry.
 
 Core grid behavior is exposed through two standalone SDKs:
 
-| Runtime | Public SDK | Code using it |
-|---|---|---|
-| Python | `trifold.api` (also re-exported by `trifold`) | CLI and build scripts |
-| JavaScript | `js/trifold.js` / `@trifold/grid` | Cloudflare Worker and website |
+| Runtime | Public SDK | Install | Code using it |
+|---|---|---|---|
+| Python | `trifold.api` (also re-exported by `trifold`) | `pip install t3grid` | CLI and build scripts |
+| JavaScript | `js/trifold.js` | `npm install t3grid` | Cloudflare Worker and website |
+
+The distributable packages are named **`t3grid`** (the unscoped name `trifold`
+was already taken on both registries); the Python import stays `import trifold`.
+The landcheck application ships separately as `pip install landcheck` /
+`npm install landcheck`.
 
 The SDKs cover address codecs, hierarchy operations, point location, cell
 geometry, metrics, and GeoJSON. Python land classification is an optional
