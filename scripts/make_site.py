@@ -16,16 +16,6 @@ GH = 'https://github.com/jaakla/trifold'
 PMTILES_BASE_URL = os.environ.get('TRIFOLD_PMTILES_BASE_URL', 'https://maps.goplex.ee/data').rstrip('/')
 
 EMBED = {
-    'tri_L4_compacted':   'global_tri_L4_compacted.topojson',
-    'tri_L4_uncompacted': 'global_tri_L4_uncompacted.topojson',
-    'tri_L5_compacted':   'global_tri_L5_compacted.topojson',
-    'tri_L5_uncompacted': 'global_tri_L5_uncompacted.topojson',
-    'tri_L6_compacted':   'global_tri_L6_compacted.topojson',
-    'tri_L6_uncompacted': 'global_tri_L6_uncompacted.topojson',
-    'tri_L7_compacted':   'global_tri_L7_compacted.topojson',
-    'tri_L7_uncompacted': 'global_tri_L7_uncompacted.topojson',
-    'tri_L8_compacted':   'global_tri_L8_compacted.topojson',
-    'tri_L8_uncompacted': 'global_tri_L8_uncompacted.topojson',
     'a5_compacted':       'cmp_a5_compacted.topojson',
     'a5_uncompacted':     'cmp_a5_uncompacted.topojson',
     'h3_compacted':       'cmp_h3_compacted.topojson',
@@ -41,9 +31,10 @@ EMBED = {
 }
 for level in range(4, 11):
     for mode in ('compacted', 'uncompacted'):
-        for group in ('rhombus', 'hex'):
-            key = f'tri_L{level}_{mode}_{group}'
-            EMBED[key] = f'global_tri_L{level}_{mode}_{group}.topojson'
+        for group in ('triangle', 'rhombus', 'hex'):
+            suffix = '' if group == 'triangle' else f'_{group}'
+            key = f'tri_L{level}_{mode}{suffix}'
+            EMBED[key] = f'global_tri_L{level}_{mode}{suffix}.topojson'
 
 datasets = {}
 pmtiles = {}
