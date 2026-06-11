@@ -170,6 +170,14 @@ html = """<!doctype html>
   .panel{position:absolute;top:12px;left:12px;z-index:10;background:rgba(255,255,255,.96);
     padding:12px 14px;border-radius:10px;box-shadow:0 2px 12px rgba(0,0,0,.22);
     font-size:13px;width:292px;max-height:calc(82vh - 30px);overflow:auto}
+  .phead{display:flex;align-items:center;justify-content:space-between;gap:10px;
+    margin:-2px 0 4px;cursor:pointer}
+  .phead b{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#333}
+  .phead button{border:1px solid #999;background:#fff;border-radius:6px;width:28px;height:24px;
+    cursor:pointer;font-size:15px;line-height:1;padding:0;color:#333}
+  .panel.min{width:auto;padding:7px 11px}
+  .panel.min>:not(.phead){display:none!important}
+  .panel.min .phead{margin:0}
   .row{margin:7px 0}
   .row label{font-weight:600;display:block;margin-bottom:3px;font-size:11px;color:#333;
     text-transform:uppercase;letter-spacing:.05em}
@@ -340,6 +348,8 @@ $ curl https://YOUR-WORKER.workers.dev/locate/-0.1276,51.5072?level=6
     <div id="map"></div>
     <div id="loading">Loading grid data…</div>
     <div class="panel">
+      <div class="phead"><b>Controls</b>
+        <button id="panelmin" aria-label="minimize control panel" title="minimize">–</button></div>
       <div class="row"><label>System</label>
         <div class="seg" id="seg-sys">
           <button data-v="tri" class="on">T3 ▲</button>
@@ -381,6 +391,18 @@ $ curl https://YOUR-WORKER.workers.dev/locate/-0.1276,51.5072?level=6
       <div class="note" id="sysnote"></div>
     </div>
   </div>
+  <script>
+  (function(){
+    var panel=document.querySelector('.panel'),btn=document.getElementById('panelmin');
+    function setMin(min){panel.classList.toggle('min',min);btn.textContent=min?'+':'–';
+      btn.title=btn.ariaLabel=(min?'expand':'minimize')+' control panel';}
+    btn.addEventListener('click',function(e){e.stopPropagation();
+      setMin(!panel.classList.contains('min'));});
+    panel.querySelector('.phead').addEventListener('click',function(){
+      if(panel.classList.contains('min'))setMin(false);});
+    if(matchMedia('(max-width:640px)').matches)setMin(true);
+  })();
+  </script>
 </section>
 
 <section id="compare">
@@ -681,6 +703,14 @@ landcheck_html = """<!doctype html>
   .panel{position:absolute;top:12px;left:12px;z-index:10;background:rgba(255,255,255,.96);
     padding:12px 14px;border-radius:10px;box-shadow:0 2px 12px rgba(0,0,0,.22);
     font-size:13px;width:280px;max-height:calc(74vh - 30px);overflow:auto}
+  .phead{display:flex;align-items:center;justify-content:space-between;gap:10px;
+    margin:-2px 0 4px;cursor:pointer}
+  .phead b{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#333}
+  .phead button{border:1px solid #999;background:#fff;border-radius:6px;width:28px;height:24px;
+    cursor:pointer;font-size:15px;line-height:1;padding:0;color:#333}
+  .panel.min{width:auto;padding:7px 11px}
+  .panel.min>:not(.phead){display:none!important}
+  .panel.min .phead{margin:0}
   .row{margin:7px 0}
   .row label{font-weight:600;display:block;margin-bottom:3px;font-size:11px;color:#333;
     text-transform:uppercase;letter-spacing:.05em}
@@ -743,6 +773,8 @@ landcheck_html = """<!doctype html>
   <div class="viewerwrap">
     <div id="map"></div>
     <div class="panel">
+      <div class="phead"><b>Controls</b>
+        <button id="panelmin" aria-label="minimize control panel" title="minimize">–</button></div>
       <div class="row"><label>Sample points</label>
         <div class="btns">
           <button id="b-cities">World cities + tricky spots</button>
@@ -792,6 +824,18 @@ landcheck_html = """<!doctype html>
       <div class="note" id="loadnote">Loading dataset…</div>
     </div>
   </div>
+  <script>
+  (function(){
+    var panel=document.querySelector('.panel'),btn=document.getElementById('panelmin');
+    function setMin(min){panel.classList.toggle('min',min);btn.textContent=min?'+':'–';
+      btn.title=btn.ariaLabel=(min?'expand':'minimize')+' control panel';}
+    btn.addEventListener('click',function(e){e.stopPropagation();
+      setMin(!panel.classList.contains('min'));});
+    panel.querySelector('.phead').addEventListener('click',function(){
+      if(panel.classList.contains('min'))setMin(false);});
+    if(matchMedia('(max-width:640px)').matches)setMin(true);
+  })();
+  </script>
   <div class="inner">
     <p class="muted" style="margin-top:10px">Click any classified point for its full answer:
     cell address (computed on the fly for sea points, whose cells are not stored), kind,
