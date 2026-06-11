@@ -151,6 +151,14 @@ html = """<!doctype html>
   @media(max-width:760px){.twocol{grid-template-columns:1fr}}
   ul{padding-left:20px}li{margin:5px 0;font-size:14px}
   .muted{color:var(--mut);font-size:13px}
+  /* benchmark teaser bars */
+  .bench .brow{display:grid;grid-template-columns:104px 1fr 82px;gap:9px;align-items:center;
+    margin:6px 0;font-size:12.5px}
+  .bench .bname{text-align:right;white-space:nowrap;overflow:hidden}
+  .bench .btrack{min-width:0}
+  .bench .bfill{height:15px;border-radius:3px;background:#b9c2cc;min-width:2px}
+  .bench .bfill.tf{background:var(--warm)}
+  .bench .bval{font-size:11.5px;color:var(--mut);white-space:nowrap}
   .bitbox{font-family:ui-monospace,monospace;font-size:12px;background:#22282f;color:#e8e6df;
     padding:12px;border-radius:8px;overflow-x:auto;white-space:pre}
   /* viewer */
@@ -227,6 +235,31 @@ html = """<!doctype html>
       <img src="img/landcheck_demo.jpg" alt="landcheck demo: points classified as land, coast and sea on a world map"
         style="width:100%;border:1px solid #e0dbd0;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,.08)">
     </a>
+  </div>
+  <div class="bench" style="margin-top:26px">
+    <h3>Benchmarked: 3&ndash;30&times; faster than SQL spatial engines</h3>
+    <p style="font-size:14px;margin:6px 0 10px">One workload, four engines: classify 100,000
+    random points as land or sea against the same OSM land polygons. Trifold-based landcheck
+    answered 3&ndash;30&times; faster than BigQuery, PostGIS and DuckDB Spatial in batch mode
+    and 40&ndash;100&times; faster called one point at a time &mdash; true to the name, never
+    less than a three-fold margin. The same gap should apply to similar
+    point-classification problems.</p>
+    <div class="brow"><span class="bname">Trifold + OSM</span>
+      <div class="btrack"><div class="bfill tf" style="width:94.9%"></div></div>
+      <span class="bval">435,463 pts/s</span></div>
+    <div class="brow"><span class="bname">BigQuery</span>
+      <div class="btrack"><div class="bfill" style="width:31.4%"></div></div>
+      <span class="bval">144,092</span></div>
+    <div class="brow"><span class="bname">PostGIS</span>
+      <div class="btrack"><div class="bfill" style="width:23.9%"></div></div>
+      <span class="bval">109,731</span></div>
+    <div class="brow"><span class="bname">DuckDB Spatial</span>
+      <div class="btrack"><div class="bfill" style="width:3.2%"></div></div>
+      <span class="bval">14,605</span></div>
+    <p class="muted" style="margin-top:10px">Batch mode, median of 7 warm runs, Apple M5 Pro,
+    June 2026. The SQL engines compute exact polygon containment; landcheck agrees with them
+    on 99.5% of points from a far smaller dataset.
+    <a href="landcheck.html#benchmark">Full benchmark with methodology and caveats &rarr;</a></p>
   </div>
 </section>
 
