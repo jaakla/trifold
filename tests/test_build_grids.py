@@ -79,3 +79,21 @@ def test_dissolve_features_groups_without_recomputing_cells():
     assert grouped[0]['properties']['area_km2'] == 5
     assert grouped[0]['properties']['interior'] is False
     assert grouped[0]['geometry']['type'] == 'Polygon'
+
+
+def test_write_collection_skips_topojson_when_disabled(tmp_path):
+    features = [
+        {
+            'type': 'Feature',
+            'properties': {'id': 'x'},
+            'geometry': {'type': 'Polygon', 'coordinates': [[[0, 0], [1, 0], [0, 1], [0, 0]]]},
+        }
+    ]
+    geojson_path = tmp_path / 'test.geojson'
+    topojson_path = tmp_path / 'test.topojson'
+
+    build_grids.write_collection(features, str(geojson_path), topojson_enabled=False)
+
+    assert geojson_path.exists()
+    assert geojson_path.read_text().startswith('{"type":"FeatureCollection"')
+    assert not topojson_path.exists()

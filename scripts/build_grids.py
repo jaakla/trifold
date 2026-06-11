@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """Build global land-adaptive grids (GeoJSON + TopoJSON) with full addressing.
 
-Usage:  python scripts/build_grids.py [--levels 4 5 6] [--land PATH] [--out data/]
+Usage:  python scripts/build_grids.py [--levels 4 5 6] [--land PATH] [--out data/] [--topojson | --no-topojson]
 """
 import argparse
 import hashlib
@@ -178,7 +178,8 @@ def main():
     ap.add_argument('--land', default=DEFAULT_LAND)
     ap.add_argument('--out', default='data')
     ap.add_argument('--topojson', action=argparse.BooleanOptionalAction,
-                    default=True)
+                    default=True,
+                    help='generate TopoJSON output alongside GeoJSON')
     ap.add_argument('--group-by', nargs='+', choices=('rhombus', 'hex'),
                     default=[], help='also export dissolved display groups')
     ap.add_argument('--group-existing', action='store_true',
