@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Build docs/index.html — Trifold (T3) landing page with embedded
+"""Build docs/index.html — Trifold T3 landing page with embedded
 interactive 7-system DGGS comparison viewer (GitHub Pages ready).
 """
 import base64
@@ -90,9 +90,9 @@ html = """<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Trifold (T3): a triangular DGGS with exact nesting</title>
+<title>Trifold T3: a triangular DGGS with exact nesting</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="Trifold (T3): a hierarchical triangular discrete global grid system with exact aperture-4 nesting, compact base32 addressing, and an interactive 7-system DGGS comparison.">
+<meta name="description" content="Trifold T3: a hierarchical triangular discrete global grid system with exact aperture-4 nesting, compact base32 addressing, and an interactive 7-system DGGS comparison.">
 <script src="https://unpkg.com/maplibre-gl@5.6.0/dist/maplibre-gl.js"></script>
 <link href="https://unpkg.com/maplibre-gl@5.6.0/dist/maplibre-gl.css" rel="stylesheet">
 <script src="https://unpkg.com/topojson-client@3/dist/topojson-client.min.js"></script>
@@ -192,7 +192,7 @@ html = """<!doctype html>
 <body>
 
 <nav>
-  <span class="brand">Trifold <span class="t3">(T3)</span></span>
+  <span class="brand">Trifold <span class="t3">T3</span></span>
   <a href="#concept">Concept</a>
   <a href="#addressing">Addressing</a>
   <a href="#demo">Live demo</a>
@@ -208,7 +208,7 @@ html = """<!doctype html>
 </nav>
 
 <section class="hero">
-  <h1>Trifold <span class="t3">(T3)</span><br>triangles that nest <em>exactly</em></h1>
+  <h1>Trifold <span class="t3">T3</span><br>triangles that nest <em>exactly</em></h1>
   <p class="lede">A hierarchical triangular discrete global grid system on the icosahedron.
   Every parent cell is <b>bit-for-bit the union of its four children</b>, something neither
   hexagons nor pentagons can offer. A ~110&nbsp;km cell has a 6-character address.</p>
@@ -454,7 +454,7 @@ $ curl https://YOUR-WORKER.workers.dev/locate/-0.1276,51.5072?level=6
 </section>
 
 <footer>
-  Trifold (T3) · MIT license · <a href="__GH__" target="_blank">github.com/jaakla/trifold</a> ·
+  Trifold T3 · MIT license · <a href="__GH__" target="_blank">github.com/jaakla/trifold</a> ·
   <a href="t3-technical-reference.md">technical reference</a> ·
   land data <a href="https://www.naturalearthdata.com/" target="_blank">Natural Earth</a> ·
   comparison layers via pya5, h3-py, s2sphere, rhealpixdggs ·
@@ -470,7 +470,7 @@ const LEVEL_COLORS={0:'#3f0008',1:'#67000d',2:'#a50f15',3:'#cb181d',4:'#ef3b2c',
 const COASTAL='#74a9cf';
 
 const SYS_NOTES={
- tri:'Trifold (T3): icosahedral triangles, exact aperture-4 nesting. Click a cell for its '+
+ tri:'Trifold T3: icosahedral triangles, exact aperture-4 nesting. Click a cell for its '+
      'compact base32 address, digit path and uint64. Pole cells are meridian wedges reaching '+
      '±90°. Mercator clips them; Globe displays the complete geometry.',
  a5:'<a href="https://a5geo.org" target="_blank">A5</a> (Felix Palmer, 2025): dodecahedral '+
@@ -545,7 +545,7 @@ const map=new maplibregl.Map({
     sources:{carto:{type:'raster',
       tiles:['https://a.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png',
              'https://b.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png'],
-      tileSize:256,attribution:'© OpenStreetMap © CARTO · Trifold (T3) demo'}},
+      tileSize:256,attribution:'© OpenStreetMap © CARTO · Trifold T3 demo'}},
     layers:[{id:'bg',type:'background',paint:{'background-color':'#cfe3ef'}},
             {id:'base',type:'raster',source:'carto'}]},
   center:[10,30],zoom:1.6});
@@ -635,7 +635,7 @@ landcheck_html = """<!doctype html>
 <meta charset="utf-8">
 <title>landcheck: offline land/sea lookup (a Trifold library)</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="landcheck: offline land/sea point lookup built on the Trifold (T3) triangular DGGS. 182 KB dataset, microsecond lookups, confidence per answer. Interactive in-browser demo.">
+<meta name="description" content="landcheck: offline land/sea point lookup built on the Trifold T3 triangular DGGS. 182 KB dataset, microsecond lookups, confidence per answer. Interactive in-browser demo.">
 <script src="https://unpkg.com/maplibre-gl@5.6.0/dist/maplibre-gl.js"></script>
 <link href="https://unpkg.com/maplibre-gl@5.6.0/dist/maplibre-gl.css" rel="stylesheet">
 <style>
@@ -725,7 +725,7 @@ landcheck_html = """<!doctype html>
 <nav>
   <span class="brand">▲ landcheck
     <span class="sub">offline land/sea lookup, a
-      <a href="index.html">Trifold <span class="t3">(T3)</span></a> library</span>
+      <a href="index.html">Trifold <span class="t3">T3</span></a> library</span>
   </span>
   <a href="#demo">Demo</a>
   <a href="#guide">User guide</a>
@@ -945,7 +945,7 @@ LAND  kind=land  confidence=1.000  land_fraction=1.0  cell=TFAVKGR  refined=Fals
 </section>
 
 <footer>
-  landcheck · a <a href="index.html">Trifold (T3)</a> application · MIT license ·
+  landcheck · a <a href="index.html">Trifold T3</a> application · MIT license ·
   <a href="__GH__/tree/main/landcheck" target="_blank">source</a> ·
   land data <a href="https://www.naturalearthdata.com/" target="_blank">Natural Earth</a> ·
   optional refinement © <a href="https://osmdata.openstreetmap.de/data/land-polygons.html"

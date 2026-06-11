@@ -1,4 +1,4 @@
-# Trifold (T3) — a hierarchical triangular DGGS with *exact* nesting
+# Trifold T3 — a hierarchical triangular DGGS with *exact* nesting
 
 **Triangles tile the sphere into a quadtree where every parent is *exactly*
 the union of its four children — something neither hexagons nor most
@@ -244,7 +244,7 @@ neighbours' vertices bit-exactly.
 addressing, comparison, use cases, serving) with the interactive viewer
 embedded as its centerpiece:
 
-* **7 systems**: Trifold (T3) triangles, [A5](https://a5geo.org) pentagons,
+* **7 systems**: Trifold T3 triangles, [A5](https://a5geo.org) pentagons,
   H3 hexagons, S2 quads (s2sphere), rHEALPix (aperture 9,
   near-equal-area), HTM octahedral triangles (a related astronomy grid,
   built with T3's own machinery), and lon/lat rectangles — same land,

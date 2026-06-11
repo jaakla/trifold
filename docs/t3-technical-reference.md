@@ -1,4 +1,4 @@
-# Trifold (T3) Discrete Global Grid System: Technical Reference for Integration and Comparison
+# Trifold T3 Discrete Global Grid System: Technical Reference for Integration and Comparison
 
 *Companion document to the [README](../README.md), structured for readers
 evaluating T3 against other DGGS (A5, H3, S2, rHEALPix, HTM/QTM) for
@@ -6,7 +6,7 @@ integration into pipelines, databases, or viewers.*
 
 ## TL;DR
 
-- **Trifold (T3) is a global, triangular, exactly-nesting DGGS** built on
+- **Trifold T3 is a global, triangular, exactly-nesting DGGS** built on
   the icosahedron. It tiles the sphere with quasi-equilateral spherical
   triangles in an aperture-4 quadtree where **every parent cell is
   bit-for-bit the geometric union of its four children** — the property
