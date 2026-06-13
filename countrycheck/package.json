@@ -1,0 +1,30 @@
+{
+  "name": "countrycheck",
+  "version": "0.1.0",
+  "description": "Offline country point lookup: 323 KB global dataset, microsecond answers with confidence, built on the Trifold T3 triangular DGGS",
+  "type": "module",
+  "exports": {
+    ".": "./js/countrycheck.mjs"
+  },
+  "files": [
+    "js/countrycheck.mjs",
+    "data/countries_L10.tfcs"
+  ],
+  "keywords": [
+    "country",
+    "reverse-geocoding",
+    "iso-3166",
+    "point-in-polygon",
+    "geospatial",
+    "offline",
+    "dggs",
+    "borders"
+  ],
+  "homepage": "https://jaakla.github.io/trifold/countrycheck.html",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jaakla/trifold.git",
+    "directory": "countrycheck"
+  },
+  "license": "MIT"
+}

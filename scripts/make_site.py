@@ -11,11 +11,15 @@ import shutil
 DATA = 'data'
 OUT = 'docs/index.html'
 OUT_LANDCHECK = 'docs/landcheck.html'
+OUT_COUNTRYCHECK = 'docs/countrycheck.html'
 JS_SDK = 'js/trifold.js'
 DOCS_SDK = 'docs/sdk/trifold.js'
 LANDCHECK_SDK = 'landcheck/js/landcheck.mjs'
 DOCS_LANDCHECK_SDK = 'docs/sdk/landcheck.mjs'
 LANDCHECK_TFLS = 'landcheck/data/landsea_L10.tfls'
+COUNTRYCHECK_SDK = 'countrycheck/js/countrycheck.mjs'
+DOCS_COUNTRYCHECK_SDK = 'docs/sdk/countrycheck.mjs'
+COUNTRYCHECK_TFCS = 'countrycheck/data/countries_L10.tfcs'
 GH = 'https://github.com/jaakla/trifold'
 PMTILES_BASE_URL = os.environ.get('TRIFOLD_PMTILES_BASE_URL', 'https://maps.goplex.ee/data').rstrip('/')
 
@@ -209,7 +213,8 @@ html = """<!doctype html>
   <a href="https://github.com/jaakla/trifold/blob/main/docs/t3-technical-reference.md" target="_blank" rel="noopener">Tech reference</a>
   <span class="libs"><span class="libslabel">libraries</span>
     <a class="applink" href="landcheck.html">landcheck</a>
-    <span class="applink soon" title="on the roadmap: offline country lookup, same approach">countrycheck<span class="tag">soon</span></span>
+    <a class="applink" href="countrycheck.html"
+      title="offline country lookup, same approach">countrycheck<span class="tag">new</span></a>
   </span>
   <a class="gh" href="__GH__" target="_blank" aria-label="GitHub" title="GitHub">__GHICON__</a>
 </nav>
@@ -235,8 +240,11 @@ html = """<!doctype html>
       refinement sharpens coastal answers to a near-exact polygon test.</p>
       <p><a class="cta primary" style="padding:9px 18px;font-size:14px"
         href="landcheck.html">Info and interactive demo</a></p>
-      <p class="muted">Next on the roadmap is <b>countrycheck</b>, an offline country
-      lookup using the same run-length approach with border-cell polygons.</p>
+      <p class="muted">Its sibling
+      <a href="countrycheck.html"><b>countrycheck</b></a> applies the same run-length approach to
+      country detection: 256 countries with coastal waters in a 323&nbsp;KB dataset,
+      exact border-cell polygons optional.
+      <a href="countrycheck.html">Info and interactive demo&nbsp;&rarr;</a></p>
     </div>
     <a href="landcheck.html" style="display:block">
       <img src="img/landcheck_demo.jpg" alt="landcheck demo: points classified as land, coast and sea on a world map"
@@ -1388,6 +1396,789 @@ window.__landcheck={map,lc};   // console/debug handle
 </html>
 """
 
+countrycheck_html = """<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>countrycheck: offline country lookup (a Trifold library)</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="countrycheck: offline 'which country is this point in?' lookup built on the Trifold T3 triangular DGGS. 323 KB dataset, microsecond lookups, confidence per answer, coastal waters included. Interactive in-browser demo.">
+<script src="https://unpkg.com/maplibre-gl@5.6.0/dist/maplibre-gl.js"></script>
+<link href="https://unpkg.com/maplibre-gl@5.6.0/dist/maplibre-gl.css" rel="stylesheet">
+<style>
+  :root{--ink:#1c2733;--mut:#5b6b7b;--acc:#2b6f9a;--warm:#d94e2f;--bg:#fbfaf7;--card:#fff;
+    --country:#6d4ca8;--border:#d97706;--none:#8a93a0}
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:var(--ink);
+    background:var(--bg);line-height:1.55}
+  nav{position:sticky;top:0;z-index:50;background:rgba(251,250,247,.92);backdrop-filter:blur(6px);
+    border-bottom:1px solid #e4e0d6;display:flex;gap:18px;align-items:center;padding:10px 22px;
+    flex-wrap:wrap}
+  nav .brand{font-weight:800;font-size:17px;display:flex;align-items:baseline;gap:8px;
+    flex-wrap:wrap}
+  nav .brand .t3{color:var(--warm)}
+  nav .brand .glob{color:var(--country)}
+  nav .brand .sub{font-weight:400;font-size:12px;color:var(--mut)}
+  nav .brand .sub a{font-size:12px}
+  nav a{color:var(--mut);text-decoration:none;font-size:13.5px}
+  nav a:hover{color:var(--acc)}
+  nav a.on,nav a:focus-visible{color:var(--acc);font-weight:600}
+  nav .gh{margin-left:auto;display:flex;align-items:center;background:var(--ink);color:#fff;
+    padding:6px 9px;border-radius:8px;line-height:0}
+  section{max-width:1020px;margin:0 auto;padding:38px 22px;scroll-margin-top:64px}
+  .hero{text-align:center;padding-top:50px}
+  .hero h1{font-size:clamp(26px,4.5vw,40px);margin:0 0 10px;letter-spacing:-.02em}
+  .hero p.lede{font-size:clamp(15px,2.1vw,18px);color:var(--mut);max-width:790px;margin:0 auto 22px}
+  h2{font-size:24px;margin:0 0 12px;letter-spacing:-.01em}
+  h3{font-size:17px;margin:20px 0 8px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:16px}
+  .card{background:var(--card);border:1px solid #e7e2d8;border-radius:10px;padding:15px 17px}
+  .card b{display:block;margin-bottom:5px;font-size:15px}
+  .card p{margin:0;font-size:13.5px;color:var(--mut)}
+  table{border-collapse:collapse;width:100%;font-size:13px;margin:12px 0;background:var(--card)}
+  th,td{border:1px solid #e2ddd2;padding:7px 9px;text-align:left;vertical-align:top}
+  th{background:#f2efe7}
+  code,.mono{font-family:ui-monospace,SFMono-Regular,monospace;font-size:.92em;background:#f1ede3;
+    padding:1px 5px;border-radius:4px}
+  pre{background:#22282f;color:#e8e6df;padding:13px 15px;border-radius:8px;overflow-x:auto;
+    font-size:12.5px;line-height:1.5}
+  pre code{background:none;color:inherit;padding:0}
+  .twocol{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:760px){.twocol{grid-template-columns:1fr}}
+  ul{padding-left:20px}li{margin:4px 0;font-size:14px}
+  .muted{color:var(--mut);font-size:13px}
+  /* benchmark bars */
+  .bench .brow{display:grid;grid-template-columns:118px 1fr 92px;gap:9px;align-items:center;
+    margin:7px 0;font-size:12.5px}
+  .bench .bname{text-align:right;white-space:nowrap;overflow:hidden}
+  .bench .btrack{min-width:0}
+  .bench .bfill{height:17px;border-radius:3px;background:#b9c2cc;min-width:2px}
+  .bench .bfill.tf{background:var(--warm)}
+  .bench .bval{font-size:11.5px;color:var(--mut);white-space:nowrap}
+  /* demo */
+  #demo{max-width:none;padding:38px 0 0}
+  #demo .inner{max-width:1020px;margin:0 auto;padding:0 22px}
+  .viewerwrap{position:relative;height:74vh;min-height:480px;margin-top:16px;
+    border-top:1px solid #ddd;border-bottom:1px solid #ddd}
+  #map{position:absolute;inset:0}
+  .panel{position:absolute;top:12px;left:12px;z-index:10;background:rgba(255,255,255,.96);
+    padding:12px 14px;border-radius:10px;box-shadow:0 2px 12px rgba(0,0,0,.22);
+    font-size:13px;width:280px;max-height:calc(74vh - 30px);overflow:auto}
+  .phead{display:flex;align-items:center;justify-content:space-between;gap:10px;
+    margin:-2px 0 4px;cursor:pointer}
+  .phead b{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#333}
+  .phead button{border:1px solid #999;background:#fff;border-radius:6px;width:28px;height:24px;
+    cursor:pointer;font-size:15px;line-height:1;padding:0;color:#333}
+  .panel.min{width:auto;padding:7px 11px}
+  .panel.min>:not(.phead){display:none!important}
+  .panel.min .phead{margin:0}
+  .row{margin:7px 0}
+  .row label{font-weight:600;display:block;margin-bottom:3px;font-size:11px;color:#333;
+    text-transform:uppercase;letter-spacing:.05em}
+  .btns{display:flex;gap:6px;flex-wrap:wrap}
+  .btns button,.btns .filelabel{border:1px solid #999;background:#fff;border-radius:6px;
+    padding:6px 9px;cursor:pointer;font-size:12px}
+  .btns button:hover,.btns .filelabel:hover{background:#eef4f8}
+  .seg{display:flex;border:1px solid #999;border-radius:6px;overflow:hidden}
+  .seg button{flex:1;border:0;background:#fff;padding:6px 4px;cursor:pointer;font-size:11.5px}
+  .seg button.on{background:var(--acc);color:#fff}
+  #perf{background:#f5f3fa;border:1px solid #ddd5ec;border-radius:8px;padding:9px 11px;
+    margin-top:9px;font-size:12.5px;line-height:1.6;display:none}
+  #perf b{font-size:15px}
+  .legend{margin-top:8px;font-size:12px;line-height:1.8}
+  .legend i{display:inline-block;width:11px;height:11px;border-radius:50%;
+    vertical-align:middle;margin-right:5px;border:1px solid rgba(0,0,0,.35)}
+  .swatch{display:inline-block;width:30px;height:11px;border-radius:3px;vertical-align:middle;
+    margin-right:5px;background:linear-gradient(90deg,#d33,#dd3,#3d6,#39d,#83d)}
+  .note{font-size:11px;color:#777;margin-top:7px;line-height:1.45}
+  #droperr{color:#a23b1e;font-size:12px;margin-top:5px}
+  footer{border-top:1px solid #e4e0d6;margin-top:46px;padding:24px 22px;text-align:center;
+    color:var(--mut);font-size:13px}
+  footer a{color:var(--acc)}
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="brand"><span class="glob">&#9673;</span> countrycheck
+    <span class="sub">offline country lookup, a
+      <a href="index.html">Trifold <span class="t3">T3</span></a> library</span>
+  </span>
+  <a href="#demo">Demo</a>
+  <a href="#guide">User guide</a>
+  <a href="#tech">Technical</a>
+  <a href="#accuracy">Accuracy</a>
+  <a href="#benchmark">Benchmark</a>
+  <a href="landcheck.html">landcheck</a>
+  <a href="index.html">&larr; Trifold home</a>
+  <a class="gh" href="__GH__/tree/main/countrycheck" target="_blank" aria-label="Source on GitHub" title="Source on GitHub">__GHICON__</a>
+</nav>
+
+<section class="hero">
+  <h1>countrycheck: which <span style="color:var(--country)">country</span> is this point in?</h1>
+  <p class="lede">An offline lookup library built on the Trifold grid. The level-10 grid
+  (~7&nbsp;km cells) classified against GADM-derived country polygons &mdash; extended with
+  coastal waters and including X-coded territories like Kosovo and the Caspian Sea &mdash;
+  collapses into a <b>323&nbsp;KB</b> dataset that names the country anywhere on Earth in
+  microseconds, with a confidence value for every answer. Python and JavaScript give identical
+  results. <b>This page runs the real JS library in your browser</b>; the dataset is embedded
+  right in this HTML file.</p>
+  <a class="cta" href="#demo" style="display:inline-block;padding:11px 22px;border-radius:8px;
+    background:var(--warm);color:#fff;text-decoration:none;font-weight:600">Try it on the map</a>
+</section>
+
+<section id="demo">
+  <div class="inner">
+    <h2>Interactive demo</h2>
+    <p>Load sample points or your own file (CSV <code>lon,lat</code> or GeoJSON points), and
+    every point is resolved to a country <b>in your browser</b> by the bundled library, with no
+    server and no network call per lookup. Each dot is coloured by the country it lands in; open
+    ocean stays grey. The lookups-per-second figure is measured tightly around the classification
+    loop on <i>your</i> machine (map rendering and file parsing excluded), so it is the real
+    library throughput. Use the 100k-random button for a stable number.</p>
+  </div>
+  <div class="viewerwrap">
+    <div id="map"></div>
+    <div class="panel">
+      <div class="phead"><b>Controls</b>
+        <button id="panelmin" aria-label="minimize control panel" title="minimize">&ndash;</button></div>
+      <div class="row"><label>Sample points</label>
+        <div class="btns">
+          <button id="b-cities">Capitals + tricky spots</button>
+          <button id="b-r1">1k random</button>
+          <button id="b-r10">10k random</button>
+          <button id="b-r100">100k random</button>
+        </div></div>
+      <div class="row"><label>Your own points</label>
+        <div class="btns">
+          <label class="filelabel">Open CSV / GeoJSON&hellip;
+            <input type="file" id="fileinput" accept=".csv,.txt,.json,.geojson" style="display:none">
+          </label>
+        </div>
+        <div id="droperr"></div>
+        <div class="note">CSV: <code>lon,lat[,name]</code> per line (or a header naming
+        <code>lat</code>/<code>lon</code> columns in either order). GeoJSON: any
+        FeatureCollection of Points. Files stay on your machine.</div></div>
+      <div class="row"><label>Exact border refinement</label>
+        <label style="display:flex;gap:7px;align-items:flex-start;cursor:pointer;font-size:12.5px;
+            font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink)">
+          <input type="checkbox" id="refinecb" style="margin-top:2px">
+          <span>exact polygon test wherever a border crosses a cell
+            (downloads ~11.8&nbsp;MB once)</span></label>
+        <div class="note" id="refinenote">Off: border cells use the bundled best-call
+        with its area share as confidence. On: exact country/country and coastline
+        borders. Watch how the counts, confidence and lookup rate change.</div></div>
+      <div class="row"><label>Debug layers</label>
+        <label style="display:flex;gap:7px;align-items:flex-start;cursor:pointer;font-size:12.5px;
+            font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink)">
+          <input type="checkbox" id="bordercb" style="margin-top:2px">
+          <span>source border polygons (needs the refinement layer)</span></label>
+        <div class="note" id="bordernote">Click anywhere on the map to see the
+        level-10 triangle and its country answer.</div></div>
+      <div class="row"><label>Projection</label>
+        <div class="seg" id="seg-proj">
+          <button data-v="globe" class="on">Globe</button>
+          <button data-v="mercator">Flat</button>
+        </div></div>
+      <div id="perf"></div>
+      <div class="legend">
+        <span class="swatch"></span>one hue per country (256 total)<br>
+        <i style="background:#8a93a0"></i>no country: open ocean (confidence 1.0)<br>
+        <i style="background:#fff;border:2px solid #1c2733"></i>border cell (mixed)<br>
+        <i style="background:#fff;border:2px solid #c2185b"></i>answer changed by refinement
+      </div>
+      <div class="note" id="loadnote">Loading dataset&hellip;</div>
+    </div>
+  </div>
+  <script>
+  (function(){
+    var panel=document.querySelector('.panel'),btn=document.getElementById('panelmin');
+    function setMin(min){panel.classList.toggle('min',min);btn.textContent=min?'+':'\\u2013';
+      btn.title=btn.ariaLabel=(min?'expand':'minimize')+' control panel';}
+    btn.addEventListener('click',function(e){e.stopPropagation();
+      setMin(!panel.classList.contains('min'));});
+    panel.querySelector('.phead').addEventListener('click',function(){
+      if(panel.classList.contains('min'))setMin(false);});
+    if(matchMedia('(max-width:640px)').matches)setMin(true);
+  })();
+  </script>
+  <div class="inner">
+    <p class="muted" style="margin-top:10px">Click any classified point for its full answer:
+    country code (GADM <code>gid_0</code>), ISO&nbsp;2, name, kind, confidence, area share and
+    cell address (computed on the fly for open-ocean points, whose cells are not stored).
+    Switching on <b>exact border refinement</b> makes the source polygons authoritative in every
+    cell a border crosses. Caveats inherited from the source data: coastal waters are an
+    approximate distance-based assignment, not legal EEZ; disputed territories follow GADM
+    (Crimea, Western Sahara&hellip;); lakes belong to their surrounding country, except the
+    Caspian Sea, which is its own <code>XCA</code> entry.</p>
+  </div>
+</section>
+
+<section id="guide">
+  <h2>User guide</h2>
+  <div class="twocol">
+    <div>
+      <h3>JavaScript (browser or Node)</h3>
+      <pre><code>import { CountryCheck } from "./countrycheck.mjs";
+
+// Node: bundled file &middot; browser: fetch the 323 KB dataset
+const cc = await CountryCheck.fromFile();                  // Node
+const cc = await CountryCheck.fromUrl("countries_L10.tfcs"); // browser
+
+cc.country(24.7536, 59.437);   // 'EST'  (lon, lat)
+cc.check(-0.1276, 51.5072);
+// { country: 'GBR', iso2: 'GB', name: 'United Kingdom',
+//   kind: 'country', confidence: 1, share: 1,
+//   cell: 'TFA95BM', refined: false }</code></pre>
+    </div>
+    <div>
+      <h3>Python (stdlib only)</h3>
+      <pre><code>from countrycheck import CountryCheck
+
+cc = CountryCheck()                    # bundled data
+cc.country(24.7536, 59.4370)           # 'EST'
+cc.check(-0.1276, 51.5072)
+# CountryResult(country='GBR', iso2='GB',
+#   name='United Kingdom', kind='country',
+#   confidence=1.0, share=1.0, cell='TFA95BM',
+#   refined=False)</code></pre>
+    </div>
+  </div>
+  <h3>What the answer means</h3>
+  <table>
+    <tr><th>kind</th><th>meaning</th><th><code>country</code></th><th><code>confidence</code></th></tr>
+    <tr><td><b>country</b></td><td>cell wholly inside one country</td><td>that country</td><td>1.0</td></tr>
+    <tr><td><b>none</b></td><td>cell absent from the dataset (international waters)</td>
+      <td>null</td><td>1.0</td></tr>
+    <tr><td><b>border</b></td><td>mixed cell; bundled best call decides (may be none)</td>
+      <td>best call</td><td>area share</td></tr>
+    <tr><td><b>border</b> + refined</td><td>decided by the exact source polygon</td>
+      <td>exact</td><td>0.99</td></tr>
+  </table>
+  <p class="muted">Measured accuracy: 99.82% agreement with exact polygon containment on
+  30,000 uniform random points. The <code>country</code> and <code>none</code> answers were 100%
+  correct; all residual error lives in <code>border</code> answers, which self-report lower
+  confidence. With the border refinement loaded, agreement reaches <b>100.0%</b> on the same
+  sample.</p>
+  <h3>Command line</h3>
+  <pre><code>$ python countrycheck/python/countrycheck.py 24.7536 59.4370
+EST  iso2=EE  name='Estonia'  kind=country  confidence=1.000  share=1.0  cell=TFAVKGR  refined=False</code></pre>
+  <p class="muted">The CLI loads the border refinement automatically when
+  <code>borders_L10.tfcr</code> is present. Install with <code>pip install countrycheck</code> or
+  <code>npm install countrycheck</code>, or run straight from a repo checkout.</p>
+</section>
+
+<section id="tech">
+  <h2>Technical info</h2>
+  <div class="cards">
+    <div class="card"><b>Canonical index</b><p>Any Trifold cell at level &le; 10 maps to a
+      contiguous range in the level-10 index space (<code>face&middot;4<sup>10</sup> + path</code>):
+      a level-l cell covers exactly 4<sup>10&minus;l</sup> consecutive indices. The whole country
+      classification becomes run-length intervals.</p></div>
+    <div class="card"><b>TFCS format &middot; 323 KB</b><p>222,403 runs as
+      <code>varint(gap), varint(len&middot;2|border)</code> &mdash; interior runs carry a country id,
+      border runs a best call plus a 4-bit area share &mdash; over a country table of 256
+      code/iso2/name strings, all zlib-compressed. Level-agnostic.</p></div>
+    <div class="card"><b>Lookup path</b><p>Pure-float point location (no dependencies,
+      bit-identical to the SDK) descends 10 subdivision levels, then one binary search over the
+      run starts. ~0.6 µs in Node, ~13 µs in pure Python, ~3 µs batched with numpy.</p></div>
+    <div class="card"><b>Border refinement &middot; TFCR</b><p>Source country polygons clipped to
+      every border cell, quantized to a cell-local 16-bit grid (~0.1 m), one zone per country
+      present with zigzag-varint rings and the even-odd rule. A point-in-polygon test then decides
+      the exact country (or none) in those cells.</p></div>
+  </div>
+  <p style="margin-top:14px">The data is built against GADM-derived country polygons extended with
+  coastal waters: 256 countries and territories, 7.17M level-10 cells belonging to some country, of
+  which 195,062 are border cells. Full documentation, the one-pass <code>build.py</code> and the
+  cross-language test suite live in
+  <a href="__GH__/tree/main/countrycheck" target="_blank"><code>countrycheck/</code> on GitHub</a>.
+  Roadmap: an L12 (~1.8&nbsp;km) variant and timezone detection from the same source data.</p>
+</section>
+
+<section id="accuracy">
+  <h2>Accuracy: tested on 57,501 real airports</h2>
+  <p>Ground truth is the <a href="https://ourairports.com/" target="_blank">OurAirports</a> dump
+  &mdash; 57,501 points, each tagged with an ISO country code from an unrelated source.
+  countrycheck places <b>99.49%</b> of them in the correct country from the bundled 323&nbsp;KB
+  data, and <b>99.66%</b> with the border refinement loaded. Interior-country answers are 99.94%
+  correct; the refinement works only on the 768 airports that fall in a <i>border cell</i>, and
+  there it lifts agreement from 78.65% to 91.54%.</p>
+  <div class="cards">
+    <div class="card"><b>99.49% &rarr; 99.66%</b><p>overall agreement with airport country codes,
+      bundled vs. border-refined. The residual is mostly disputed/border territory GADM maps
+      differently, dependencies coded to a parent state, and offshore or placeholder
+      coordinates.</p></div>
+    <div class="card"><b>100.000% refined</b><p>against exact SQL point-in-polygon containment over
+      the same source polygons (100,000 random points): the refinement resolved every one of the
+      160 base-mode border disagreements. Base mode: 99.84%.</p></div>
+  </div>
+  <p class="muted">Reproduce with <code>scripts/accuracy_countrycheck_airports.py</code> (airports)
+  and <code>scripts/benchmark_countrycheck.py</code> (vs. SQL containment).</p>
+</section>
+
+<section id="benchmark">
+  <h2>Benchmark: 12&ndash;65&times; faster than SQL spatial engines</h2>
+  <p>One workload, four engines: assign a country (<code>gid_0</code>) to 100,000 sphere-uniform
+  random points against the same GADM country polygons. Median of seven warm runs, Apple M5 Pro,
+  June 2026. The refined Trifold answers reproduce exact polygon containment (see above) while
+  running an order of magnitude faster &mdash; true to the name, never less than a three-fold
+  margin. Called one point at a time, the gap widens further.</p>
+  <div class="twocol">
+    <div class="bench">
+      <h3>Batch &middot; 100,000 points per call</h3>
+      <div class="brow"><span class="bname">Trifold base</span>
+        <div class="btrack"><div class="bfill tf" style="width:100%"></div></div>
+        <span class="bval">405,255 pts/s</span></div>
+      <div class="brow"><span class="bname">Trifold + refine</span>
+        <div class="btrack"><div class="bfill tf" style="width:94.7%"></div></div>
+        <span class="bval">383,804</span></div>
+      <div class="brow"><span class="bname">PostGIS 3.6</span>
+        <div class="btrack"><div class="bfill" style="width:7.98%"></div></div>
+        <span class="bval">32,329</span></div>
+      <div class="brow"><span class="bname">DuckDB Spatial</span>
+        <div class="btrack"><div class="bfill" style="width:1.46%"></div></div>
+        <span class="bval">5,909</span></div>
+    </div>
+    <div class="bench">
+      <h3>Singular &middot; one point per call</h3>
+      <div class="brow"><span class="bname">Trifold base</span>
+        <div class="btrack"><div class="bfill tf" style="width:100%"></div></div>
+        <span class="bval">79,849 q/s</span></div>
+      <div class="brow"><span class="bname">Trifold + refine</span>
+        <div class="btrack"><div class="bfill tf" style="width:89.3%"></div></div>
+        <span class="bval">71,341</span></div>
+      <div class="brow"><span class="bname">DuckDB Spatial</span>
+        <div class="btrack"><div class="bfill" style="width:3.02%"></div></div>
+        <span class="bval">2,415</span></div>
+      <div class="brow"><span class="bname">PostGIS 3.6</span>
+        <div class="btrack"><div class="bfill" style="width:1.44%"></div></div>
+        <span class="bval">1,153</span></div>
+    </div>
+  </div>
+  <p class="muted" style="margin-top:12px">DuckDB 1.5.3 and PostGIS 3.6.3 compute exact containment
+  and returned byte-identical answers; BigQuery is documented but was not run in this pass. PostGIS
+  singular includes localhost TCP + Docker transport; DuckDB runs embedded in-process. The live
+  figure in the demo panel is the same throughput measured on your own device. Full methodology,
+  dataset manifest, the airport test and the BigQuery procedure:
+  <a href="__GH__/blob/main/countrycheck_benchmark.md" target="_blank"><code>countrycheck_benchmark.md</code></a>.</p>
+</section>
+
+<footer>
+  countrycheck &middot; a <a href="index.html">Trifold T3</a> library &middot; MIT license &middot;
+  <a href="__GH__/tree/main/countrycheck" target="_blank">source</a> &middot;
+  country polygons derived from <a href="https://gadm.org/" target="_blank">GADM</a>,
+  extended with coastal waters
+</footer>
+
+<script type="module">
+import {CountryCheck,locateIndex,indexToCompact,indexToLonLatRing} from './sdk/countrycheck.mjs';
+const TFCS_B64="__TFCS_B64__";
+const TFCR_URLS=['data/borders_L10.tfcr','__TFCR_URL__'];
+
+const NONE_COLOR='#8a93a0';
+// deterministic, well-spread hue per country id (golden-angle)
+function countryColor(cid){
+  if(cid==null||cid<0)return NONE_COLOR;
+  const h=(cid*137.508)%360;
+  const s=cid%2?52:64, l=cid%3?46:56;
+  return `hsl(${h.toFixed(1)},${s}%,${l}%)`;
+}
+const CITIES=[
+ ['Tallinn',24.7536,59.4370],['Helsinki',24.9384,60.1699],
+ ['St Petersburg',30.3141,59.9386],['London',-0.1276,51.5072],['Paris',2.3522,48.8566],
+ ['Vatican City',12.4534,41.9029],['San Marino',12.4578,43.9424],['Berlin',13.405,52.52],
+ ['Kaliningrad (RU exclave)',20.5,54.71],['Singapore',103.8198,1.3521],
+ ['Johor Bahru (MY)',103.76,1.49],['Hong Kong',114.17,22.32],['Tokyo',139.6917,35.6895],
+ ['New York',-74.006,40.7128],['Point Roberts (US exclave)',-123.06,48.98],
+ ['Mexico City',-99.1332,19.4326],['Brasília',-47.9292,-15.7801],
+ ['Cape Town',18.4241,-33.9249],['Maseru (Lesotho)',27.4869,-29.3142],
+ ['Cairo',31.2357,30.0444],['Jerusalem',35.2137,31.7683],['Istanbul',28.9784,41.0082],
+ ['Nicosia (CY)',33.3623,35.1656],['N. Nicosia (XNC)',33.3623,35.1923],
+ ['Pristina (Kosovo XKO)',21.1655,42.6629],['Caspian Sea (XCA)',51.0,42.0],
+ ['Western Sahara',-13.0,24.5],['Simferopol (Crimea)',34.1,44.95],
+ ['Gibraltar',-5.3536,36.1408],['Reykjavík',-21.9426,64.1466],['Sydney',151.2093,-33.8688],
+ ['Gulf of Finland (EST coastal water)',24.75,59.50],
+ ['Mid-Atlantic (ocean)',-30,30],['South Pacific (ocean)',-150,-30],
+ ['North Pole (ocean)',0,89.5]];
+
+// dataset: embedded base64 -> bytes -> CountryCheck
+const t0=performance.now();
+const bytes=Uint8Array.from(atob(TFCS_B64),c=>c.charCodeAt(0));
+const cc=await CountryCheck.fromBytes(bytes);
+const loadMs=performance.now()-t0;
+const codeToCid=new Map(cc.countries.map((c,i)=>[c.code,i]));
+document.getElementById('loadnote').textContent=
+  `Dataset: ${(bytes.length/1024).toFixed(0)} KB embedded in this page · `+
+  `decoded + indexed in ${loadMs.toFixed(0)} ms · level ${cc.level} · `+
+  `${cc.countries.length} countries · ${cc.stats.runs.toLocaleString()} runs`;
+
+function randomPoints(n){
+  // uniform on the sphere (not uniform in lat)
+  const pts=new Array(n);
+  for(let i=0;i<n;i++){
+    const lon=Math.random()*360-180;
+    const lat=Math.asin(2*Math.random()-1)*180/Math.PI;
+    pts[i]=['',lon,lat];
+  }
+  return pts;
+}
+
+// classify: timing measured tightly around the lookup loop only
+function classify(pts){
+  const results=new Array(pts.length);
+  const t0=performance.now();
+  for(let i=0;i<pts.length;i++)results[i]=cc.check(pts[i][1],pts[i][2]);
+  const ms=performance.now()-t0;
+  // flips: only computed when refinement is on (cheap second pass, untimed)
+  let base=null;
+  if(cc._refine){
+    const keep=cc._refine; cc._refine=null;
+    base=new Array(pts.length);
+    for(let i=0;i<pts.length;i++)base[i]=cc.country(pts[i][1],pts[i][2]);
+    cc._refine=keep;
+  }
+  return {results,ms,base};
+}
+
+let lastPts=null,lastLabel='';
+function show(pts,label){
+  lastPts=pts;lastLabel=label;
+  const {results,ms,base}=classify(pts);
+  let nCountry=0,nBorder=0,nNone=0,nFlipped=0;
+  const seen=new Set();
+  const features=new Array(pts.length);
+  for(let i=0;i<pts.length;i++){
+    const r=results[i];
+    if(r.kind==='none')nNone++;else if(r.kind==='border')nBorder++;else nCountry++;
+    if(r.country)seen.add(r.country);
+    const flipped=base!=null&&base[i]!==r.country;
+    if(flipped)nFlipped++;
+    const cid=r.country==null?-1:codeToCid.get(r.country);
+    features[i]={type:'Feature',
+      properties:{name:pts[i][0],country:r.country,iso2:r.iso2,cname:r.name,
+        kind:r.kind,conf:r.confidence,share:r.share,cell:r.cell,refined:r.refined,
+        border:r.kind==='border',flipped,color:countryColor(cid)},
+      geometry:{type:'Point',coordinates:[pts[i][1],pts[i][2]]}};
+  }
+  map.getSource('points').setData({type:'FeatureCollection',features});
+  const rate=pts.length/(ms/1000);
+  const refineOn=!!cc._refine;
+  document.getElementById('perf').style.display='block';
+  document.getElementById('perf').innerHTML=
+    `<b>${Math.round(rate).toLocaleString()}</b> lookups/second on this device<br>`+
+    `${pts.length.toLocaleString()} points (${label}) classified in ${ms.toFixed(1)} ms `+
+    `(${(ms*1000/pts.length).toFixed(2)} µs/point)`+
+    `${refineOn?' · <b>refinement on</b>':''}<br>`+
+    `answers: <b>${nCountry.toLocaleString()}</b> interior-country · `+
+    `<b>${nBorder.toLocaleString()}</b> border · `+
+    `<b>${nNone.toLocaleString()}</b> no country<br>`+
+    `<b>${seen.size.toLocaleString()}</b> distinct countries hit`+
+    `${refineOn?`<br><span style="color:#c2185b">◉</span> <b>${nFlipped.toLocaleString()}</b> `+
+      `answer${nFlipped===1?'':'s'} changed by the polygon test `+
+      `(ringed on the map, click one)`:''}`;
+}
+
+function splitCsvLine(l){
+  const out=[];let cur='',q=false;
+  for(let i=0;i<l.length;i++){const ch=l[i];
+    if(q){if(ch==='"'){if(l[i+1]==='"'){cur+='"';i++;}else q=false;}else cur+=ch;}
+    else if(ch==='"')q=true;
+    else if(ch===','||ch===';'||ch==='\\t'){out.push(cur.trim());cur='';}
+    else cur+=ch;}
+  out.push(cur.trim());return out;
+}
+function parseCsv(text){
+  const lines=text.split(/\\r?\\n/).filter(l=>l.trim());
+  if(!lines.length)throw new Error('empty file');
+  let lonCol=0,latCol=1,nameCol=2,start=0;
+  const head=splitCsvLine(lines[0].toLowerCase());
+  const latIdx=head.findIndex(h=>/^(lat|latitude|y)$/.test(h));
+  const lonIdx=head.findIndex(h=>/^(lon|lng|long|longitude|x)$/.test(h));
+  if(latIdx>=0&&lonIdx>=0){
+    lonCol=lonIdx;latCol=latIdx;start=1;
+    nameCol=head.findIndex(h=>/^(name|label|id|title)$/.test(h));
+  }
+  const pts=[];
+  for(let i=start;i<lines.length;i++){
+    const c=splitCsvLine(lines[i]);
+    const lon=parseFloat(c[lonCol]),lat=parseFloat(c[latCol]);
+    if(!isFinite(lon)||!isFinite(lat))continue;
+    if(lon<-180||lon>180||lat<-90||lat>90)continue;
+    pts.push([nameCol>=0&&c[nameCol]?c[nameCol]:'',lon,lat]);
+  }
+  if(!pts.length)throw new Error('no valid lon,lat rows found');
+  return pts;
+}
+function parseGeojson(text){
+  const gj=JSON.parse(text);
+  const features=gj.type==='FeatureCollection'?gj.features:
+    gj.type==='Feature'?[gj]:null;
+  if(!features)throw new Error('expected a GeoJSON FeatureCollection');
+  const pts=[];
+  for(const f of features){
+    if(!f.geometry)continue;
+    const geoms=f.geometry.type==='Point'?[f.geometry.coordinates]:
+      f.geometry.type==='MultiPoint'?f.geometry.coordinates:[];
+    for(const [lon,lat] of geoms)
+      if(isFinite(lon)&&isFinite(lat)&&lon>=-180&&lon<=180&&lat>=-90&&lat<=90)
+        pts.push([(f.properties&&(f.properties.name||f.properties.label))||'',lon,lat]);
+  }
+  if(!pts.length)throw new Error('no Point features found');
+  return pts;
+}
+
+const map=new maplibregl.Map({
+  container:'map',
+  style:{version:8,projection:{type:'globe'},
+    sources:{carto:{type:'raster',
+      tiles:['https://a.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png',
+             'https://b.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png'],
+      tileSize:256,attribution:'© OpenStreetMap © CARTO · Trifold countrycheck demo'}},
+    layers:[{id:'bg',type:'background',paint:{'background-color':'#cfe3ef'}},
+            {id:'base',type:'raster',source:'carto'}]},
+  center:[15,30],zoom:1.4,
+  canvasContextAttributes:{preserveDrawingBuffer:true}});
+map.addControl(new maplibregl.NavigationControl());
+
+// triangle ring (closed, GeoJSON order) of the level-10 cell at a point
+function cellRingAt(lon,lat){
+  const index=locateIndex(lon,lat,cc.level);
+  const ring=indexToLonLatRing(index,cc.level).map(p=>[p[0],p[1]]);
+  ring.push(ring[0]);
+  return {index,ring};
+}
+function drawCell(lon,lat){
+  const {index,ring}=cellRingAt(lon,lat);
+  map.getSource('cell').setData({type:'Feature',properties:{},
+    geometry:{type:'Polygon',coordinates:[ring]}});
+  return index;
+}
+function describe(lon,lat,name){
+  const r=cc.check(lon,lat);
+  const cid=r.country==null?-1:codeToCid.get(r.country);
+  let html=name?`<b>${name}</b><br>`:'';
+  if(r.country!=null){
+    html+=`<b style="color:${countryColor(cid)}">${r.country}</b>`+
+      `${r.iso2?` (${r.iso2})`:''} — ${r.name||''}<br>`;
+  }else{
+    html+=`<b style="color:${NONE_COLOR}">no country</b> (international waters)<br>`;
+  }
+  html+=`kind <b>${r.kind}</b> · confidence ${r.confidence.toFixed(3)}`;
+  if(r.share!=null)html+=` · area share ${Number(r.share).toFixed(3)}`;
+  if(r.refined)html+=`<br><span style="color:#6d4ca8">decided by exact polygon test</span>`;
+  const cell=r.cell??indexToCompact(locateIndex(lon,lat,cc.level),cc.level);
+  html+=`<br>cell <span style="font-family:monospace">${cell}</span>`+
+    `${r.cell?'':' <span style="color:#777">(empty = open ocean)</span>'}`;
+  html+=`<br><span style="color:#777;font-size:11px">${lon.toFixed(4)}, ${lat.toFixed(4)}</span>`;
+  return html;
+}
+
+map.on('load',()=>{
+  map.addSource('borders',{type:'geojson',
+    data:{type:'FeatureCollection',features:[]}});
+  map.addLayer({id:'borderlines',type:'line',source:'borders',
+    layout:{'line-cap':'round','line-join':'round'},
+    paint:{'line-color':['get','color'],'line-width':1.3,'line-opacity':0.9}});
+  map.addSource('cell',{type:'geojson',
+    data:{type:'FeatureCollection',features:[]}});
+  map.addLayer({id:'cell-fill',type:'fill',source:'cell',
+    paint:{'fill-color':'#6d4ca8','fill-opacity':0.12}});
+  map.addLayer({id:'cell-line',type:'line',source:'cell',
+    paint:{'line-color':'#6d4ca8','line-width':2}});
+  map.addSource('points',{type:'geojson',
+    data:{type:'FeatureCollection',features:[]}});
+  const flipped=['boolean',['get','flipped'],false];
+  const border=['boolean',['get','border'],false];
+  map.addLayer({id:'pts',type:'circle',source:'points',paint:{
+    'circle-color':['get','color'],
+    'circle-radius':['interpolate',['linear'],['zoom'],
+      0,['case',flipped,4,2.2],
+      4,['case',flipped,5.5,3.5],
+      8,['case',flipped,7,5]],
+    'circle-opacity':0.85,
+    'circle-stroke-width':['case',flipped,2.2,border,1.4,0.6],
+    'circle-stroke-color':['case',flipped,'#c2185b',border,'#1c2733','rgba(0,0,0,.4)']}});
+  map.on('click',e=>{
+    if(map.queryRenderedFeatures(e.point,{layers:['pts']}).length)return;
+    let lon=e.lngLat.lng,lat=e.lngLat.lat;
+    lon=((lon+180)%360+360)%360-180;
+    lat=Math.max(-90,Math.min(90,lat));
+    drawCell(lon,lat);
+    new maplibregl.Popup().setLngLat(e.lngLat)
+      .setHTML(describe(lon,lat,null)).addTo(map);
+  });
+  map.on('click','pts',e=>{
+    const p=e.features[0].properties;
+    const [lon,lat]=e.features[0].geometry.coordinates;
+    drawCell(lon,lat);
+    new maplibregl.Popup().setLngLat(e.lngLat)
+      .setHTML(describe(lon,lat,p.name||null)).addTo(map);
+  });
+  map.on('mouseenter','pts',()=>map.getCanvas().style.cursor='pointer');
+  map.on('mouseleave','pts',()=>map.getCanvas().style.cursor='');
+  map.on('moveend',()=>{if(bordercb.checked)updateBorders();});
+  show(CITIES.map(c=>[c[0],c[1],c[2]]),'capitals + tricky spots');
+});
+
+document.getElementById('b-cities').onclick=()=>show(CITIES.map(c=>[c[0],c[1],c[2]]),'capitals + tricky spots');
+document.getElementById('b-r1').onclick=()=>show(randomPoints(1000),'uniform random on sphere');
+document.getElementById('b-r10').onclick=()=>show(randomPoints(10000),'uniform random on sphere');
+document.getElementById('b-r100').onclick=()=>show(randomPoints(100000),'uniform random on sphere');
+
+// --- source border debug layer (zone rings decoded from TFCR) ---
+const bordercb=document.getElementById('bordercb');
+const bordernote=document.getElementById('bordernote');
+let cellBoxes=null;   // [index,minx,miny,maxx,maxy] per refined cell, lazy
+function buildCellBoxes(){
+  cellBoxes=[];
+  for(const [index,zones] of cc._refine){
+    let hasRings=false;
+    for(const [cid,rings] of zones)if(rings!==null){hasRings=true;break;}
+    if(!hasRings)continue;   // whole-cell zones: nothing to draw
+    const ring=indexToLonLatRing(index,cc.level);
+    const lons=ring.map(p=>p[0]),lats=ring.map(p=>p[1]);
+    cellBoxes.push([index,Math.min(...lons),Math.min(...lats),
+                    Math.max(...lons),Math.max(...lats)]);
+  }
+}
+function borderFeatures(){
+  if(!cellBoxes)buildCellBoxes();
+  const b=map.getBounds();
+  const w=b.getWest(),e=b.getEast(),s=b.getSouth(),n=b.getNorth();
+  const feats=[];let segs=0;
+  for(const [index,minx,miny,maxx,maxy] of cellBoxes){
+    if(maxy<s||miny>n)continue;
+    let hit=false;
+    for(const off of [-360,0,360]){if(maxx+off>=w&&minx+off<=e){hit=true;break;}}
+    if(!hit)continue;
+    const sx=(maxx-minx)/65535,sy=(maxy-miny)/65535;
+    // ring segments running along the triangle edges are clip artifacts where a
+    // country continues into the neighbour cell, not real borders; drop them by
+    // testing each segment's endpoints against the 3 triangle edges (quantized).
+    const tri=indexToLonLatRing(index,cc.level)
+      .map(p=>[(p[0]-minx)/sx,(p[1]-miny)/sy]);
+    const edges=[0,1,2].map(i=>{
+      const a=tri[i],c=tri[(i+1)%3];
+      const dx=c[0]-a[0],dy=c[1]-a[1];
+      return [a[0],a[1],dx,dy,Math.hypot(dx,dy)];
+    });
+    const EPS=1.5;
+    const onEdge=(x,y,E)=>Math.abs((x-E[0])*E[3]-(y-E[1])*E[2])/E[4]<EPS;
+    for(const [cid,rings] of cc._refine.get(index)){
+      if(rings===null)continue;
+      const color=countryColor(cid);
+      for(const pts of rings){
+        const m=pts.length/2;
+        let current=[];
+        for(let i=0;i<m;i++){
+          const j=(i+1)%m;
+          const x1=pts[2*i],y1=pts[2*i+1],x2=pts[2*j],y2=pts[2*j+1];
+          const artifact=edges.some(E=>onEdge(x1,y1,E)&&onEdge(x2,y2,E));
+          if(artifact){
+            if(current.length>1){feats.push({type:'Feature',
+              properties:{color},geometry:{type:'LineString',coordinates:current}});
+              segs+=current.length;}
+            current=[];
+          }else{
+            if(!current.length)current.push([minx+x1*sx,miny+y1*sy]);
+            current.push([minx+x2*sx,miny+y2*sy]);
+          }
+        }
+        if(current.length>1){feats.push({type:'Feature',
+          properties:{color},geometry:{type:'LineString',coordinates:current}});
+          segs+=current.length;}
+      }
+    }
+    if(segs>80000)return null;   // too much detail for this view
+  }
+  return feats;
+}
+function updateBorders(){
+  if(!bordercb.checked){
+    map.getSource('borders').setData({type:'FeatureCollection',features:[]});
+    return;
+  }
+  if(!cc._refine){
+    bordernote.textContent='Turn on exact border refinement first to load the polygons.';
+    bordercb.checked=false;return;
+  }
+  const feats=borderFeatures();
+  if(feats===null){
+    map.getSource('borders').setData({type:'FeatureCollection',features:[]});
+    bordernote.textContent='Source borders: zoom in further to draw them.';
+    return;
+  }
+  map.getSource('borders').setData({type:'FeatureCollection',features:feats});
+  bordernote.textContent=`${feats.length.toLocaleString()} source border polyline(s) in view, `+
+    `coloured by country, decoded from the refinement dataset — exactly the geometry the `+
+    `refined lookup tests against.`;
+}
+bordercb.onchange=updateBorders;
+
+// --- exact border refinement toggle ---
+let refineCells=null;   // decoded TFCR, kept so the checkbox can flip freely
+const refinecb=document.getElementById('refinecb');
+const refinenote=document.getElementById('refinenote');
+refinecb.onchange=async()=>{
+  if(refinecb.checked&&!refineCells){
+    refinecb.disabled=true;
+    refinenote.textContent='Downloading border refinement layer…';
+    let loaded=false;
+    for(const url of TFCR_URLS){
+      try{
+        const res=await fetch(url);
+        if(!res.ok)continue;
+        const buf=await res.arrayBuffer();
+        refinenote.textContent=`Decoding ${(buf.byteLength/1e6).toFixed(1)} MB…`;
+        await cc.loadRefinement(new Uint8Array(buf));
+        refineCells=cc._refine;
+        loaded=true;
+        refinenote.textContent=`Loaded: ${refineCells.size.toLocaleString()} border cells with `+
+          `exact polygon detail. Border answers are now near-exact (confidence 0.99).`;
+        break;
+      }catch(err){console.warn(url,err);}
+    }
+    refinecb.disabled=false;
+    if(!loaded){
+      refinecb.checked=false;
+      refinenote.textContent='Could not download the refinement layer, so the bundled best calls stay in use.';
+      return;
+    }
+  }else{
+    cc._refine=refinecb.checked?refineCells:null;
+    refinenote.textContent=refinecb.checked
+      ?'Exact polygon test active in border cells.'
+      :'Off: border cells use the bundled best call and its area share.';
+  }
+  if(lastPts)show(lastPts,lastLabel);   // re-classify so the effect is visible
+  updateBorders();                      // border layer follows refinement
+};
+document.getElementById('fileinput').onchange=async e=>{
+  const file=e.target.files[0];
+  if(!file)return;
+  document.getElementById('droperr').textContent='';
+  try{
+    const text=await file.text();
+    const pts=text.trimStart().startsWith('{')?parseGeojson(text):parseCsv(text);
+    if(pts.length>500000)throw new Error('too many points (max 500k)');
+    show(pts,file.name);
+  }catch(err){
+    document.getElementById('droperr').textContent=`Could not read ${file.name}: ${err.message}`;
+  }
+  e.target.value='';
+};
+document.querySelectorAll('#seg-proj button').forEach(b=>{b.onclick=()=>{
+  document.querySelectorAll('#seg-proj button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');
+  try{map.setProjection({type:b.dataset.v});}catch(e){console.warn(e);}
+};});
+window.__countrycheck={map,cc};   // console/debug handle
+</script>
+</body>
+</html>
+"""
+
 GH_ICON = ('<svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" '
            'aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 '
            '5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49'
@@ -1425,3 +2216,19 @@ with open(OUT_LANDCHECK, 'w') as f:
             .replace('__GHICON__', GH_ICON))
 print(f"{OUT_LANDCHECK}: {os.path.getsize(OUT_LANDCHECK)/1e6:.1f} MB "
       f"(incl. {len(tfls_b64)/1e3:.0f} KB b64 dataset)")
+
+shutil.copy2(COUNTRYCHECK_SDK, DOCS_COUNTRYCHECK_SDK)
+tfcs_b64 = base64.b64encode(open(COUNTRYCHECK_TFCS, 'rb').read()).decode()
+# border refinement (TFCR): fetched on demand from the data host in production;
+# copy into docs/data/ (gitignored) so the toggle works locally
+tfcr_src = 'countrycheck/data/borders_L10.tfcr'
+if os.path.isfile(tfcr_src):
+    os.makedirs('docs/data', exist_ok=True)
+    shutil.copy2(tfcr_src, 'docs/data/borders_L10.tfcr')
+with open(OUT_COUNTRYCHECK, 'w') as f:
+    f.write(countrycheck_html.replace('__TFCS_B64__', tfcs_b64)
+            .replace('__TFCR_URL__', f'{PMTILES_BASE_URL}/borders_L10.tfcr')
+            .replace('__GH__', GH)
+            .replace('__GHICON__', GH_ICON))
+print(f"{OUT_COUNTRYCHECK}: {os.path.getsize(OUT_COUNTRYCHECK)/1e6:.1f} MB "
+      f"(incl. {len(tfcs_b64)/1e3:.0f} KB b64 dataset)")

@@ -150,10 +150,10 @@ serve an L8 (~30 KB) or L12 (~3 MB) variant.
 
 ## Roadmap
 
-* **Country detection**: the run-length layer maps
-  each cell to a country id instead of a land bit (runs split at borders;
-  border cells carry clipped boundary polygons like TFLR does for
-  coastlines). Probably can use same formats, same lookup path, same confidence model.
+* ~~Country detection~~ — shipped as [countrycheck](../countrycheck/):
+  the run-length layer maps each cell to a country id instead of a land
+  bit (TFCS format), border cells carry clipped country polygons (TFCR)
+  like TFLR does for coastlines; same lookup path, same confidence model.
 * Level-12 (~1.8 km trifolds) variant for higher-precision use.
 * ~~Published packages~~ — packaged as `pip install landcheck` and
   `npm install landcheck` (0.1.0); the core SDK is `pip/npm install t3grid`.

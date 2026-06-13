@@ -49,8 +49,9 @@ Core grid behavior is exposed through two standalone SDKs:
 
 The distributable packages are named **`t3grid`** (the unscoped name `trifold`
 was already taken on both registries); the Python import stays `import trifold`.
-The landcheck application ships separately as `pip install landcheck` /
-`npm install landcheck`.
+The landcheck and countrycheck applications ship separately as
+`pip install landcheck` / `npm install landcheck` and
+`pip install countrycheck` / `npm install countrycheck`.
 
 The SDKs cover address codecs, hierarchy operations, point location, cell
 geometry, metrics, and GeoJSON. Python land classification is an optional
@@ -345,13 +346,29 @@ OSM simplified land polygons clipped per cell. See
 
 ---
 
-## 9. Repository layout
+## 9. Subproject: countrycheck — offline country lookup
+
+The same run-length approach applied to country detection: the level-10
+grid classified against GADM-derived country polygons extended with
+coastal waters (256 countries and territories) collapses into 222,403
+runs — a **323 KB** bundled dataset that answers *"which country is
+this point in?"* in ~1–13 µs, offline, in Python and JavaScript with
+identical results and a confidence per answer (measured 99.82%
+agreement with exact polygon containment; all residual error confined
+to self-flagged `border` answers). An optional second file stores the
+exact clipped country polygons per border cell, raising measured
+agreement to 100.0%. See [countrycheck/](countrycheck/).
+
+---
+
+## 10. Repository layout
 
 ```
 src/trifold/        library: address.py · core.py · classify.py · grid.py · cli.py
 scripts/            build_grids.py · build_comparison_dggs.py · build_a5_layer.py · build_more_dggs.py · make_site.py · make_pmtiles.sh
 worker/             cell-server.js (Cloudflare Worker, zero-data cell API)
 landcheck/          offline land/sea point lookup (Python + JS + 182 KB data)
+countrycheck/       offline country point lookup (Python + JS + 323 KB data)
 docs/               index.html (landing page + demo — GitHub Pages ready) ·
                     t3-technical-reference.md · img/
 data/               generated products (gitignored; see data/README.md)
@@ -446,7 +463,7 @@ Natural Earth 1:50m land data. The default build downloads and verifies the
 pinned v5.1.2 GeoJSON automatically. Use `--land PATH` to supply another
 local dataset instead.
 
-## 10. Roadmap
+## 11. Roadmap
 
 * neighbour traversal across face boundaries (edge-adjacency tables)
 * level 7–9 products + PMTiles in CI
