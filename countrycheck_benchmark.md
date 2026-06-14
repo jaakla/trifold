@@ -4,12 +4,15 @@ This benchmark measures Trifold `countrycheck` two ways:
 
 1. **Accuracy** against an independent real-world point set — 57,501 airports
    from OurAirports, each carrying an ISO country code.
-2. **Speed** against point-in-polygon queries over the same GADM-derived country
-   polygons (extended with coastal waters) in DuckDB, PostGIS, and BigQuery.
+2. **Speed** against point-in-polygon queries over the same country polygons in
+   DuckDB, PostGIS, and BigQuery.
 
-Local results were measured on June 13, 2026. BigQuery is documented but was not
-run in this pass; follow the procedure in section 5 to reproduce it on your own
-project.
+The country polygons take their **borders from the timezone-boundary-builder
+"with oceans" dataset** (OSM-derived, accurate, already extended into nearby
+territorial water) and their **identity/ISO codes from GADM** level-0, joined by
+maximum land overlap (see `sql/build_countries_coastal.sql`). Local results were
+measured on June 13, 2026. BigQuery is documented but was not run in this pass;
+follow the procedure in section 5 to reproduce it on your own project.
 
 All three scripts live in `scripts/` and are runnable from the repository root:
 
@@ -33,26 +36,26 @@ everything else is compared on countrycheck's `iso2`.
 
 | mode | agreement | airports placed in a country wrongly | no-country answers |
 |---|---:|---:|---:|
-| base (bundled best call) | **99.485%** | 199 | 97 |
-| with border refinement | **99.657%** | 100 | 97 |
+| base (bundled best call) | **99.496%** | 191 | 99 |
+| with border refinement | **99.680%** | 85 | 99 |
 
 By answer kind, the refined run breaks down as:
 
 | kind | airports | agreement |
 |---|---:|---:|
-| `country` (cell wholly in one country) | 56,636 | 99.94% |
-| `border` (mixed cell) | 768 | 91.54% |
-| `none` (open water) | 97 | 0% by definition |
+| `country` (cell wholly in one country) | 56,673 | 99.91% |
+| `border` (mixed cell) | 729 | 95.20% |
+| `none` (open water) | 99 | 0% by definition |
 
-The refinement only touches the 768 airports that fall in a **border cell**, and
+The refinement only touches the 729 airports that fall in a **border cell**, and
 that is exactly where it pays off:
 
 | border-cell airports | agreement |
 |---|---:|
-| base best-call | 78.65% |
-| refined exact polygon | **91.54%** |
+| base best-call | 80.66% |
+| refined exact polygon | **95.20%** |
 
-The refinement corrected a net 99 of those 768 border airports. The residual
+The refinement corrected a net 106 of those 729 border airports. The residual
 disagreement is dominated by genuine source differences, not location error:
 airports on disputed or border territory that GADM assigns differently
 (`KR`→`KP` along the Korean DMZ, `CA`→`US` for fields sitting exactly on the
@@ -84,42 +87,44 @@ time.
 
 | engine / mode | setup | median query | min-max | points/s | us/point | matched |
 |---|---:|---:|---:|---:|---:|---:|
-| Trifold base | 0.073 s | **0.247 s** | 0.238-0.253 s | 405,255 | 2.47 | 33,826 |
-| Trifold + border refinement | 1.497 s | **0.261 s** | 0.256-0.266 s | 383,804 | 2.61 | 33,827 |
-| PostGIS 3.6.3 | ~8 s | **3.093 s** | 3.086-3.111 s | 32,329 | 30.9 | 33,827 |
-| DuckDB 1.5.3 Spatial | 2.84 s | **16.925 s** | 16.737-17.274 s | 5,909 | 169.3 | 33,827 |
+| Trifold base | 0.065 s | **0.221 s** | 0.218-0.230 s | 452,594 | 2.21 | 33,463 |
+| Trifold + border refinement | 1.995 s | **0.234 s** | 0.231-0.241 s | 428,151 | 2.34 | 33,463 |
+| PostGIS 3.6.3 | ~6 s | **1.694 s** | 1.686-1.736 s | 59,043 | 16.9 | 33,463 |
+| DuckDB 1.5.3 Spatial | 3.18 s | **21.499 s** | 21.163-21.813 s | 4,651 | 215.0 | 33,463 |
 | BigQuery on-demand | managed | not run | | | | |
 
 ```text
-Trifold base     405,255 pts/s  ████████████████████████████████████████
-Trifold + refine 383,804 pts/s  █████████████████████████████████████▉
-PostGIS           32,329 pts/s  ███▏
-DuckDB Spatial     5,909 pts/s  ▌
+Trifold base     452,594 pts/s  ████████████████████████████████████████
+Trifold + refine 428,151 pts/s  █████████████████████████████████████▊
+PostGIS           59,043 pts/s  █████▏
+DuckDB Spatial     4,651 pts/s  ▍
 ```
 
-For this batch, refined Trifold was 11.9x faster than PostGIS and 65.0x faster
-than DuckDB; base Trifold was 12.5x and 68.6x. PostGIS was 5.5x faster than
-DuckDB on these complex country polygons. These ratios describe this specific
-global, uniformly random workload.
+For this batch, refined Trifold was 7.3x faster than PostGIS and 92x faster than
+DuckDB; base Trifold was 7.7x and 97x. PostGIS was 12.7x faster than DuckDB on
+these polygons (its lateral GiST join handles the tz polygons, which have far
+fewer disjoint island parts than the previous GADM geometry, much better than
+DuckDB's R-tree scan). These ratios describe this specific global, uniformly
+random workload.
 
 ### Singular: one point per call, 1,000 calls per run
 
 | engine / mode | median run | min-max | queries/s | us/query | matched |
 |---|---:|---:|---:|---:|---:|
-| Trifold base scalar | **0.01252 s** | 0.0124-0.0127 s | 79,849 | 12.5 | 352 |
-| Trifold + refinement scalar | **0.01402 s** | 0.0139-0.0222 s | 71,341 | 14.0 | 352 |
-| DuckDB 1.5.3 Spatial | **0.414 s** | 0.409-0.424 s | 2,415 | 414 | 352 |
-| PostGIS 3.6.3 over localhost/Docker | **0.867 s** | 0.856-0.904 s | 1,153 | 867 | 352 |
+| Trifold base scalar | **0.01138 s** | 0.0113-0.0117 s | 87,848 | 11.4 | 348 |
+| Trifold + refinement scalar | **0.01172 s** | 0.0116-0.0119 s | 85,361 | 11.7 | 348 |
+| DuckDB 1.5.3 Spatial | **0.442 s** | 0.435-0.451 s | 2,261 | 442 | 348 |
+| PostGIS 3.6.3 over localhost/Docker | **0.791 s** | 0.785-0.812 s | 1,265 | 791 | 348 |
 | BigQuery | not run | follow section 5 | | | |
 
 ```text
-Trifold base scalar  79,849 q/s  ████████████████████████████████████████
-Trifold + refine     71,341 q/s  ███████████████████████████████████▊
-DuckDB Spatial        2,415 q/s  █▏
-PostGIS               1,153 q/s  ▌
+Trifold base scalar  87,848 q/s  ████████████████████████████████████████
+Trifold + refine     85,361 q/s  ██████████████████████████████████████▉
+DuckDB Spatial        2,261 q/s  █
+PostGIS               1,265 q/s  ▌
 ```
 
-Trifold base scalar was 33.1x faster than embedded DuckDB and 69.3x faster than
+Trifold base scalar was 38.9x faster than embedded DuckDB and 69.4x faster than
 PostGIS through the host-to-Docker TCP connection. The singular result includes
 language-driver and query-call overhead; the PostGIS path includes localhost TCP
 and Docker VM transport while DuckDB is embedded in the Python process.
@@ -130,11 +135,11 @@ DuckDB and PostGIS returned byte-identical answers for the 1,000 singular points
 (same SHA-256 over the per-point `gid_0` sequence):
 
 ```text
-fa29d26a64a2b03569d51f86643c47ae5b6e2e6396ef9747d62c2aca0ec87a71
+7eb1e6e1ca36fa64cbdda58aaccefa4c97459ec0a72d5b1d76f08f3a35f5e5e9
 ```
 
 All three local engines agreed on the matched-country count for the full
-100,000-point batch: 33,827 points fall in some country (the rest are open
+100,000-point batch: 33,463 points fall in some country (the rest are open
 ocean → no country).
 
 ## 4. countrycheck vs exact SQL containment
@@ -145,15 +150,17 @@ same `countries_coastal` polygons:
 
 | Trifold mode | disagreements / 100,000 | agreement |
 |---|---:|---:|
-| base | 160 | 99.840% |
-| border-refined | **0** | **100.000%** |
+| base | 168 | 99.832% |
+| border-refined | **5** | **99.995%** |
 
-Every base disagreement is a border cell, and the refinement resolves all of
-them on this sample — refined countrycheck reproduces exact point-in-polygon
-containment here, while running ~12x faster than PostGIS and ~65x faster than
-DuckDB performing that same containment. (This is consistent with the library's
-documented accuracy: 99.82% base / 100.0% refined on a separate 30,000-point
-random sample.)
+Every base disagreement is a border cell. The refinement resolves all but 5 of
+them; those 5 are points in coastal water claimed by two countries, where the SQL
+tie-break (larger land area) and countrycheck's build-time assignment differ —
+not a containment error. So refined countrycheck reproduces exact point-in-polygon
+containment to 99.995% here, while running ~7x faster than PostGIS and ~92x faster
+than DuckDB performing that same containment. (Consistent with the library's
+documented 99.82% base / 100.0% refined on a separate 30,000-point random
+sample.)
 
 To reproduce the cross-check in one DuckDB session after section 6 setup:
 
@@ -196,12 +203,14 @@ natively on macOS. This is not a cycle-perfect hardware comparison.
 
 ```text
 Country polygons: osm-vector/countries_coastal.geojson
-Bytes:            72,741,597 (69.37 MiB)
+Bytes:            119,955,620 (114.4 MiB)
 Features:         256 MultiPolygons, one per GADM gid_0
 Key columns:      gid_0, iso2, land_area_km2, has_coastal_extension
 CRS:              WGS84 longitude-latitude
-Source:           GADM admin-0, extended with distance-based coastal waters
-                  (not legal EEZ); 7 X-coded territories without ISO codes.
+Borders:          timezone-boundary-builder "with oceans" (OSM-derived), which
+                  also supplies the territorial-water extent; GADM admin-0 joined
+                  for identity/ISO by max land overlap (sql/build_countries_coastal.sql).
+                  7 X-coded territories without ISO codes.
 
 Ground-truth points: osm-vector/airports.geojson (OurAirports)
 Features:            57,501 Points with iso_country (ISO 3166-1 alpha-2)
@@ -215,10 +224,10 @@ Stored footprint after loading and indexing:
 
 | representation | bytes | MiB |
 |---|---:|---:|
-| Trifold TFCS base | 323,038 | 0.31 |
-| Trifold TFCS + TFCR | 12,127,421 | 11.57 |
-| DuckDB database | 42,479,616 | 40.51 |
-| PostGIS countries + points + indexes | 63,266,816 | 60.34 |
+| Trifold TFCS base | 323,646 | 0.31 |
+| Trifold TFCS + TFCR | 19,528,154 | 18.62 |
+| DuckDB database | 78,655,488 | 75.01 |
+| PostGIS countries + points + indexes | 102,670,336 | 97.92 |
 
 ## Benchmark contract
 
@@ -388,9 +397,11 @@ loader and job-statistics commands; the only change is `land`→`countries` and 
 - Trifold wins both local modes because the lookup is a compact hierarchical cell
   lookup; only refinement-covered border cells pay any polygon cost.
 - Country polygons are heavier for the SQL engines than the land/sea mask in
-  `benchmark.md`, so the speed gap is wider here (12-69x vs 3-30x).
+  `benchmark.md`, so the speed gap is wider here (7-97x vs 3-30x). DuckDB's
+  R-tree scan suffers most; PostGIS's lateral GiST join holds up far better.
 - SQL engines return exact containment for the loaded polygons; refined Trifold
-  matched that exactly on this 100,000-point sample, base Trifold to 99.84%.
+  matched that to 99.995% on this 100,000-point sample (5 coastal-overlap
+  tie-breaks), base Trifold to 99.83%.
 - Singular mode measures sequential warm-client latency; batch mode measures 100K
   set throughput. Neither covers concurrency, updates, cold starts, or non-local
   production network latency.

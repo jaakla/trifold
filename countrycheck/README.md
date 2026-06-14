@@ -37,16 +37,22 @@ cc.check(-0.1276, 51.5072);
 ## How it works
 
 The Trifold level-10 grid (~7 km triangles, 21M cells globally) is
-classified against GADM-derived country polygons extended with coastal
-waters (256 countries and territories, including X-coded ones like
-Kosovo or the Caspian Sea that have no ISO code): 7.17M cells belong to
-some country, of which 195,062 are *border* cells (crossed by a
-country/country or country/water edge) and the rest are wholly interior.
-Because Trifold addresses sort hierarchically, every cell at any level
-maps to a contiguous range in the canonical level-10 index space
-(`face·4¹⁰ + path`), so the entire classification collapses to
-**222,403 run-length intervals** — 323 KB compressed, including the
-country table and, for every border cell, the best country call with a
+classified against country polygons extended with coastal waters (256
+countries and territories, including X-coded ones like Kosovo or the
+Caspian Sea that have no ISO code). The **borders come from the
+timezone-boundary-builder "with oceans" polygons** (OSM-derived, so they
+follow the true line and already reach into nearby territorial water);
+GADM level-0 supplies only the country identity and ISO codes, joined by
+maximum land overlap. (That timezone source carries occasional antenna
+artifacts — a vertex spiking off the border and back; `scripts/despike_countries.py`
+removes them before the grid build, touching 0.02% of vertices with no
+measurable area change.) 6.90M cells belong to some country, of which
+195,473 are *border* cells (crossed by a country/country or country/water
+edge) and the rest are wholly interior. Because Trifold addresses sort
+hierarchically, every cell at any level maps to a contiguous range in the
+canonical level-10 index space (`face·4¹⁰ + path`), so the entire
+classification collapses to **222,855 run-length intervals** — 324 KB
+compressed, including the country table and, for every border cell, the best country call with a
 4-bit area share.
 
 A lookup is: locate the point's level-10 triangle (pure float math, no
@@ -59,33 +65,35 @@ dependencies), then binary-search the runs.
 | `border` | mixed cell | best call (may be `None`) | call's area share |
 | `border` + `refined` | decided by exact polygon test | exact | 0.99 |
 
-**Measured accuracy** (30,000 uniform random points vs. exact polygon
-containment in the source dataset): 99.82% agreement overall; `country`
-and `none` answers 100% correct; *all* residual error lives in `border`
+**Measured accuracy** (100,000 uniform random points vs. exact polygon
+containment in the source dataset): 99.83% agreement overall; `country`
+and `none` answers correct; *all* residual error lives in `border`
 answers, which self-report their lower confidence. With the border
-refinement loaded, agreement was **100.0%** on the same sample.
+refinement loaded, agreement is **99.995%** (5 points in 100,000, all
+coastal water claimed by two countries where the tie-break differs).
 
 **Independent accuracy** — against 57,501 real airports (OurAirports,
-each tagged with an ISO country code), countrycheck places **99.49%**
-in the right country with the bundled data and **99.66%** with the
-refinement. Interior-country answers are 99.94% right; the refinement
-works only on the 768 airports that fall in a *border cell*, lifting
-those from 78.65% to 91.54%. The remaining disagreements are mostly
-genuine source differences (disputed/border territory GADM assigns
+each tagged with an ISO country code), countrycheck places **99.50%**
+in the right country with the bundled data and **99.68%** with the
+refinement. Interior-country answers are 99.91% right; the refinement
+works only on the 729 airports that fall in a *border cell*, lifting
+those from 80.66% to **95.20%**. The remaining disagreements are mostly
+genuine source differences (disputed/border territory the sources assign
 differently, dependencies coded to a parent state, offshore or
 placeholder coordinates). Reproduce with
 `scripts/accuracy_countrycheck_airports.py`.
 
-Caveats inherited from the source data: coastal waters are an
-approximate distance-based assignment, not legal EEZ boundaries;
-disputed territories follow GADM's mapping (e.g. Crimea, Western
-Sahara); lakes belong to their surrounding country except the Caspian
-Sea, which is its own `XCA` entry.
+Caveats inherited from the source data: coastal waters come from the
+timezone "with oceans" polygons (an operational maritime extent, not
+legal EEZ); disputed/border territory follows whatever the two sources
+encode (e.g. Crimea, Western Sahara, the Korean DMZ); lakes belong to
+their surrounding country except the Caspian Sea, which is its own `XCA`
+entry.
 
 ## Optional border refinement
 
 For applications that need exact borders, a second dataset
-(`borders_L10.tfcr`, **11.8 MB**) stores the source country polygons
+(`borders_L10.tfcr`, **19.2 MB**) stores the source country polygons
 clipped to every border cell, quantized to a cell-local 16-bit grid
 (~0.1 m) with delta-varint rings, one zone per country present in the
 cell. When loaded, border answers switch from the bulk best-call guess
@@ -127,20 +135,21 @@ ES module, works with browser + Node.
 ## Benchmark vs SQL spatial engines
 
 Same job for every engine: assign a country (`gid_0`) to 100,000
-sphere-uniform random points against the same GADM country polygons.
-Median of seven warm runs on an Apple M5 Pro (June 2026). Refined
-countrycheck reproduced exact point-in-polygon containment on all
-100,000 points (0 disagreements; base 99.84%) while running far faster:
+sphere-uniform random points against the same country polygons. Median of
+seven warm runs on an Apple M5 Pro (June 2026). Refined countrycheck
+reproduced exact point-in-polygon containment on 99.995% of the points
+(5 of 100,000, all coastal-overlap tie-breaks; base 99.83%) while running
+far faster:
 
 | engine | batch | points/s | vs Trifold |
 |---|---:|---:|---:|
-| **Trifold base** | 0.247 s | **405,255** | 1× |
-| **Trifold + refinement** | 0.261 s | **383,804** | 1× |
-| PostGIS 3.6.3 | 3.093 s | 32,329 | 11.9× slower |
-| DuckDB 1.5.3 Spatial | 16.925 s | 5,909 | 65× slower |
+| **Trifold base** | 0.221 s | **452,594** | 1× |
+| **Trifold + refinement** | 0.234 s | **428,151** | 1× |
+| PostGIS 3.6.3 | 1.694 s | 59,043 | 7.7× slower |
+| DuckDB 1.5.3 Spatial | 21.499 s | 4,651 | 97× slower |
 
-Called one point at a time, Trifold answered ~80,000 lookups/s vs 2,415
-(DuckDB) and 1,153 (PostGIS). DuckDB and PostGIS returned byte-identical
+Called one point at a time, Trifold answered ~88,000 lookups/s vs 2,261
+(DuckDB) and 1,265 (PostGIS). DuckDB and PostGIS returned byte-identical
 answers. Full methodology, the singular numbers, dataset manifest, the
 airport accuracy test and the BigQuery procedure are in
 [`countrycheck_benchmark.md`](../countrycheck_benchmark.md); the scripts

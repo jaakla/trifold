@@ -1518,9 +1518,9 @@ countrycheck_html = """<!doctype html>
 <section class="hero">
   <h1>countrycheck: which <span style="color:var(--country)">country</span> is this point in?</h1>
   <p class="lede">An offline lookup library built on the Trifold grid. The level-10 grid
-  (~7&nbsp;km cells) classified against GADM-derived country polygons &mdash; extended with
-  coastal waters and including X-coded territories like Kosovo and the Caspian Sea &mdash;
-  collapses into a <b>323&nbsp;KB</b> dataset that names the country anywhere on Earth in
+  (~7&nbsp;km cells) classified against country polygons with accurate OSM-derived borders &mdash;
+  extended with coastal waters and including X-coded territories like Kosovo and the Caspian Sea
+  &mdash; collapses into a <b>323&nbsp;KB</b> dataset that names the country anywhere on Earth in
   microseconds, with a confidence value for every answer. Python and JavaScript give identical
   results. <b>This page runs the real JS library in your browser</b>; the dataset is embedded
   right in this HTML file.</p>
@@ -1565,7 +1565,7 @@ countrycheck_html = """<!doctype html>
             font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink)">
           <input type="checkbox" id="refinecb" style="margin-top:2px">
           <span>exact polygon test wherever a border crosses a cell
-            (downloads ~11.8&nbsp;MB once)</span></label>
+            (downloads ~19&nbsp;MB once)</span></label>
         <div class="note" id="refinenote">Off: border cells use the bundled best-call
         with its area share as confidence. On: exact country/country and coastline
         borders. Watch how the counts, confidence and lookup rate change.</div></div>
@@ -1688,10 +1688,12 @@ EST  iso2=EE  name='Estonia'  kind=country  confidence=1.000  share=1.0  cell=TF
       present with zigzag-varint rings and the even-odd rule. A point-in-polygon test then decides
       the exact country (or none) in those cells.</p></div>
   </div>
-  <p style="margin-top:14px">The data is built against GADM-derived country polygons extended with
-  coastal waters: 256 countries and territories, 7.17M level-10 cells belonging to some country, of
-  which 195,062 are border cells. Full documentation, the one-pass <code>build.py</code> and the
-  cross-language test suite live in
+  <p style="margin-top:14px">The borders come from the timezone-boundary-builder &ldquo;with oceans&rdquo;
+  polygons (OSM-derived, already reaching into territorial water); GADM level-0 supplies only the
+  country identity and ISO codes, joined by max land overlap. 256 countries and territories, 6.90M
+  level-10 cells belonging to some country, of which 195,473 are border cells. Full documentation,
+  the one-pass <code>build.py</code>, the PostGIS source build (<code>sql/build_countries_coastal.sql</code>)
+  and the cross-language test suite live in
   <a href="__GH__/tree/main/countrycheck" target="_blank"><code>countrycheck/</code> on GitHub</a>.
   Roadmap: an L12 (~1.8&nbsp;km) variant and timezone detection from the same source data.</p>
 </section>
@@ -1700,60 +1702,61 @@ EST  iso2=EE  name='Estonia'  kind=country  confidence=1.000  share=1.0  cell=TF
   <h2>Accuracy: tested on 57,501 real airports</h2>
   <p>Ground truth is the <a href="https://ourairports.com/" target="_blank">OurAirports</a> dump
   &mdash; 57,501 points, each tagged with an ISO country code from an unrelated source.
-  countrycheck places <b>99.49%</b> of them in the correct country from the bundled 323&nbsp;KB
-  data, and <b>99.66%</b> with the border refinement loaded. Interior-country answers are 99.94%
-  correct; the refinement works only on the 768 airports that fall in a <i>border cell</i>, and
-  there it lifts agreement from 78.65% to 91.54%.</p>
+  countrycheck places <b>99.50%</b> of them in the correct country from the bundled 323&nbsp;KB
+  data, and <b>99.68%</b> with the border refinement loaded. Interior-country answers are 99.91%
+  correct; the refinement works only on the 729 airports that fall in a <i>border cell</i>, and
+  there it lifts agreement from 80.66% to <b>95.20%</b> &mdash; the payoff of the accurate
+  OSM-derived borders.</p>
   <div class="cards">
-    <div class="card"><b>99.49% &rarr; 99.66%</b><p>overall agreement with airport country codes,
-      bundled vs. border-refined. The residual is mostly disputed/border territory GADM maps
+    <div class="card"><b>99.50% &rarr; 99.68%</b><p>overall agreement with airport country codes,
+      bundled vs. border-refined. The residual is mostly disputed/border territory the sources map
       differently, dependencies coded to a parent state, and offshore or placeholder
       coordinates.</p></div>
-    <div class="card"><b>100.000% refined</b><p>against exact SQL point-in-polygon containment over
-      the same source polygons (100,000 random points): the refinement resolved every one of the
-      160 base-mode border disagreements. Base mode: 99.84%.</p></div>
+    <div class="card"><b>99.995% refined</b><p>against exact SQL point-in-polygon containment over
+      the same source polygons (100,000 random points): the refinement resolved all but 5 of the
+      168 base-mode border disagreements (those 5 are coastal-overlap tie-breaks). Base mode: 99.83%.</p></div>
   </div>
   <p class="muted">Reproduce with <code>scripts/accuracy_countrycheck_airports.py</code> (airports)
   and <code>scripts/benchmark_countrycheck.py</code> (vs. SQL containment).</p>
 </section>
 
 <section id="benchmark">
-  <h2>Benchmark: 12&ndash;65&times; faster than SQL spatial engines</h2>
+  <h2>Benchmark: 7&ndash;97&times; faster than SQL spatial engines</h2>
   <p>One workload, four engines: assign a country (<code>gid_0</code>) to 100,000 sphere-uniform
-  random points against the same GADM country polygons. Median of seven warm runs, Apple M5 Pro,
-  June 2026. The refined Trifold answers reproduce exact polygon containment (see above) while
-  running an order of magnitude faster &mdash; true to the name, never less than a three-fold
-  margin. Called one point at a time, the gap widens further.</p>
+  random points against the same country polygons. Median of seven warm runs, Apple M5 Pro,
+  June 2026. The refined Trifold answers reproduce exact polygon containment to 99.995% (see above)
+  while running an order of magnitude faster &mdash; ~7&times; PostGIS, ~97&times; DuckDB Spatial.
+  Called one point at a time, the gap holds.</p>
   <div class="twocol">
     <div class="bench">
       <h3>Batch &middot; 100,000 points per call</h3>
       <div class="brow"><span class="bname">Trifold base</span>
         <div class="btrack"><div class="bfill tf" style="width:100%"></div></div>
-        <span class="bval">405,255 pts/s</span></div>
+        <span class="bval">452,594 pts/s</span></div>
       <div class="brow"><span class="bname">Trifold + refine</span>
-        <div class="btrack"><div class="bfill tf" style="width:94.7%"></div></div>
-        <span class="bval">383,804</span></div>
+        <div class="btrack"><div class="bfill tf" style="width:94.6%"></div></div>
+        <span class="bval">428,151</span></div>
       <div class="brow"><span class="bname">PostGIS 3.6</span>
-        <div class="btrack"><div class="bfill" style="width:7.98%"></div></div>
-        <span class="bval">32,329</span></div>
+        <div class="btrack"><div class="bfill" style="width:13.0%"></div></div>
+        <span class="bval">59,043</span></div>
       <div class="brow"><span class="bname">DuckDB Spatial</span>
-        <div class="btrack"><div class="bfill" style="width:1.46%"></div></div>
-        <span class="bval">5,909</span></div>
+        <div class="btrack"><div class="bfill" style="width:1.03%"></div></div>
+        <span class="bval">4,651</span></div>
     </div>
     <div class="bench">
       <h3>Singular &middot; one point per call</h3>
       <div class="brow"><span class="bname">Trifold base</span>
         <div class="btrack"><div class="bfill tf" style="width:100%"></div></div>
-        <span class="bval">79,849 q/s</span></div>
+        <span class="bval">87,848 q/s</span></div>
       <div class="brow"><span class="bname">Trifold + refine</span>
-        <div class="btrack"><div class="bfill tf" style="width:89.3%"></div></div>
-        <span class="bval">71,341</span></div>
+        <div class="btrack"><div class="bfill tf" style="width:97.2%"></div></div>
+        <span class="bval">85,361</span></div>
       <div class="brow"><span class="bname">DuckDB Spatial</span>
-        <div class="btrack"><div class="bfill" style="width:3.02%"></div></div>
-        <span class="bval">2,415</span></div>
+        <div class="btrack"><div class="bfill" style="width:2.57%"></div></div>
+        <span class="bval">2,261</span></div>
       <div class="brow"><span class="bname">PostGIS 3.6</span>
         <div class="btrack"><div class="bfill" style="width:1.44%"></div></div>
-        <span class="bval">1,153</span></div>
+        <span class="bval">1,265</span></div>
     </div>
   </div>
   <p class="muted" style="margin-top:12px">DuckDB 1.5.3 and PostGIS 3.6.3 compute exact containment
@@ -1767,8 +1770,9 @@ EST  iso2=EE  name='Estonia'  kind=country  confidence=1.000  share=1.0  cell=TF
 <footer>
   countrycheck &middot; a <a href="index.html">Trifold T3</a> library &middot; MIT license &middot;
   <a href="__GH__/tree/main/countrycheck" target="_blank">source</a> &middot;
-  country polygons derived from <a href="https://gadm.org/" target="_blank">GADM</a>,
-  extended with coastal waters
+  borders from the OSM-based <a href="https://github.com/evansiroky/timezone-boundary-builder"
+  target="_blank">timezone-boundary-builder</a>, identity from
+  <a href="https://gadm.org/" target="_blank">GADM</a>
 </footer>
 
 <script type="module">

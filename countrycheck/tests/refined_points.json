@@ -1,3040 +1,718 @@
 [
  {
-  "lon": -68.48375849,
-  "lat": -52.41607036,
-  "country": "CHL",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TDABR1K"
- },
- {
-  "lon": -4.28063931,
-  "lat": 9.73493824,
-  "country": "BFA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TEAJE4B"
- },
- {
-  "lon": 171.56630053,
-  "lat": -44.41975963,
+  "lon": -63.62373553,
+  "lat": -54.96166355,
   "country": null,
   "kind": "border",
   "refined": true,
   "confidence": 0.99,
-  "cell": "T3AKBY4"
+  "cell": "TDAB12D"
  },
  {
-  "lon": -145.15702496,
-  "lat": -15.55694955,
+  "lon": -1.2965556,
+  "lat": 10.97513887,
+  "country": "GHA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TEAJBDJ"
+ },
+ {
+  "lon": 138.526833,
+  "lat": -16.69208377,
   "country": null,
   "kind": "border",
   "refined": true,
   "confidence": 0.99,
-  "cell": "T7ATW12"
+  "cell": "T3A7NPC"
  },
  {
-  "lon": 64.65480944,
-  "lat": 25.03287332,
+  "lon": -151.96255112,
+  "lat": -16.06858026,
   "country": null,
   "kind": "border",
   "refined": true,
   "confidence": 0.99,
-  "cell": "T5A34Z5"
+  "cell": "T7ADR2V"
  },
  {
-  "lon": -22.96855751,
-  "lat": -72.27560073,
+  "lon": 168.78349937,
+  "lat": 9.8167849,
   "country": null,
   "kind": "border",
   "refined": true,
   "confidence": 0.99,
-  "cell": "TJAT01A"
+  "cell": "T4AWQJQ"
  },
  {
-  "lon": 171.35678033,
-  "lat": 8.90318276,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T4AYNES"
- },
- {
-  "lon": -1.7702231,
-  "lat": 43.45960586,
-  "country": "FRA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFAA3TV"
- },
- {
-  "lon": -67.08832517,
-  "lat": 1.21336832,
-  "country": "BRA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TBA7ADT"
- },
- {
-  "lon": 152.95577347,
-  "lat": 5.88534976,
-  "country": "FSM",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T4A4YTD"
- },
- {
-  "lon": -101.67497103,
-  "lat": 29.73616993,
-  "country": "MEX",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TBATN4K"
- },
- {
-  "lon": 139.72438458,
-  "lat": 10.29164695,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T0A63NN"
- },
- {
-  "lon": 22.81815041,
-  "lat": -13.01284777,
-  "country": "ZMB",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKAF9EG"
- },
- {
-  "lon": 8.30208091,
-  "lat": 35.38693485,
-  "country": "DZA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFAAX4P"
- },
- {
-  "lon": -100.93845003,
-  "lat": -72.2433062,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T8APZDR"
- },
- {
-  "lon": 72.148665,
-  "lat": 10.27635281,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T1AMWJX"
- },
- {
-  "lon": -155.26370938,
-  "lat": 20.27817895,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T7A44JS"
- },
- {
-  "lon": -25.3158949,
-  "lat": 16.68121309,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TEA5A35"
- },
- {
-  "lon": 174.07840852,
-  "lat": -39.76480734,
-  "country": "NZL",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T3AMM5R"
- },
- {
-  "lon": 18.30865639,
-  "lat": -28.85174133,
-  "country": "NAM",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T9AMVFT"
- },
- {
-  "lon": 51.85795991,
-  "lat": 12.20066704,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5A41MC"
- },
- {
-  "lon": -171.1772587,
-  "lat": -9.18090703,
-  "country": "TKL",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T7A8GMJ"
- },
- {
-  "lon": 29.56265418,
-  "lat": -2.83941027,
-  "country": "BDI",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKAZKGJ"
- },
- {
-  "lon": 34.2676615,
-  "lat": 4.48871099,
-  "country": "KEN",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKAWKEA"
- },
- {
-  "lon": 174.00027165,
-  "lat": -38.80658206,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T3AMW52"
- },
- {
-  "lon": -162.33950621,
-  "lat": 59.32213953,
-  "country": "USA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T6ATC8Z"
- },
- {
-  "lon": -73.03107666,
-  "lat": -50.75899856,
-  "country": "ARG",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TDAA552"
- },
- {
-  "lon": -57.86916198,
-  "lat": -19.28516656,
-  "country": "BRA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TCA486S"
- },
- {
-  "lon": -83.79154459,
-  "lat": -73.55502391,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T8AMNFX"
- },
- {
-  "lon": -76.94786571,
-  "lat": -18.27116526,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TCAZDG9"
- },
- {
-  "lon": -67.00854118,
-  "lat": 1.67062281,
-  "country": "COL",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TBA7AEA"
- },
- {
-  "lon": -65.45993046,
-  "lat": -47.60270847,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TDAECG1"
- },
- {
-  "lon": 165.02955378,
-  "lat": 11.706243,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T4AWVV0"
- },
- {
-  "lon": -16.80628613,
-  "lat": 78.75865475,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFAWBYA"
- },
- {
-  "lon": 166.71598639,
-  "lat": 55.34167843,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T6A8BW1"
- },
- {
-  "lon": 55.64477562,
-  "lat": 50.56977941,
-  "country": "KAZ",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5ADRXV"
- },
- {
-  "lon": 21.67979997,
-  "lat": 10.30273412,
-  "country": "TCD",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKA6N6X"
- },
- {
-  "lon": -61.60560277,
-  "lat": 15.19297204,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TBA649K"
- },
- {
-  "lon": 41.50816858,
-  "lat": 14.56084849,
-  "country": "ERI",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKAGE31"
- },
- {
-  "lon": 30.64898233,
-  "lat": -3.40034572,
-  "country": "BDI",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKAZGRG"
- },
- {
-  "lon": 19.99122942,
-  "lat": -25.57391913,
-  "country": "NAM",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKAB90D"
- },
- {
-  "lon": -58.10726311,
-  "lat": -32.81400748,
-  "country": "URY",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TDARC49"
- },
- {
-  "lon": -70.55065623,
-  "lat": 71.44839757,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFA7EMS"
- },
- {
-  "lon": 43.30482873,
-  "lat": 12.80243287,
-  "country": "YEM",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKAG9XN"
- },
- {
-  "lon": -95.08188455,
-  "lat": 18.86153746,
-  "country": "MEX",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TBAJC08"
- },
- {
-  "lon": -175.63171231,
-  "lat": 64.61061698,
-  "country": "RUS",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T6AY91V"
- },
- {
-  "lon": 68.39782779,
-  "lat": -48.73446023,
-  "country": "ATF",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T9A7M7F"
- },
- {
-  "lon": 144.37822373,
-  "lat": 7.44153973,
-  "country": "FSM",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T4A79JK"
- },
- {
-  "lon": 15.51692272,
-  "lat": 21.10279986,
-  "country": "NER",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKA15AX"
- },
- {
-  "lon": -63.58677169,
-  "lat": 2.40935487,
-  "country": "VEN",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TBA1DPX"
- },
- {
-  "lon": 13.74691564,
-  "lat": 38.2997762,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5AMTPW"
- },
- {
-  "lon": 139.15483706,
-  "lat": 73.66729793,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T6A6SZP"
- },
- {
-  "lon": 37.08328506,
-  "lat": 14.37102113,
-  "country": "ERI",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKAXDNJ"
- },
- {
-  "lon": -87.29937922,
-  "lat": 19.18491718,
-  "country": "MEX",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TBAYY0V"
- },
- {
-  "lon": 13.00655166,
-  "lat": -8.67959597,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKA9Z2Y"
- },
- {
-  "lon": 51.36058721,
-  "lat": 10.79741447,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5A43QQ"
- },
- {
-  "lon": -6.02823541,
-  "lat": 25.71937658,
-  "country": "MRT",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TEAM3CY"
- },
- {
-  "lon": 68.2734594,
-  "lat": -49.37717601,
-  "country": "ATF",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T9A7MXH"
- },
- {
-  "lon": 21.55277435,
-  "lat": 48.5468042,
-  "country": "SVK",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFACZT4"
- },
- {
-  "lon": 92.38639269,
-  "lat": 22.95043381,
-  "country": "IND",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T1AYG7D"
- },
- {
-  "lon": 29.24886334,
-  "lat": -29.64027211,
-  "country": "LSO",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T9AK20F"
- },
- {
-  "lon": 26.79221445,
-  "lat": -19.97428535,
-  "country": "BWA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKACJK3"
- },
- {
-  "lon": -3.82266,
-  "lat": 36.49000611,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TAAB1E4"
- },
- {
-  "lon": 20.432524,
-  "lat": -17.92004817,
-  "country": "NAM",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKAFMD9"
- },
- {
-  "lon": 159.88023169,
-  "lat": 6.82749617,
-  "country": "FSM",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T4AXJN1"
- },
- {
-  "lon": 81.50749945,
-  "lat": 6.09132884,
-  "country": "LKA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T1AQ1MJ"
- },
- {
-  "lon": 15.59327317,
-  "lat": 31.77447842,
-  "country": "LBY",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5ANSQ2"
- },
- {
-  "lon": 91.40893596,
-  "lat": 23.04171067,
-  "country": "BGD",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T1AV06S"
- },
- {
-  "lon": -8.23785399,
-  "lat": 70.79011617,
-  "country": "SJM",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFAZFJK"
- },
- {
-  "lon": 4.1354379,
-  "lat": 37.12571301,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFAAKXG"
- },
- {
-  "lon": 143.93321606,
-  "lat": 51.10876955,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T0AJGKB"
- },
- {
-  "lon": 27.92766013,
-  "lat": 59.56509714,
-  "country": "RUS",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFAVH6W"
- },
- {
-  "lon": 120.50311087,
-  "lat": 25.93218266,
-  "country": "CHN",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T0A52JA"
- },
- {
-  "lon": 154.10546854,
-  "lat": 48.40582058,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T0ATHYN"
- },
- {
-  "lon": 79.38665445,
-  "lat": 9.55088489,
-  "country": "IND",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T1AQZ0M"
- },
- {
-  "lon": 34.19806223,
-  "lat": 51.93747201,
-  "country": "UKR",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5AJPMW"
- },
- {
-  "lon": -65.31312534,
-  "lat": -10.88472662,
-  "country": "BOL",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TCA7Z7C"
- },
- {
-  "lon": 28.10403247,
-  "lat": 59.33531404,
-  "country": "EST",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFAVH64"
- },
- {
-  "lon": 73.93017731,
-  "lat": 4.79220099,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T1ANY54"
- },
- {
-  "lon": -117.59500024,
-  "lat": 33.04875913,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TGASP3M"
- },
- {
-  "lon": -125.7748448,
-  "lat": 74.39135374,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T6AGSDC"
- },
- {
-  "lon": 14.8223434,
-  "lat": 48.74390643,
-  "country": "AUT",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFAEVST"
- },
- {
-  "lon": -3.9602336,
-  "lat": 54.28606676,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFA941V"
- },
- {
-  "lon": 33.84159225,
-  "lat": 44.19327202,
-  "country": "UKR",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5AKY4M"
- },
- {
-  "lon": 18.55884004,
-  "lat": 3.7293946,
-  "country": "CAF",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKAS1J7"
- },
- {
-  "lon": -16.73586504,
-  "lat": 16.01846647,
-  "country": "SEN",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TEAG7B6"
- },
- {
-  "lon": 93.31094758,
-  "lat": 12.20561603,
-  "country": "IND",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T1AWYRK"
- },
- {
-  "lon": -25.62886652,
-  "lat": 37.22546109,
-  "country": "PRT",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TAAT0VB"
- },
- {
-  "lon": 148.9721105,
-  "lat": -19.97147477,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T3A57T6"
- },
- {
-  "lon": 26.29253595,
-  "lat": 38.55693202,
-  "country": "GRC",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5APJJD"
- },
- {
-  "lon": -64.95466732,
-  "lat": 12.15521912,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TBA7KFP"
- },
- {
-  "lon": 17.56942109,
-  "lat": -28.73542599,
-  "country": "ZAF",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T9AMTFZ"
- },
- {
-  "lon": 111.4882319,
-  "lat": 1.0050102,
-  "country": "IDN",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T1A43WV"
- },
- {
-  "lon": -53.78509862,
-  "lat": -27.0366709,
-  "country": "ARG",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TDA2VMQ"
- },
- {
-  "lon": 20.49305994,
-  "lat": 37.82425787,
-  "country": "GRC",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5AMHHW"
- },
- {
-  "lon": 14.92583349,
-  "lat": -4.67155846,
-  "country": "COD",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKAR5AQ"
- },
- {
-  "lon": 137.60915235,
-  "lat": -7.82244002,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T3A1EZF"
- },
- {
-  "lon": -7.4535752,
-  "lat": 15.5213246,
-  "country": "MRT",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TEAPBV3"
- },
- {
-  "lon": -70.90497666,
-  "lat": -4.3626654,
-  "country": "BRA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TCA294Z"
- },
- {
-  "lon": 86.43950582,
-  "lat": 26.59327756,
-  "country": "NPL",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T1AVWKS"
- },
- {
-  "lon": 25.3437228,
-  "lat": -25.78709796,
-  "country": "ZAF",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T9AKAYD"
- },
- {
-  "lon": 34.59529919,
-  "lat": 32.44238695,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5AGSSQ"
- },
- {
-  "lon": 72.02099331,
-  "lat": 41.1123111,
-  "country": "UZB",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5A9PGJ"
- },
- {
-  "lon": 22.99856808,
-  "lat": 44.02061804,
-  "country": "BGR",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5AKBJ1"
- },
- {
-  "lon": 123.46385899,
-  "lat": -14.0412414,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T2A1ATR"
- },
- {
-  "lon": -81.31893216,
-  "lat": 7.33154204,
-  "country": "PAN",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TBAX1S2"
- },
- {
-  "lon": 36.58349705,
-  "lat": 14.32510146,
-  "country": "ERI",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKAXFEK"
- },
- {
-  "lon": 46.148975,
-  "lat": 38.92360698,
-  "country": "ARM",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5AYH61"
- },
- {
-  "lon": -148.81371291,
-  "lat": -15.04049973,
-  "country": "PYF",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T7AD092"
- },
- {
-  "lon": 9.7973828,
-  "lat": 42.61042068,
-  "country": "ITA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFAB16H"
- },
- {
-  "lon": -99.97232827,
-  "lat": -74.64313506,
+  "lon": 69.70709102,
+  "lat": -66.61831232,
   "country": "ATA",
   "kind": "border",
   "refined": true,
   "confidence": 0.99,
-  "cell": "T8APHCJ"
+  "cell": "TJAQ4VM"
  },
  {
-  "lon": 23.98426337,
-  "lat": 15.99740965,
-  "country": "TCD",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKA4GD4"
- },
- {
-  "lon": -99.64539609,
-  "lat": 16.51511827,
-  "country": "MEX",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TBAJA8G"
- },
- {
-  "lon": 179.87098699,
-  "lat": -72.55749033,
-  "country": "ATA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T8AY7D3"
- },
- {
-  "lon": 81.43285317,
-  "lat": 80.74442492,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFAHSH2"
- },
- {
-  "lon": -3.05491346,
-  "lat": -71.22006632,
-  "country": "ATA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TJAYD37"
- },
- {
-  "lon": 59.12486461,
-  "lat": 69.53773127,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFAQJ57"
- },
- {
-  "lon": -164.54460008,
-  "lat": 23.74595321,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T7A1PDP"
- },
- {
-  "lon": -168.25821024,
-  "lat": 53.7243812,
-  "country": "USA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T6AF6TD"
- },
- {
-  "lon": 171.96297014,
-  "lat": -40.67788365,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T3APP71"
- },
- {
-  "lon": -100.25823075,
-  "lat": 28.20471455,
-  "country": "MEX",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TBATP7G"
- },
- {
-  "lon": -81.16903827,
-  "lat": -12.17590134,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TCASPVD"
- },
- {
-  "lon": 66.06751891,
-  "lat": 42.36496631,
-  "country": "UZB",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5A9B06"
- },
- {
-  "lon": -130.95145706,
-  "lat": 53.51783343,
-  "country": "CAN",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TGADCVF"
- },
- {
-  "lon": -6.43044749,
-  "lat": 10.62693431,
-  "country": "MLI",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TEAP30S"
- },
- {
-  "lon": -83.83153754,
-  "lat": -73.61725708,
-  "country": "ATA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T8AMNFY"
- },
- {
-  "lon": 43.99317783,
-  "lat": 42.62684186,
-  "country": "RUS",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5AV412"
- },
- {
-  "lon": 123.36817379,
-  "lat": 30.46305876,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T0AXEYC"
- },
- {
-  "lon": 23.62124775,
-  "lat": 4.77003539,
-  "country": "CAF",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKAZEP4"
- },
- {
-  "lon": 56.01893441,
-  "lat": -21.39892937,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T9AF9A6"
- },
- {
-  "lon": -94.03226536,
-  "lat": 29.4989236,
-  "country": "USA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TBAVGAB"
- },
- {
-  "lon": -75.15579145,
-  "lat": -43.96236491,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TCAQ924"
- },
- {
-  "lon": 118.6806077,
-  "lat": 10.56826836,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T1A6B3W"
- },
- {
-  "lon": -165.60575285,
-  "lat": 62.74840583,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T6AT8W1"
- },
- {
-  "lon": -63.93923104,
-  "lat": 60.3823415,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFA0K1C"
- },
- {
-  "lon": 126.79191803,
-  "lat": 7.62375672,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T0A1TNP"
- },
- {
-  "lon": 30.20435598,
-  "lat": 10.12387639,
-  "country": "SSD",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKAW9RQ"
- },
- {
-  "lon": 50.55890057,
-  "lat": -15.80748975,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T9ADHBV"
- },
- {
-  "lon": 130.9325962,
-  "lat": -11.26789335,
-  "country": "AUS",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T3A0RMQ"
- },
- {
-  "lon": 130.97535849,
-  "lat": 24.43864701,
-  "country": "JPN",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T0A4YYE"
- },
- {
-  "lon": 137.01931375,
-  "lat": -1.01106382,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T4A1Y0F"
- },
- {
-  "lon": -6.33405677,
-  "lat": 35.37996492,
-  "country": "MAR",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TAABTCT"
- },
- {
-  "lon": 178.86842357,
-  "lat": -7.5938777,
-  "country": "TUV",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T4AC9WK"
- },
- {
-  "lon": -79.84393811,
-  "lat": 25.78473573,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TBAY8JJ"
- },
- {
-  "lon": 145.39328561,
-  "lat": 18.81757188,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T0A3P0B"
- },
- {
-  "lon": 73.33702707,
-  "lat": -52.99058146,
-  "country": "HMD",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T9A737P"
- },
- {
-  "lon": -80.06665036,
-  "lat": -66.02718645,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TJABNYC"
- },
- {
-  "lon": 99.98379537,
-  "lat": 21.73433602,
-  "country": "CHN",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T1AZV8B"
- },
- {
-  "lon": -52.47165142,
-  "lat": 47.31668544,
-  "country": "CAN",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TAAPDYT"
- },
- {
-  "lon": -68.56323957,
-  "lat": -53.8017313,
-  "country": "ARG",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TDABYSZ"
- },
- {
-  "lon": 8.69875293,
-  "lat": 3.00255593,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKA2MPX"
- },
- {
-  "lon": 47.97915233,
-  "lat": 30.8218284,
-  "country": "IRQ",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5AWG11"
- },
- {
-  "lon": 14.62409642,
-  "lat": -25.54078835,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKABP57"
- },
- {
-  "lon": -92.12489702,
-  "lat": 20.15350367,
-  "country": "MEX",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TBAVFDD"
- },
- {
-  "lon": 162.156256,
-  "lat": -11.03250422,
-  "country": "SLB",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T4ASKFC"
- },
- {
-  "lon": 143.84330241,
-  "lat": -9.08604877,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T4A23G5"
- },
- {
-  "lon": -38.83220431,
-  "lat": -14.73321657,
-  "country": "BRA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TDA44C6"
- },
- {
-  "lon": -60.04294422,
-  "lat": -23.99356174,
-  "country": "PRY",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TCA53Q2"
- },
- {
-  "lon": -78.74165077,
-  "lat": -16.64269878,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TCAZ2DW"
- },
- {
-  "lon": -92.0953381,
-  "lat": 1.18152004,
-  "country": "ECU",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TBAH0DN"
- },
- {
-  "lon": 10.11286496,
-  "lat": 1.00623632,
-  "country": "GNQ",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKAR23D"
- },
- {
-  "lon": 145.21918175,
-  "lat": 75.812667,
-  "country": "RUS",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T6A4ZXA"
- },
- {
-  "lon": -174.46367298,
-  "lat": 64.39246206,
-  "country": "RUS",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T6AYDMF"
- },
- {
-  "lon": -149.58074505,
-  "lat": -77.6979378,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T8AV7N5"
- },
- {
-  "lon": 12.97019513,
-  "lat": 45.41717972,
-  "country": "ITA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFAEHJQ"
- },
- {
-  "lon": 22.2775455,
-  "lat": 64.04027947,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFAVVPF"
- },
- {
-  "lon": 45.48853805,
-  "lat": 40.67697377,
-  "country": "ARM",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5AV394"
- },
- {
-  "lon": 14.70192856,
-  "lat": 46.5057328,
-  "country": "AUT",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFAEZ6Z"
- },
- {
-  "lon": 122.06658313,
-  "lat": 32.62128472,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T0AXDD3"
- },
- {
-  "lon": 11.40883518,
-  "lat": 36.92940875,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFAATE2"
- },
- {
-  "lon": 174.49284917,
-  "lat": -37.60481381,
-  "country": "NZL",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T3AMKEF"
- },
- {
-  "lon": 68.17503213,
-  "lat": 38.8078968,
-  "country": "TJK",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5A93MC"
- },
- {
-  "lon": -76.75310125,
-  "lat": 73.6088536,
-  "country": "CAN",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFA7A3Q"
- },
- {
-  "lon": 64.3549751,
-  "lat": 38.93164664,
-  "country": "TKM",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5ARWJ4"
- },
- {
-  "lon": -7.09455062,
-  "lat": 54.43284796,
-  "country": "GBR",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFA9S6Q"
- },
- {
-  "lon": -66.8557711,
-  "lat": -10.08849432,
-  "country": "BOL",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TCA7HK3"
- },
- {
-  "lon": -15.97543864,
-  "lat": -73.94941442,
-  "country": "ATA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TJAT237"
- },
- {
-  "lon": -133.49933561,
-  "lat": 53.92520998,
-  "country": "CAN",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TGADFF0"
- },
- {
-  "lon": 121.13356259,
-  "lat": 26.95179991,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T0A5ECF"
- },
- {
-  "lon": -5.20201182,
-  "lat": 11.92781895,
-  "country": "MLI",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TEAPCXJ"
- },
- {
-  "lon": 16.48752662,
-  "lat": 38.10308714,
-  "country": "ITA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5AMRD9"
- },
- {
-  "lon": 128.28203283,
-  "lat": 32.40037739,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T0AXXJ5"
- },
- {
-  "lon": 22.44175306,
-  "lat": 12.61605232,
-  "country": "TCD",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKA6PWN"
- },
- {
-  "lon": 127.47768153,
-  "lat": 50.23380693,
-  "country": "CHN",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T0AQKKY"
- },
- {
-  "lon": -1.66353428,
-  "lat": 11.02191299,
-  "country": "BFA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TEAJBVV"
- },
- {
-  "lon": -100.55489292,
-  "lat": -74.90680113,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T8APHF3"
- },
- {
-  "lon": 147.68831629,
-  "lat": 59.05350143,
-  "country": "RUS",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T6A2JS5"
- },
- {
-  "lon": -68.5981702,
-  "lat": -55.95821393,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TDABWAJ"
- },
- {
-  "lon": -7.49295888,
-  "lat": 70.98511651,
-  "country": "SJM",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFAZFV8"
- },
- {
-  "lon": -55.70309403,
-  "lat": -22.6295736,
-  "country": "PRY",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TDA3KJV"
- },
- {
-  "lon": 73.81620487,
-  "lat": 1.66060969,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T1ANT6A"
- },
- {
-  "lon": 43.57842866,
-  "lat": -18.43572725,
-  "country": "MDG",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T9ADE9Q"
- },
- {
-  "lon": 80.52755039,
-  "lat": 9.80464095,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T1AQZFJ"
- },
- {
-  "lon": 18.45112903,
-  "lat": 55.05071443,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFACDD5"
- },
- {
-  "lon": -169.37413262,
-  "lat": -14.00662583,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T7A8PHB"
- },
- {
-  "lon": 95.32775275,
-  "lat": 29.0431063,
-  "country": "IND",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T1AT25Y"
- },
- {
-  "lon": 2.76858776,
-  "lat": 7.38853411,
-  "country": "NGA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TEAKWZW"
- },
- {
-  "lon": 20.79224527,
-  "lat": 9.44830487,
-  "country": "TCD",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKA3BKN"
- },
- {
-  "lon": -78.56009366,
-  "lat": 75.43557925,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFA4358"
- },
- {
-  "lon": -14.9274304,
-  "lat": 10.52745197,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TEAWRFN"
- },
- {
-  "lon": 122.61510774,
-  "lat": 18.15330206,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T1A21FT"
- },
- {
-  "lon": -65.66525172,
-  "lat": -9.7980844,
-  "country": "BOL",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TCA7ZJ9"
- },
- {
-  "lon": 50.73721248,
-  "lat": 69.21749339,
-  "country": "RUS",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFAP46M"
- },
- {
-  "lon": 137.94812664,
-  "lat": -6.97773071,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T3A12QG"
- },
- {
-  "lon": 9.38379642,
-  "lat": 57.43184713,
-  "country": "DNK",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFAC0RN"
- },
- {
-  "lon": 0.10541704,
-  "lat": 42.72887505,
-  "country": "FRA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFAAFMM"
- },
- {
-  "lon": 142.40861558,
-  "lat": 26.72130452,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T0ASDJF"
- },
- {
-  "lon": 139.8794575,
-  "lat": 33.89230481,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T0AZPYA"
- },
- {
-  "lon": 150.52445651,
-  "lat": -65.04290272,
-  "country": "ATA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T8A91Z7"
- },
- {
-  "lon": -0.06165201,
-  "lat": 38.27346808,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TAAB5ZN"
- },
- {
-  "lon": -70.74848865,
-  "lat": -24.07093859,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TCAXRDA"
- },
- {
-  "lon": 150.44647072,
-  "lat": -35.50086381,
-  "country": "AUS",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T3AYX0R"
- },
- {
-  "lon": -177.24632189,
-  "lat": 52.15457989,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T6AF352"
- },
- {
-  "lon": -72.05890528,
-  "lat": 40.79802214,
-  "country": "USA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TBA8XYJ"
- },
- {
-  "lon": -71.34811271,
-  "lat": -51.96610483,
-  "country": "ARG",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TDAA6BB"
- },
- {
-  "lon": 144.01268042,
-  "lat": 50.47628582,
-  "country": "RUS",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T0AJGYR"
- },
- {
-  "lon": -81.8868849,
-  "lat": 25.79177703,
-  "country": "USA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TBAYFA8"
- },
- {
-  "lon": -175.47778052,
-  "lat": -15.40631285,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T4AEP9Q"
- },
- {
-  "lon": 168.68583942,
-  "lat": 60.3535668,
-  "country": "RUS",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T6ASKFV"
- },
- {
-  "lon": -16.67073168,
-  "lat": 12.3668948,
-  "country": "SEN",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TEAXN6N"
- },
- {
-  "lon": 128.18122881,
-  "lat": 38.34978782,
-  "country": "KOR",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T0AWV81"
- },
- {
-  "lon": 11.07029478,
-  "lat": -4.12700885,
-  "country": "COG",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKA8EBM"
- },
- {
-  "lon": 152.30130057,
-  "lat": -21.74016919,
-  "country": "AUS",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T3AXE2N"
- },
- {
-  "lon": 134.00175712,
-  "lat": -33.04727349,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T3ASNMT"
- },
- {
-  "lon": 134.03279056,
-  "lat": -32.97164514,
-  "country": "AUS",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T3AS51G"
- },
- {
-  "lon": 73.88875581,
-  "lat": 2.60962637,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T1ANRKT"
- },
- {
-  "lon": -159.56329088,
-  "lat": 3.80944383,
+  "lon": 174.69815637,
+  "lat": -1.54354555,
   "country": "KIR",
   "kind": "border",
   "refined": true,
   "confidence": 0.99,
-  "cell": "T7ASF18"
+  "cell": "T4AVRG6"
  },
  {
-  "lon": -158.95689512,
-  "lat": 55.63165709,
+  "lon": -1.58229712,
+  "lat": 43.9905608,
+  "country": "FRA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAA27J"
+ },
+ {
+  "lon": -64.50172757,
+  "lat": 4.12226676,
+  "country": "VEN",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBA7EQ6"
+ },
+ {
+  "lon": 154.97271232,
+  "lat": -3.48126562,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T4A39ZT"
+ },
+ {
+  "lon": -96.98848154,
+  "lat": 25.51181475,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBATRKF"
+ },
+ {
+  "lon": 140.00058057,
+  "lat": 10.16448627,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0A60NN"
+ },
+ {
+  "lon": 20.98726155,
+  "lat": -19.99663123,
+  "country": "NAM",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKAER8V"
+ },
+ {
+  "lon": 12.53840388,
+  "lat": 37.38685632,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAATJV"
+ },
+ {
+  "lon": 109.44773385,
+  "lat": -64.59271479,
+  "country": "ATA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T8ABZYM"
+ },
+ {
+  "lon": 80.72099827,
+  "lat": 15.50334174,
+  "country": "IND",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1AJA73"
+ },
+ {
+  "lon": -146.82052253,
+  "lat": 70.51046443,
   "country": "USA",
   "kind": "border",
   "refined": true,
   "confidence": 0.99,
-  "cell": "T6AC9NQ"
+  "cell": "T6AVBN1"
  },
  {
-  "lon": -77.18252824,
-  "lat": -2.7763942,
-  "country": "PER",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TCA2Y5P"
- },
- {
-  "lon": 0.26850222,
-  "lat": 39.76754065,
+  "lon": -34.59702721,
+  "lat": -7.34447452,
   "country": null,
   "kind": "border",
   "refined": true,
   "confidence": 0.99,
-  "cell": "TFAA715"
+  "cell": "TEA2EM8"
  },
  {
-  "lon": 162.03654608,
-  "lat": -65.49674435,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T8ARJDR"
- },
- {
-  "lon": 121.79429909,
-  "lat": -34.25779143,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T3A884G"
- },
- {
-  "lon": 141.65444266,
-  "lat": -38.38749948,
+  "lon": 120.00531477,
+  "lat": -33.96133636,
   "country": "AUS",
   "kind": "border",
   "refined": true,
   "confidence": 0.99,
-  "cell": "T3AY6CT"
+  "cell": "T3A8E4Q"
  },
  {
-  "lon": 29.69503382,
-  "lat": 46.91547785,
-  "country": "MDA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5AKQBB"
- },
- {
-  "lon": 178.5115236,
-  "lat": -8.39499168,
-  "country": "TUV",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T4ACDTX"
- },
- {
-  "lon": 42.3539646,
-  "lat": 16.32150381,
-  "country": "YEM",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5A587T"
- },
- {
-  "lon": -11.49352706,
-  "lat": 9.99388075,
-  "country": "SLE",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TEAWP3P"
- },
- {
-  "lon": -69.39285282,
-  "lat": -15.65724855,
-  "country": "PER",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TCA4M6W"
- },
- {
-  "lon": 147.17262037,
-  "lat": 44.00708256,
+  "lon": 17.91254309,
+  "lat": -31.70541127,
   "country": null,
   "kind": "border",
   "refined": true,
   "confidence": 0.99,
-  "cell": "T0AVZAH"
+  "cell": "T9ANMZ1"
  },
  {
-  "lon": 36.72858818,
-  "lat": 45.63805915,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5AKGEM"
- },
- {
-  "lon": -110.64959665,
-  "lat": 19.17749817,
-  "country": "MEX",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TGA2FYX"
- },
- {
-  "lon": 175.92539134,
-  "lat": -36.33965075,
-  "country": "NZL",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T3AMJHC"
- },
- {
-  "lon": -10.45065501,
-  "lat": 26.01202999,
-  "country": "ESH",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TAA8NTD"
- },
- {
-  "lon": -24.54211578,
-  "lat": -72.69032718,
-  "country": "ATA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TJAC04E"
- },
- {
-  "lon": -170.94993269,
-  "lat": 52.82773051,
-  "country": "USA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T6AF4M6"
- },
- {
-  "lon": -58.14448372,
-  "lat": -26.23502705,
-  "country": "ARG",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TDA2WPY"
- },
- {
-  "lon": 178.49940913,
-  "lat": -7.34356871,
-  "country": "TUV",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T4ACB2W"
- },
- {
-  "lon": -112.21773922,
-  "lat": 28.21738675,
-  "country": "MEX",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TGA2TDF"
- },
- {
-  "lon": -79.92353067,
-  "lat": 27.12322612,
-  "country": "USA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TBAY872"
- },
- {
-  "lon": -54.67558574,
-  "lat": 67.11607651,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFA69V4"
- },
- {
-  "lon": 17.13005128,
-  "lat": 47.92607075,
-  "country": "HUN",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFAESB0"
- },
- {
-  "lon": -116.61809369,
-  "lat": 31.23008446,
-  "country": "MEX",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TGASSEC"
- },
- {
-  "lon": 15.69904414,
-  "lat": 31.74607946,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5ANSHD"
- },
- {
-  "lon": 39.47592936,
-  "lat": 33.69329642,
-  "country": "IRQ",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5AWQBS"
- },
- {
-  "lon": -26.83324289,
-  "lat": -56.84604381,
-  "country": "SGS",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TJA83EZ"
- },
- {
-  "lon": 45.18121277,
-  "lat": 42.67749816,
-  "country": "GEO",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5AVSB3"
- },
- {
-  "lon": -74.50551136,
-  "lat": -42.2956417,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TCAQEVS"
- },
- {
-  "lon": 151.7219346,
-  "lat": 8.80605999,
-  "country": "FSM",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T4A5WCN"
- },
- {
-  "lon": 145.56097073,
-  "lat": 16.63933339,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T0A3Y6A"
- },
- {
-  "lon": -126.05208922,
-  "lat": -73.28708583,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T8AP4XB"
- },
- {
-  "lon": 128.34264714,
-  "lat": 38.55504611,
-  "country": "KOR",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T0AWSX4"
- },
- {
-  "lon": -140.29109283,
-  "lat": -15.77124836,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T7AJQ6Y"
- },
- {
-  "lon": 28.00285169,
-  "lat": 56.77614146,
-  "country": "RUS",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFATK0A"
- },
- {
-  "lon": 149.16711263,
-  "lat": -1.2825699,
-  "country": "PNG",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T4A6JWD"
- },
- {
-  "lon": 112.38545249,
-  "lat": 49.49495564,
-  "country": "MNG",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T0AMCFA"
- },
- {
-  "lon": -73.55544524,
-  "lat": -19.89583017,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TCAWCJC"
- },
- {
-  "lon": 27.65086383,
-  "lat": -23.22594805,
-  "country": "ZAF",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKACXDG"
- },
- {
-  "lon": 30.02306889,
-  "lat": 0.87213046,
-  "country": "COD",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKAZMXP"
- },
- {
-  "lon": -54.7880436,
-  "lat": -61.07050617,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TJAA3HS"
- },
- {
-  "lon": 32.97760513,
-  "lat": -18.02253956,
-  "country": "MOZ",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKADCTK"
- },
- {
-  "lon": -78.72957741,
-  "lat": 75.10316531,
-  "country": "CAN",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFA40CF"
- },
- {
-  "lon": 22.42869681,
-  "lat": 12.59140582,
-  "country": "TCD",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKA6PYP"
- },
- {
-  "lon": -90.48600313,
-  "lat": -1.55975314,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TCA9GP4"
- },
- {
-  "lon": 151.89393856,
-  "lat": 58.64215239,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T6A2Z9C"
- },
- {
-  "lon": 44.2217999,
-  "lat": 10.69779011,
-  "country": "SOM",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKAHV1E"
- },
- {
-  "lon": 109.83151992,
-  "lat": 2.02981184,
-  "country": "MYS",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T1A4FK2"
- },
- {
-  "lon": 27.82891354,
-  "lat": 41.95689348,
-  "country": "TUR",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5AK3PH"
- },
- {
-  "lon": 4.58819592,
-  "lat": 39.82514277,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFABJ9J"
- },
- {
-  "lon": 50.88772531,
-  "lat": -10.37706009,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKAK9NB"
- },
- {
-  "lon": 165.58198809,
-  "lat": -20.72916328,
-  "country": "NCL",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T4A8J79"
- },
- {
-  "lon": 11.29013618,
-  "lat": 35.92321812,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5AN6CW"
- },
- {
-  "lon": 139.99492707,
-  "lat": -65.01241111,
-  "country": "ATA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T8A9N33"
- },
- {
-  "lon": -124.21568069,
-  "lat": 45.11481782,
-  "country": "USA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TGATCGS"
- },
- {
-  "lon": 9.95695452,
-  "lat": 64.88157413,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFAY673"
- },
- {
-  "lon": 170.42977159,
-  "lat": -19.53225026,
-  "country": "VUT",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T4A8VER"
- },
- {
-  "lon": -71.45355364,
-  "lat": 45.19612137,
-  "country": "CAN",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TBAA0YP"
- },
- {
-  "lon": 28.77182266,
-  "lat": 21.99588908,
-  "country": "SDN",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKA4BW3"
- },
- {
-  "lon": 10.6909675,
-  "lat": 31.99733224,
-  "country": "TUN",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5AN8FN"
- },
- {
-  "lon": -11.57582243,
-  "lat": -71.75544022,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TJAY1N6"
- },
- {
-  "lon": 126.56705616,
-  "lat": -8.1887902,
-  "country": "IDN",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T3A0G3T"
- },
- {
-  "lon": 11.36759738,
-  "lat": 33.48596712,
-  "country": "TUN",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5ANDHG"
- },
- {
-  "lon": -157.69689147,
-  "lat": -21.86635433,
-  "country": "COK",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T7AEX36"
- },
- {
-  "lon": 47.38025209,
-  "lat": -14.40452114,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T9ADN2F"
- },
- {
-  "lon": 1.27450517,
-  "lat": 40.79236513,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFAA7PV"
- },
- {
-  "lon": 171.796615,
-  "lat": 6.77454185,
+  "lon": 171.52040496,
+  "lat": 7.43695437,
   "country": "MHL",
   "kind": "border",
   "refined": true,
   "confidence": 0.99,
-  "cell": "T4AYMAK"
+  "cell": "T4AYN73"
  },
  {
-  "lon": 43.95434027,
-  "lat": -20.384067,
-  "country": "MDG",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T9ATH8Y"
- },
- {
-  "lon": 56.0529978,
-  "lat": -21.22797643,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T9AFDBP"
- },
- {
-  "lon": 30.61547208,
-  "lat": -22.32840437,
-  "country": "ZWE",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKACTVH"
- },
- {
-  "lon": -22.36793371,
-  "lat": -72.14532562,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TJAY06C"
- },
- {
-  "lon": 27.80255236,
-  "lat": 47.14368808,
-  "country": "MDA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5AK7S8"
- },
- {
-  "lon": 155.08736522,
-  "lat": 50.7717347,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T0ATMRG"
- },
- {
-  "lon": -157.47533088,
-  "lat": 2.26553959,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T7AS7AK"
- },
- {
-  "lon": -6.41613636,
-  "lat": 36.24079284,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TAAB0D2"
- },
- {
-  "lon": 68.49732994,
-  "lat": -50.00342629,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T9A7MPX"
- },
- {
-  "lon": -178.98969959,
-  "lat": -21.12569147,
-  "country": "FJI",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T4AB0CG"
- },
- {
-  "lon": 176.69083449,
-  "lat": -17.2637519,
-  "country": "FJI",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T4AFZYW"
- },
- {
-  "lon": 142.05644874,
-  "lat": -65.01835277,
-  "country": "ATA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T8A9Q9Y"
- },
- {
-  "lon": 35.00398821,
-  "lat": 6.20908505,
-  "country": "ETH",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKAWYH8"
- },
- {
-  "lon": 55.93335289,
-  "lat": -4.79144464,
-  "country": "SYC",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKAMS0C"
- },
- {
-  "lon": -16.26910759,
-  "lat": 17.67784805,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TEAHJMX"
- },
- {
-  "lon": -60.81318493,
-  "lat": -62.48165144,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TJAAFZE"
- },
- {
-  "lon": 46.23125109,
-  "lat": 10.99289032,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKAH17C"
- },
- {
-  "lon": 14.20244329,
-  "lat": 53.01947963,
-  "country": "DEU",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFAC721"
- },
- {
-  "lon": -97.16560507,
-  "lat": 26.83199467,
+  "lon": -151.9152382,
+  "lat": 71.00193277,
   "country": "USA",
   "kind": "border",
   "refined": true,
   "confidence": 0.99,
-  "cell": "TBATR8G"
+  "cell": "T6AYMP4"
  },
  {
-  "lon": -83.21059833,
-  "lat": 45.69321852,
-  "country": "CAN",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TBAB062"
- },
- {
-  "lon": 22.38649593,
-  "lat": -26.27674837,
-  "country": "BWA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKABAB2"
- },
- {
-  "lon": -63.70186854,
-  "lat": 44.25565632,
-  "country": "CAN",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TAAHDE0"
- },
- {
-  "lon": 35.88123429,
-  "lat": 29.22458539,
-  "country": "JOR",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5AGJP5"
- },
- {
-  "lon": -82.9409358,
-  "lat": 14.38643154,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TBAXGS1"
- },
- {
-  "lon": 28.8704611,
-  "lat": -16.04275626,
-  "country": "ZWE",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKADRDY"
- },
- {
-  "lon": 26.97374956,
-  "lat": -11.81302746,
+  "lon": 24.1407475,
+  "lat": 4.88673571,
   "country": "COD",
   "kind": "border",
   "refined": true,
   "confidence": 0.99,
-  "cell": "TKAC813"
+  "cell": "TKAZEY4"
  },
  {
-  "lon": -176.56675494,
-  "lat": 51.44389404,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T6AFTAP"
- },
- {
-  "lon": 24.03205033,
-  "lat": 17.51113537,
-  "country": "SDN",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKA5G7J"
- },
- {
-  "lon": 155.27113383,
-  "lat": 55.19245741,
-  "country": "RUS",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T6A2NTV"
- },
- {
-  "lon": 61.78254988,
-  "lat": 41.2147097,
-  "country": "UZB",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5ARQ97"
- },
- {
-  "lon": 26.8331891,
-  "lat": 51.76381058,
-  "country": "UKR",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFADPFX"
- },
- {
-  "lon": -68.50596783,
-  "lat": -19.32989096,
-  "country": "CHL",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TCA4S1D"
- },
- {
-  "lon": -161.20322252,
-  "lat": 70.55970763,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T6AYY4N"
- },
- {
-  "lon": 12.64388382,
-  "lat": 54.68348739,
-  "country": "DEU",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFAC44D"
- },
- {
-  "lon": 142.99040192,
-  "lat": 6.87030776,
-  "country": "FSM",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T4A7BYV"
- },
- {
-  "lon": 125.78161882,
-  "lat": -9.36625943,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T2A13ND"
- },
- {
-  "lon": -63.16852251,
-  "lat": 17.98014752,
-  "country": "SXM",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TBA3RJ6"
- },
- {
-  "lon": 27.81240775,
-  "lat": 56.90466517,
-  "country": "RUS",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFATGB7"
- },
- {
-  "lon": 29.22130516,
-  "lat": 9.72164367,
+  "lon": 26.23088735,
+  "lat": 9.79662584,
   "country": "SSD",
   "kind": "border",
   "refined": true,
   "confidence": 0.99,
-  "cell": "TKAWDPF"
+  "cell": "TKAW28S"
  },
  {
-  "lon": -79.89006309,
-  "lat": -77.86830465,
-  "country": "ATA",
+  "lon": 169.91991988,
+  "lat": -46.62583969,
+  "country": "NZL",
   "kind": "border",
   "refined": true,
   "confidence": 0.99,
-  "cell": "TJACXEE"
+  "cell": "T3AK6M9"
  },
  {
-  "lon": 178.12503601,
-  "lat": -8.19265199,
+  "lon": -132.5087419,
+  "lat": 57.45385963,
+  "country": "USA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AJV9P"
+ },
+ {
+  "lon": -59.61682057,
+  "lat": -38.96762002,
+  "country": "ARG",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TDA9YR4"
+ },
+ {
+  "lon": -57.83186972,
+  "lat": -19.08774853,
+  "country": "BOL",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TCA487Y"
+ },
+ {
+  "lon": -141.90597342,
+  "lat": -16.63054331,
+  "country": "PYF",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T7ATNXS"
+ },
+ {
+  "lon": -78.93642032,
+  "lat": -16.26944086,
+  "country": "PER",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TCAZ2T8"
+ },
+ {
+  "lon": -64.58319017,
+  "lat": 4.12023126,
+  "country": "VEN",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBA7EQP"
+ },
+ {
+  "lon": -61.49828244,
+  "lat": -50.83812695,
+  "country": "FLK",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TDAE5MH"
+ },
+ {
+  "lon": 161.03079718,
+  "lat": -10.54906732,
+  "country": "SLB",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T4ASY44"
+ },
+ {
+  "lon": -16.94444535,
+  "lat": 74.82044348,
+  "country": "GRL",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAW3A2"
+ },
+ {
+  "lon": 105.05853835,
+  "lat": 79.2404075,
   "country": null,
   "kind": "border",
   "refined": true,
   "confidence": 0.99,
-  "cell": "T4ACDK8"
+  "cell": "T6A4B76"
  },
  {
-  "lon": 8.59620724,
-  "lat": 46.12704948,
-  "country": "ITA",
+  "lon": 75.96833908,
+  "lat": 40.38819777,
+  "country": "KGZ",
   "kind": "border",
   "refined": true,
   "confidence": 0.99,
-  "cell": "TFAFGA6"
+  "cell": "T5A9W5X"
  },
  {
-  "lon": -118.29458796,
-  "lat": 28.62615157,
+  "lon": 23.97643946,
+  "lat": 16.44969295,
+  "country": "TCD",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKA4GZG"
+ },
+ {
+  "lon": -61.73546981,
+  "lat": 10.85534125,
+  "country": "TTO",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBA69W2"
+ },
+ {
+  "lon": 41.95845214,
+  "lat": 15.70215479,
+  "country": "YEM",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKAG2PH"
+ },
+ {
+  "lon": 25.29186788,
+  "lat": 7.47542879,
+  "country": "SSD",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKAZ9PC"
+ },
+ {
+  "lon": 13.13808881,
+  "lat": -5.91370003,
+  "country": "AGO",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKA9VMF"
+ },
+ {
+  "lon": -55.7308094,
+  "lat": -35.83707536,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TDAR5S0"
+ },
+ {
+  "lon": -74.52711191,
+  "lat": 72.59454183,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFA78QQ"
+ },
+ {
+  "lon": 39.10208372,
+  "lat": 14.66046005,
+  "country": "ERI",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKAG1R2"
+ },
+ {
+  "lon": -105.2844929,
+  "lat": 19.40708865,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBAK4J2"
+ },
+ {
+  "lon": 156.2431864,
+  "lat": 71.28408155,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6ASAH5"
+ },
+ {
+  "lon": 56.10425505,
+  "lat": -7.33043533,
+  "country": "SYC",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T9ABDBF"
+ },
+ {
+  "lon": 147.76218347,
+  "lat": 7.90554218,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T4A4633"
+ },
+ {
+  "lon": 9.87131098,
+  "lat": 30.37645248,
+  "country": "TUN",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKA023D"
+ },
+ {
+  "lon": -60.58257528,
+  "lat": 5.18535206,
+  "country": "BRA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBA1PCW"
+ },
+ {
+  "lon": 27.88130443,
+  "lat": 44.03682356,
+  "country": "ROU",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AKCHD"
+ },
+ {
+  "lon": 55.88131406,
+  "lat": 26.22716453,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AZAT5"
+ },
+ {
+  "lon": 36.94083862,
+  "lat": 4.40007334,
+  "country": "KEN",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKAWZ2W"
+ },
+ {
+  "lon": -87.54569297,
+  "lat": 17.65690415,
+  "country": "BLZ",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBAYZR7"
+ },
+ {
+  "lon": 21.8377568,
+  "lat": -9.53431843,
+  "country": "AGO",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKA9AKG"
+ },
+ {
+  "lon": 171.45091627,
+  "lat": 6.84044618,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T4AYQ1E"
+ },
+ {
+  "lon": -6.50191428,
+  "lat": 24.51938018,
+  "country": "MLI",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TEAM17W"
+ },
+ {
+  "lon": 55.33279553,
+  "lat": -21.48252364,
+  "country": "REU",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T9AC1BB"
+ },
+ {
+  "lon": 22.42299616,
+  "lat": 49.11580599,
+  "country": "POL",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFACYEV"
+ },
+ {
+  "lon": 97.39930833,
+  "lat": 10.86728154,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1AXZQG"
+ },
+ {
+  "lon": 24.94086688,
+  "lat": -25.78723122,
+  "country": "ZAF",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T9AKAJ3"
+ },
+ {
+  "lon": 25.1983371,
+  "lat": -11.2282944,
+  "country": "COD",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKAC26Q"
+ },
+ {
+  "lon": -1.23303041,
+  "lat": 32.34451496,
+  "country": "MAR",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TAABHWJ"
+ },
+ {
+  "lon": 20.03790611,
+  "lat": -22.33056629,
+  "country": "BWA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKAEWWY"
+ },
+ {
+  "lon": 172.89365998,
+  "lat": 2.22292267,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T4AV3WZ"
+ },
+ {
+  "lon": 73.45266588,
+  "lat": 6.96582185,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1ANHWF"
+ },
+ {
+  "lon": 21.20728295,
+  "lat": 37.59914125,
+  "country": "GRC",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AMH45"
+ },
+ {
+  "lon": 91.97770582,
+  "lat": 26.81941625,
+  "country": "IND",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1ATB7G"
+ },
+ {
+  "lon": 23.9931144,
+  "lat": 71.3105486,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAYZ7N"
+ },
+ {
+  "lon": 3.17023821,
+  "lat": 37.0397589,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAAGCG"
+ },
+ {
+  "lon": 134.72137463,
+  "lat": 48.26263218,
+  "country": "RUS",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0AJE9J"
+ },
+ {
+  "lon": 28.80881222,
+  "lat": 69.10112978,
+  "country": "FIN",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAVEMP"
+ },
+ {
+  "lon": 121.6289034,
+  "lat": 25.56334254,
+  "country": "TWN",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0A52ED"
+ },
+ {
+  "lon": 153.8432065,
+  "lat": 48.3371761,
+  "country": "RUS",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0ATHGS"
+ },
+ {
+  "lon": 73.88558456,
+  "lat": 14.72665434,
+  "country": "IND",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1APMS5"
+ },
+ {
+  "lon": 36.93935563,
+  "lat": 29.90301055,
+  "country": "JOR",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AGJA9"
+ },
+ {
+  "lon": -66.42435457,
+  "lat": -9.86790549,
+  "country": "BRA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TCA7WNZ"
+ },
+ {
+  "lon": 28.41198168,
+  "lat": 68.42774141,
+  "country": "FIN",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAVEHY"
+ },
+ {
+  "lon": 73.2028755,
+  "lat": 11.41541441,
+  "country": "IND",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1AMM0D"
+ },
+ {
+  "lon": -118.2909115,
+  "lat": 28.62422139,
   "country": null,
   "kind": "border",
   "refined": true,
@@ -3042,1461 +720,3783 @@
   "cell": "TGASE0V"
  },
  {
-  "lon": 148.13303421,
-  "lat": -64.99451119,
+  "lon": 177.5609363,
+  "lat": 51.64191068,
   "country": null,
   "kind": "border",
   "refined": true,
   "confidence": 0.99,
-  "cell": "T8A91BM"
+  "cell": "T6A9NWC"
  },
  {
-  "lon": 168.24933683,
-  "lat": 5.76104116,
-  "country": "MHL",
+  "lon": 14.20165542,
+  "lat": 50.8446249,
+  "country": "CZE",
   "kind": "border",
   "refined": true,
   "confidence": 0.99,
-  "cell": "T4AYXV2"
+  "cell": "TFAETHA"
  },
  {
-  "lon": 131.53898334,
-  "lat": 47.65145564,
-  "country": "CHN",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T0AP41A"
- },
- {
-  "lon": -67.5149051,
-  "lat": -10.5145066,
-  "country": "BOL",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TCA7HRH"
- },
- {
-  "lon": -60.28356831,
-  "lat": -14.79664095,
-  "country": "BOL",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TCA7DB0"
- },
- {
-  "lon": 7.82095641,
-  "lat": 43.5632477,
+  "lon": -7.67254126,
+  "lat": 56.42380564,
   "country": null,
   "kind": "border",
   "refined": true,
   "confidence": 0.99,
-  "cell": "TFABTT4"
+  "cell": "TFA909R"
  },
  {
-  "lon": 122.25007168,
-  "lat": 32.18074453,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T0AXDKZ"
- },
- {
-  "lon": 159.75162807,
-  "lat": -80.37642589,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T8AT5DV"
- },
- {
-  "lon": 31.05371368,
-  "lat": -22.36111213,
-  "country": "ZAF",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKACTK5"
- },
- {
-  "lon": -70.07833383,
-  "lat": 6.91988011,
-  "country": "COL",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TBA45FN"
- },
- {
-  "lon": 17.38044726,
-  "lat": 31.23393417,
-  "country": "LBY",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5ANRK1"
- },
- {
-  "lon": 114.19554844,
-  "lat": 50.25720686,
-  "country": "RUS",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T0AM4TG"
- },
- {
-  "lon": 115.44795378,
-  "lat": 3.07556635,
-  "country": "MYS",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T1A19DH"
- },
- {
-  "lon": -96.21973077,
-  "lat": -73.15137776,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T8APZ02"
- },
- {
-  "lon": -47.83700054,
-  "lat": -25.51038822,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TDA3D6W"
- },
- {
-  "lon": 73.63806056,
-  "lat": 43.05683713,
-  "country": "KAZ",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5A9N4K"
- },
- {
-  "lon": 61.51280454,
-  "lat": 70.05466487,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFAQJJX"
- },
- {
-  "lon": 68.57771137,
-  "lat": 55.17224573,
-  "country": "KAZ",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5AEZ30"
- },
- {
-  "lon": 15.23391243,
-  "lat": 43.15246307,
-  "country": "HRV",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFAB8AA"
- },
- {
-  "lon": -55.89942285,
-  "lat": -35.88170474,
-  "country": "ARG",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TDAR52R"
- },
- {
-  "lon": 167.74643997,
-  "lat": 54.44929073,
-  "country": "RUS",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T6A89YY"
- },
- {
-  "lon": 29.64245967,
-  "lat": 45.29303129,
-  "country": "ROU",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5AKPMG"
- },
- {
-  "lon": 165.58788454,
-  "lat": -50.81215611,
-  "country": "NZL",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T8A2GJ5"
- },
- {
-  "lon": 125.71288947,
-  "lat": -32.49002097,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T3ARD9X"
- },
- {
-  "lon": 55.28065324,
-  "lat": -5.59566686,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKAMXXG"
- },
- {
-  "lon": -70.64698233,
-  "lat": -9.49526608,
-  "country": "BRA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TCA30NA"
- },
- {
-  "lon": 43.29285353,
-  "lat": 9.67945464,
-  "country": "SOM",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKAHZJN"
- },
- {
-  "lon": 41.15310872,
-  "lat": 42.85512345,
-  "country": "GEO",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5AV7W7"
- },
- {
-  "lon": 12.09876022,
-  "lat": -17.13952378,
-  "country": "AGO",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKAECTV"
- },
- {
-  "lon": 48.79820514,
-  "lat": 46.45158376,
-  "country": "RUS",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5AVKCV"
- },
- {
-  "lon": 123.20398108,
-  "lat": 14.5831217,
-  "country": "PHL",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T1A604M"
- },
- {
-  "lon": 16.45481226,
-  "lat": 67.25034715,
-  "country": "SWE",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFAZGF9"
- },
- {
-  "lon": -170.06378863,
-  "lat": -19.31373276,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T7AAE7Y"
- },
- {
-  "lon": -81.63702016,
-  "lat": -10.61877782,
-  "country": "PER",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TCASXWX"
- },
- {
-  "lon": 171.8764042,
-  "lat": 6.43068301,
-  "country": "MHL",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T4AV8QA"
- },
- {
-  "lon": 37.14581878,
-  "lat": 21.62305558,
-  "country": "SDN",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5AGFM9"
- },
- {
-  "lon": -14.51943124,
-  "lat": 10.01993463,
-  "country": "GIN",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TEAWYEK"
- },
- {
-  "lon": 22.7968057,
-  "lat": 49.33923356,
+  "lon": 36.75738343,
+  "lat": 46.48481405,
   "country": "UKR",
   "kind": "border",
   "refined": true,
   "confidence": 0.99,
-  "cell": "TFACR9H"
+  "cell": "T5AJKNW"
  },
  {
-  "lon": 139.6078493,
-  "lat": -1.8397546,
-  "country": "IDN",
+  "lon": 14.43208698,
+  "lat": 1.06040009,
+  "country": "COG",
   "kind": "border",
   "refined": true,
   "confidence": 0.99,
-  "cell": "T4A0RXD"
+  "cell": "TKAR9YF"
  },
  {
-  "lon": 53.17572625,
-  "lat": 22.86085501,
-  "country": "SAU",
+  "lon": -16.43845759,
+  "lat": 16.04184286,
+  "country": "SEN",
   "kind": "border",
   "refined": true,
   "confidence": 0.99,
-  "cell": "T5A4X2H"
+  "cell": "TEAG6AV"
  },
  {
-  "lon": -118.61486254,
-  "lat": 33.83196564,
-  "country": "USA",
+  "lon": 99.14093488,
+  "lat": 13.71889795,
+  "country": "MMR",
   "kind": "border",
   "refined": true,
   "confidence": 0.99,
-  "cell": "TGASQR7"
+  "cell": "T1AW7ER"
  },
  {
-  "lon": 14.87760877,
-  "lat": 12.36096643,
-  "country": "CMR",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKA3TNG"
- },
- {
-  "lon": -146.03942348,
-  "lat": -15.52414695,
-  "country": "PYF",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T7AD2G8"
- },
- {
-  "lon": 148.10792911,
-  "lat": 74.5438463,
+  "lon": -28.22273242,
+  "lat": 39.26951629,
   "country": null,
   "kind": "border",
   "refined": true,
   "confidence": 0.99,
-  "cell": "T6A4MP4"
+  "cell": "TAATE4Z"
  },
  {
-  "lon": 156.30508147,
-  "lat": 60.82354898,
-  "country": "RUS",
+  "lon": 142.49361319,
+  "lat": -10.46239858,
+  "country": "AUS",
   "kind": "border",
   "refined": true,
   "confidence": 0.99,
-  "cell": "T6ARBMR"
+  "cell": "T3A40V1"
  },
  {
-  "lon": -57.96754777,
-  "lat": -26.02808194,
+  "lon": 14.31146975,
+  "lat": 32.84858778,
+  "country": "LBY",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AN1CG"
+ },
+ {
+  "lon": -70.36373293,
+  "lat": 42.64066412,
+  "country": "USA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBA8QRW"
+ },
+ {
+  "lon": 19.63309379,
+  "lat": -35.02517374,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T9ANKKZ"
+ },
+ {
+  "lon": 120.48121765,
+  "lat": 21.8122178,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1A3G56"
+ },
+ {
+  "lon": -55.71266882,
+  "lat": -28.38935092,
   "country": "ARG",
   "kind": "border",
   "refined": true,
   "confidence": 0.99,
-  "cell": "TDA2WNQ"
+  "cell": "TDA2SY7"
  },
  {
-  "lon": 165.66053085,
-  "lat": 55.45213813,
-  "country": "RUS",
+  "lon": 27.26738389,
+  "lat": 42.13180596,
+  "country": "BGR",
   "kind": "border",
   "refined": true,
   "confidence": 0.99,
-  "cell": "T6A88D3"
+  "cell": "T5AK23C"
  },
  {
-  "lon": -48.46074361,
-  "lat": 0.23986357,
-  "country": "BRA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TEA03DY"
- },
- {
-  "lon": 25.09403231,
-  "lat": -17.66293579,
-  "country": "NAM",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKADGTJ"
- },
- {
-  "lon": 125.59614965,
-  "lat": 33.80667173,
-  "country": "KOR",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T0AX4C3"
- },
- {
-  "lon": -176.38010883,
-  "lat": -22.22009127,
-  "country": "TON",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T4AB41E"
- },
- {
-  "lon": 106.65444815,
-  "lat": 22.53537127,
-  "country": "CHN",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T1AS45Q"
- },
- {
-  "lon": -84.98242252,
-  "lat": 46.96601831,
-  "country": "CAN",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TBAB112"
- },
- {
-  "lon": 114.85092866,
-  "lat": 45.41519858,
-  "country": "CHN",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T0AQ8ZV"
- },
- {
-  "lon": -68.29032898,
-  "lat": -24.40969163,
-  "country": "CHL",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TCAX0ED"
- },
- {
-  "lon": 11.20512878,
-  "lat": 57.73581796,
-  "country": "SWE",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFAC3QE"
- },
- {
-  "lon": 59.03081724,
-  "lat": 50.67102077,
-  "country": "KAZ",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5AC6TK"
- },
- {
-  "lon": 14.73041601,
-  "lat": 45.51284531,
-  "country": "HRV",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFAEW9Y"
- },
- {
-  "lon": 2.24542683,
-  "lat": 20.24440902,
-  "country": "MLI",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TEAMKR4"
- },
- {
-  "lon": -5.72464126,
-  "lat": 53.86046523,
+  "lon": 48.03084158,
+  "lat": 4.2325531,
   "country": null,
   "kind": "border",
   "refined": true,
   "confidence": 0.99,
-  "cell": "TFA9XCC"
+  "cell": "TKAQ33D"
  },
  {
-  "lon": -105.8345958,
-  "lat": 31.28291946,
-  "country": "USA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TGAR37W"
- },
- {
-  "lon": 3.29084925,
-  "lat": 37.00579834,
-  "country": "DZA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFAAGCZ"
- },
- {
-  "lon": 12.99047166,
-  "lat": 47.86116852,
-  "country": "DEU",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFAEYDM"
- },
- {
-  "lon": -9.5755283,
-  "lat": -71.06733756,
+  "lon": 113.84048758,
+  "lat": -28.39336719,
   "country": null,
   "kind": "border",
   "refined": true,
   "confidence": 0.99,
-  "cell": "TJAYFK4"
+  "cell": "T2AXFBP"
  },
  {
-  "lon": 29.44811462,
-  "lat": 45.41459014,
-  "country": "ROU",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5AKPPQ"
- },
- {
-  "lon": 30.44236355,
-  "lat": 35.98606884,
-  "country": "TUR",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5AQJNW"
- },
- {
-  "lon": -143.20876754,
-  "lat": -17.60894402,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T7ADBPG"
- },
- {
-  "lon": -136.19688469,
-  "lat": 59.53184284,
-  "country": "USA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T6AJY4H"
- },
- {
-  "lon": 28.66750056,
-  "lat": -67.51871414,
-  "country": "ATA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TJAWWM1"
- },
- {
-  "lon": 74.46017738,
-  "lat": 31.00074368,
-  "country": "PAK",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5AR0CT"
- },
- {
-  "lon": -54.40367348,
-  "lat": -27.36649022,
-  "country": "ARG",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TDA2VYH"
- },
- {
-  "lon": 106.43725853,
-  "lat": 78.6211073,
-  "country": "RUS",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T6A4EAX"
- },
- {
-  "lon": 33.21364711,
-  "lat": -11.5222001,
-  "country": "ZMB",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKAVHXY"
- },
- {
-  "lon": 124.49479608,
-  "lat": 39.20524214,
-  "country": "PRK",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T0AGJ1H"
- },
- {
-  "lon": 53.91934168,
-  "lat": 37.28063032,
-  "country": "IRN",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5AZJMS"
- },
- {
-  "lon": -69.98932845,
-  "lat": -34.33985993,
-  "country": "ARG",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TCAHJKH"
- },
- {
-  "lon": -75.92458563,
-  "lat": -66.01111428,
-  "country": "ATA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TJABQD8"
- },
- {
-  "lon": 101.41404977,
-  "lat": 21.2657388,
-  "country": "CHN",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T1AZ30Y"
- },
- {
-  "lon": -83.42042402,
-  "lat": 12.32217932,
-  "country": "NIC",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TBAXHG5"
- },
- {
-  "lon": 95.23330523,
-  "lat": 2.89308471,
-  "country": "IDN",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T1AG190"
- },
- {
-  "lon": 97.92007355,
-  "lat": 77.96638612,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T6A42N7"
- },
- {
-  "lon": -68.45330089,
-  "lat": -25.90520085,
-  "country": "CHL",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TCAX1WB"
- },
- {
-  "lon": -97.56805417,
-  "lat": 48.97323985,
-  "country": "USA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TGAAEZ6"
- },
- {
-  "lon": 147.50736479,
-  "lat": -10.1312167,
-  "country": "PNG",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T4A2679"
- },
- {
-  "lon": 29.95018554,
-  "lat": -15.65474523,
-  "country": "ZWE",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKADVT4"
- },
- {
-  "lon": -166.93648893,
-  "lat": 53.23446476,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T6AC4AK"
- },
- {
-  "lon": 18.22425185,
-  "lat": 40.74690248,
-  "country": "ITA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5AMP4G"
- },
- {
-  "lon": -145.47124761,
-  "lat": -76.91796539,
-  "country": "ATA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T8AVDRC"
- },
- {
-  "lon": 47.87420024,
-  "lat": 50.27442527,
-  "country": "RUS",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5ATK0P"
- },
- {
-  "lon": 12.33788841,
-  "lat": 60.00473964,
-  "country": "NOR",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFAT3DV"
- },
- {
-  "lon": 14.22365476,
-  "lat": -22.41270739,
-  "country": "NAM",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKABVJG"
- },
- {
-  "lon": -117.08319365,
-  "lat": 31.88046237,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TGASPH8"
- },
- {
-  "lon": -69.41707419,
-  "lat": 1.71943142,
-  "country": "BRA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TBA43BQ"
- },
- {
-  "lon": -7.20105305,
-  "lat": 39.18965827,
-  "country": "ESP",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TAAEHBD"
- },
- {
-  "lon": -30.95812545,
-  "lat": 67.72745047,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFA3FTZ"
- },
- {
-  "lon": 109.37268008,
-  "lat": 49.32446997,
-  "country": "MNG",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T0AMEF8"
- },
- {
-  "lon": -61.50681613,
-  "lat": 58.15528944,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TAAMXME"
- },
- {
-  "lon": -63.48809073,
-  "lat": 18.2663674,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TBA3RD4"
- },
- {
-  "lon": 37.59038605,
-  "lat": 19.27471033,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5AG0MP"
- },
- {
-  "lon": 172.78657425,
-  "lat": -34.89793696,
-  "country": "NZL",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T3ANG68"
- },
- {
-  "lon": -10.05704529,
-  "lat": 12.21250028,
-  "country": "MLI",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TEAGQNK"
- },
- {
-  "lon": 68.54798992,
-  "lat": 40.15481666,
-  "country": "UZB",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5A93AA"
- },
- {
-  "lon": 17.66368843,
-  "lat": 54.99341549,
-  "country": "POL",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFACDTE"
- },
- {
-  "lon": 22.06496046,
-  "lat": 41.17891695,
-  "country": "MKD",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5APP2P"
- },
- {
-  "lon": -125.84661478,
-  "lat": 74.25487579,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T6AP853"
- },
- {
-  "lon": 22.80518002,
-  "lat": 78.80279862,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFAWR5C"
- },
- {
-  "lon": -113.94106742,
-  "lat": -74.84072561,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T8AQG1R"
- },
- {
-  "lon": 98.93928613,
-  "lat": 6.46645993,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T1AX39G"
- },
- {
-  "lon": 36.84059605,
-  "lat": 15.98988089,
-  "country": "ERI",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKAX8JZ"
- },
- {
-  "lon": -176.83075486,
-  "lat": -44.29118323,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T8A0SQY"
- },
- {
-  "lon": 29.85076525,
-  "lat": -1.37659422,
-  "country": "RWA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKAZHGK"
- },
- {
-  "lon": 43.29683654,
-  "lat": -21.2921276,
-  "country": "MDG",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T9ATWGB"
- },
- {
-  "lon": 149.9345225,
-  "lat": -6.49565432,
-  "country": "PNG",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T4A3VC8"
- },
- {
-  "lon": -140.32566678,
-  "lat": -19.37802764,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "THATNWP"
- },
- {
-  "lon": -126.13499008,
-  "lat": -74.7367512,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T8AJ8W1"
- },
- {
-  "lon": 26.98398891,
-  "lat": -20.01844892,
-  "country": "ZWE",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKACJPN"
- },
- {
-  "lon": 12.91583441,
-  "lat": 55.11088294,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFACC39"
- },
- {
-  "lon": -93.8387393,
-  "lat": 18.4889274,
-  "country": "MEX",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TBAV9YD"
- },
- {
-  "lon": 141.61769468,
-  "lat": 46.44530518,
-  "country": "RUS",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T0AV7PE"
- },
- {
-  "lon": 133.69178595,
-  "lat": 46.05747512,
-  "country": "CHN",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T0AJ3KQ"
- },
- {
-  "lon": 145.48359065,
-  "lat": 14.12990518,
-  "country": "MNP",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T0A262S"
- },
- {
-  "lon": 150.17581897,
-  "lat": -6.49713852,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T4A3VF2"
- },
- {
-  "lon": -87.19970468,
-  "lat": 21.80040573,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TBAYGQH"
- },
- {
-  "lon": 27.4920952,
-  "lat": 31.5317325,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5AQ1PC"
- },
- {
-  "lon": -77.86893945,
-  "lat": 19.729729,
-  "country": "CUB",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TBAZ1NT"
- },
- {
-  "lon": -88.30563864,
-  "lat": 13.06330781,
-  "country": "SLV",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TBAWZ6E"
- },
- {
-  "lon": 139.56536101,
-  "lat": 32.91164674,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T0AZ4SK"
- },
- {
-  "lon": 47.35510142,
-  "lat": -64.95930273,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TJAHM04"
- },
- {
-  "lon": 169.95638712,
-  "lat": 10.68219583,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T4AGQ09"
- },
- {
-  "lon": -9.81265484,
-  "lat": 39.05765735,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TAAEZK7"
- },
- {
-  "lon": -61.27702131,
-  "lat": 5.83111455,
-  "country": "GUY",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TBA1572"
- },
- {
-  "lon": 51.84945639,
-  "lat": 25.02196466,
-  "country": "QAT",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5AWE4N"
- },
- {
-  "lon": -157.87429725,
-  "lat": -20.07219767,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T7AEV29"
- },
- {
-  "lon": -78.49281056,
-  "lat": -33.7573842,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TCAGX17"
- },
- {
-  "lon": -8.77252031,
-  "lat": 51.35141659,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFA9HKQ"
- },
- {
-  "lon": 154.1716319,
-  "lat": -11.07652313,
-  "country": "PNG",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T4A2VGW"
- },
- {
-  "lon": 2.13545235,
-  "lat": 39.77571821,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFAA7A8"
- },
- {
-  "lon": 21.03829201,
-  "lat": 37.19448903,
-  "country": "GRC",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5AMK3T"
- },
- {
-  "lon": -155.8072186,
-  "lat": -5.4683082,
-  "country": "KIR",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T7AYE4E"
- },
- {
-  "lon": 103.67485468,
-  "lat": 2.94691151,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T1A519F"
- },
- {
-  "lon": -94.12203645,
-  "lat": 18.41000272,
-  "country": "MEX",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TBAV9T4"
- },
- {
-  "lon": 92.02663952,
-  "lat": 50.69012219,
-  "country": "RUS",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T1ABNQ0"
- },
- {
-  "lon": 18.73928763,
-  "lat": 30.61319261,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T5AM9Z4"
- },
- {
-  "lon": 105.28993409,
-  "lat": -7.08893958,
-  "country": "IDN",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T2A3PWP"
- },
- {
-  "lon": -138.67253605,
-  "lat": -75.16568351,
-  "country": "ATA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T8AJ1W7"
- },
- {
-  "lon": 22.25151232,
-  "lat": 13.40488433,
-  "country": "TCD",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKA6XFF"
- },
- {
-  "lon": 159.57068987,
-  "lat": -65.01406575,
-  "country": "ATA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T8ARKV7"
- },
- {
-  "lon": -57.93169774,
-  "lat": -20.01544654,
-  "country": "BOL",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TCA48H4"
- },
- {
-  "lon": 13.57008061,
-  "lat": 46.0538402,
-  "country": "SVN",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TFAEWKZ"
- },
- {
-  "lon": 23.52001868,
-  "lat": -12.95384865,
-  "country": "AGO",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKAC1DG"
- },
- {
-  "lon": 28.21938976,
-  "lat": -16.77453917,
-  "country": "ZWE",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKADYFA"
- },
- {
-  "lon": 21.75175678,
-  "lat": 10.62141102,
-  "country": "CAF",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKA6N5C"
- },
- {
-  "lon": 40.33948937,
-  "lat": -9.97006534,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKAJGM3"
- },
- {
-  "lon": -6.13718296,
-  "lat": 4.66122593,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TEAVFTQ"
- },
- {
-  "lon": 148.82937987,
-  "lat": -64.97490337,
-  "country": null,
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "T8A91FJ"
- },
- {
-  "lon": -69.55882567,
-  "lat": 1.73191782,
-  "country": "BRA",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TBA42AH"
- },
- {
-  "lon": 34.49410695,
-  "lat": -12.68561706,
-  "country": "MWI",
-  "kind": "border",
-  "refined": true,
-  "confidence": 0.99,
-  "cell": "TKATJTD"
- },
- {
-  "lon": 1.6181197,
-  "lat": 11.43557842,
+  "lon": -4.22407261,
+  "lat": 13.17805129,
   "country": "BFA",
   "kind": "border",
   "refined": true,
   "confidence": 0.99,
-  "cell": "TEAKSN6"
+  "cell": "TEAP7NN"
  },
  {
-  "lon": 131.85830214,
-  "lat": 0.52495341,
+  "lon": -70.64658292,
+  "lat": -4.18395874,
+  "country": "BRA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TCA297E"
+ },
+ {
+  "lon": 86.88617812,
+  "lat": 20.022171,
   "country": null,
   "kind": "border",
   "refined": true,
   "confidence": 0.99,
-  "cell": "T4A02EB"
+  "cell": "T1AVF84"
  },
  {
-  "lon": 27.93064204,
-  "lat": 48.30150682,
-  "country": "MDA",
+  "lon": 31.94569294,
+  "lat": -27.31031106,
+  "country": "SWZ",
   "kind": "border",
   "refined": true,
   "confidence": 0.99,
-  "cell": "T5AK5Y5"
+  "cell": "T9AKS9F"
  },
  {
-  "lon": -80.42030109,
-  "lat": 0.52101413,
+  "lon": 53.6290866,
+  "lat": 51.29771311,
+  "country": "RUS",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5ADVZB"
+ },
+ {
+  "lon": 72.01122198,
+  "lat": 36.8187107,
+  "country": "TJK",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5A8BB6"
+ },
+ {
+  "lon": 35.20346145,
+  "lat": 29.29825808,
+  "country": "SAU",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AGYN7"
+ },
+ {
+  "lon": 96.85207278,
+  "lat": 16.55537841,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1AZNRF"
+ },
+ {
+  "lon": -81.47507362,
+  "lat": 3.80517204,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBAX82N"
+ },
+ {
+  "lon": 35.51080322,
+  "lat": 4.60851149,
+  "country": "KEN",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKAWZQN"
+ },
+ {
+  "lon": 50.87357146,
+  "lat": 24.56886971,
+  "country": "SAU",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AWECR"
+ },
+ {
+  "lon": 179.86272536,
+  "lat": 69.17455115,
+  "country": "RUS",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AZSVJ"
+ },
+ {
+  "lon": 8.4046093,
+  "lat": 36.29025922,
+  "country": "TUN",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAAZAD"
+ },
+ {
+  "lon": 158.64258374,
+  "lat": -54.37361056,
+  "country": "AUS",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T8A2NH6"
+ },
+ {
+  "lon": 23.9996272,
+  "lat": 18.48351172,
+  "country": "TCD",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKA45YE"
+ },
+ {
+  "lon": -106.26639731,
+  "lat": 22.80221867,
+  "country": "MEX",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBAJTQ5"
+ },
+ {
+  "lon": 68.43577919,
+  "lat": -49.05973011,
+  "country": "ATF",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T9A7M5Q"
+ },
+ {
+  "lon": 66.2471652,
+  "lat": 75.80482048,
+  "country": "RUS",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAHNFP"
+ },
+ {
+  "lon": -9.43421658,
+  "lat": -86.03971724,
+  "country": "ATA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TJATMG0"
+ },
+ {
+  "lon": 78.32436321,
+  "lat": 73.64741514,
+  "country": "RUS",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAQE16"
+ },
+ {
+  "lon": -141.13637821,
+  "lat": 68.54499077,
+  "country": "USA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AV9DB"
+ },
+ {
+  "lon": 168.21144627,
+  "lat": 54.74773224,
+  "country": "RUS",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6A89P9"
+ },
+ {
+  "lon": 172.539061,
+  "lat": -34.24766127,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3AM5FM"
+ },
+ {
+  "lon": -97.38375717,
+  "lat": 24.57095732,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBATT2A"
+ },
+ {
+  "lon": -83.87379918,
+  "lat": -8.1630252,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TCASJYT"
+ },
+ {
+  "lon": 78.0422081,
+  "lat": 35.11373851,
+  "country": "IND",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5A84T3"
+ },
+ {
+  "lon": -131.54213968,
+  "lat": 56.57722017,
+  "country": "USA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TGAD7AR"
+ },
+ {
+  "lon": -7.81999042,
+  "lat": 10.23988345,
+  "country": "MLI",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TEAP0WD"
+ },
+ {
+  "lon": -141.97980196,
+  "lat": -16.66176703,
+  "country": "PYF",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T7ATNXT"
+ },
+ {
+  "lon": 61.21641255,
+  "lat": 30.12797608,
+  "country": "AFG",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5ASCCF"
+ },
+ {
+  "lon": 121.92177724,
+  "lat": 32.88824657,
+  "country": "CHN",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0AXDCK"
+ },
+ {
+  "lon": 27.34001733,
+  "lat": 5.23822229,
+  "country": "SSD",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKAZ667"
+ },
+ {
+  "lon": 37.91053773,
+  "lat": -46.43643944,
+  "country": "ATF",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T9AG5XQ"
+ },
+ {
+  "lon": -79.81489445,
+  "lat": 13.45077251,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBAW62C"
+ },
+ {
+  "lon": -74.22039707,
+  "lat": -40.99612144,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TCAQ2HZ"
+ },
+ {
+  "lon": 101.60745316,
+  "lat": 2.39756518,
+  "country": "MYS",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1A5FYH"
+ },
+ {
+  "lon": -139.23319862,
+  "lat": 59.16191376,
+  "country": "USA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AJHJZ"
+ },
+ {
+  "lon": -10.07300884,
+  "lat": 5.59096647,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TEAYWBW"
+ },
+ {
+  "lon": 134.39346452,
+  "lat": 7.48607665,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0A1HRF"
+ },
+ {
+  "lon": 34.61214812,
+  "lat": -11.12997594,
+  "country": "MWI",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKAVW14"
+ },
+ {
+  "lon": 49.63867698,
+  "lat": -17.8960535,
+  "country": "MDG",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T9ADZVW"
+ },
+ {
+  "lon": 115.48860109,
+  "lat": -31.95654469,
+  "country": "AUS",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T2AG3ET"
+ },
+ {
+  "lon": 131.40050551,
+  "lat": 24.37459768,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0A4YRF"
+ },
+ {
+  "lon": 146.34176639,
+  "lat": -39.2490377,
+  "country": "AUS",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3AYGY2"
+ },
+ {
+  "lon": -2.72025874,
+  "lat": 35.54282582,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TAABXSH"
+ },
+ {
+  "lon": 165.71593857,
+  "lat": -19.52594602,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T4A9HJF"
+ },
+ {
+  "lon": -81.41910117,
+  "lat": 25.52718787,
+  "country": "USA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBAY90C"
+ },
+ {
+  "lon": 145.85399344,
+  "lat": 18.68300087,
+  "country": "MNP",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0A3MN1"
+ },
+ {
+  "lon": 56.45337802,
+  "lat": -10.53561027,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T9AB841"
+ },
+ {
+  "lon": -67.40983461,
+  "lat": -65.91666699,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TJABV4W"
+ },
+ {
+  "lon": 105.57100399,
+  "lat": 15.78202507,
+  "country": "LAO",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1AZAT3"
+ },
+ {
+  "lon": -60.03407395,
+  "lat": 46.88586879,
+  "country": "CAN",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TAAQ14J"
+ },
+ {
+  "lon": -66.64340631,
+  "lat": -55.08852874,
+  "country": "ARG",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TDABXP3"
+ },
+ {
+  "lon": 12.3147705,
+  "lat": 13.10253266,
+  "country": "NER",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKA28JY"
+ },
+ {
+  "lon": 43.11422143,
+  "lat": 41.38073366,
+  "country": "GEO",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AVCVG"
+ },
+ {
+  "lon": 20.01696056,
+  "lat": -23.83118095,
+  "country": "BWA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKAB870"
+ },
+ {
+  "lon": -82.4296159,
+  "lat": 15.29538555,
+  "country": "HND",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBAW5BW"
+ },
+ {
+  "lon": -178.79287275,
+  "lat": -16.4220583,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T4AEY9Y"
+ },
+ {
+  "lon": 139.4892421,
+  "lat": -36.89849147,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3AZR4E"
+ },
+ {
+  "lon": -36.27257699,
+  "lat": -10.61177966,
+  "country": "BRA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TDA421Z"
+ },
+ {
+  "lon": -59.83668255,
+  "lat": -24.1409028,
+  "country": "ARG",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TCA53MF"
+ },
+ {
+  "lon": -79.75200681,
+  "lat": -26.21630433,
+  "country": "CHL",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TCAYSVB"
+ },
+ {
+  "lon": -93.84353311,
+  "lat": 15.70955057,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBAJ0P3"
+ },
+ {
+  "lon": 42.81239318,
+  "lat": -0.44086831,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKAPCPW"
+ },
+ {
+  "lon": 44.50452391,
+  "lat": 37.15020557,
+  "country": "TUR",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AYWSS"
+ },
+ {
+  "lon": -166.43621047,
+  "lat": 59.59579881,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AT1HA"
+ },
+ {
+  "lon": -160.15849802,
+  "lat": -74.99609648,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T8AV2SX"
+ },
+ {
+  "lon": 0.36278088,
+  "lat": 50.54581368,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAEAKJ"
+ },
+ {
+  "lon": 31.4276608,
+  "lat": 62.81801929,
+  "country": "FIN",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAVQPZ"
+ },
+ {
+  "lon": 60.83420905,
+  "lat": 31.71922035,
+  "country": "AFG",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AS4TG"
+ },
+ {
+  "lon": 12.06828545,
+  "lat": 46.97893293,
+  "country": "ITA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAEY5H"
+ },
+ {
+  "lon": 125.62846714,
+  "lat": 35.3809748,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0AX521"
+ },
+ {
+  "lon": 8.83086514,
+  "lat": 37.74635551,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAARWG"
+ },
+ {
+  "lon": 121.71573295,
+  "lat": -34.23328694,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3A886R"
+ },
+ {
+  "lon": 53.50839913,
+  "lat": 12.09884032,
+  "country": "YEM",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5A79JK"
+ },
+ {
+  "lon": -58.64345846,
+  "lat": 74.19538146,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFA77RZ"
+ },
+ {
+  "lon": 25.24553325,
+  "lat": 32.04625641,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AQ4M7"
+ },
+ {
+  "lon": -10.09993163,
+  "lat": 54.45328644,
+  "country": "IRL",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFA9RJ4"
+ },
+ {
+  "lon": -60.36906984,
+  "lat": -13.97551861,
+  "country": "BRA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TCA7DZK"
+ },
+ {
+  "lon": 71.90563173,
+  "lat": -66.99577441,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TJAQ76F"
+ },
+ {
+  "lon": -133.96354756,
+  "lat": 55.25932465,
+  "country": "USA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TGADD9D"
+ },
+ {
+  "lon": 121.57916817,
+  "lat": 27.68633659,
+  "country": "CHN",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0A5DNB"
+ },
+ {
+  "lon": -6.68429518,
+  "lat": 15.55563489,
+  "country": "MRT",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TEAPB87"
+ },
+ {
+  "lon": 21.90803868,
+  "lat": 44.65495722,
+  "country": "ROU",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AKAF1"
+ },
+ {
+  "lon": 129.06293336,
+  "lat": 34.09561913,
+  "country": "JPN",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0AXWBF"
+ },
+ {
+  "lon": 23.56670135,
+  "lat": 10.0213479,
+  "country": "CAF",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKA4NTK"
+ },
+ {
+  "lon": 128.06693916,
+  "lat": 49.56367605,
+  "country": "RUS",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0AQJ18"
+ },
+ {
+  "lon": -2.79622318,
+  "lat": 11.01692569,
+  "country": "BFA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TEAJ8VC"
+ },
+ {
+  "lon": 159.31056913,
+  "lat": -54.2392375,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T8A2Q97"
+ },
+ {
+  "lon": 57.13273791,
+  "lat": 42.0206231,
+  "country": "UZB",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AY1S7"
+ },
+ {
+  "lon": -66.96001803,
+  "lat": -53.94695305,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TDABRBK"
+ },
+ {
+  "lon": 20.48025354,
+  "lat": 70.72923537,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAYZK5"
+ },
+ {
+  "lon": -55.46833688,
+  "lat": -23.88444041,
+  "country": "PRY",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TDA3HGZ"
+ },
+ {
+  "lon": 73.762818,
+  "lat": 0.71632914,
+  "country": "MDV",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1AMAJT"
+ },
+ {
+  "lon": 50.22364028,
+  "lat": -16.45104119,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T9ADWXT"
+ },
+ {
+  "lon": 76.15131749,
+  "lat": 9.15682498,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1APT3E"
+ },
+ {
+  "lon": 14.59937566,
+  "lat": 54.92721008,
+  "country": "DNK",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFACCB0"
+ },
+ {
+  "lon": 176.80052679,
+  "lat": 69.95063453,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AZ1TV"
+ },
+ {
+  "lon": 104.66034283,
+  "lat": 20.2020195,
+  "country": "LAO",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1AS6JA"
+ },
+ {
+  "lon": 0.49402706,
+  "lat": 11.05279796,
+  "country": "BFA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TEAKVTP"
+ },
+ {
+  "lon": 9.65491442,
+  "lat": 3.26672439,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKA2X17"
+ },
+ {
+  "lon": -37.20653303,
+  "lat": 65.24091871,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFA3VEG"
+ },
+ {
+  "lon": -11.18808954,
+  "lat": 9.94730563,
+  "country": "SLE",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TEAWPR0"
+ },
+ {
+  "lon": 121.4885739,
+  "lat": 1.48819317,
+  "country": "IDN",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1A1TSF"
+ },
+ {
+  "lon": -65.31535389,
+  "lat": -11.03343931,
+  "country": "BOL",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TCA7Z1D"
+ },
+ {
+  "lon": 45.25498632,
+  "lat": 68.72828272,
+  "country": "RUS",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAJE4F"
+ },
+ {
+  "lon": 97.14952579,
+  "lat": -12.23092055,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T2ASQQ3"
+ },
+ {
+  "lon": 7.83031738,
+  "lat": 40.72250261,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFABZ86"
+ },
+ {
+  "lon": -0.29843271,
+  "lat": 42.80410112,
+  "country": "ESP",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAAE07"
+ },
+ {
+  "lon": 142.20912882,
+  "lat": 27.97163276,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0ASDA5"
+ },
+ {
+  "lon": 141.90255189,
+  "lat": 38.2908776,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0AZH29"
+ },
+ {
+  "lon": -159.65069169,
+  "lat": -18.66486118,
+  "country": "COK",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T7AFMR6"
+ },
+ {
+  "lon": -1.5383388,
+  "lat": 35.67203114,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TAABP22"
+ },
+ {
+  "lon": -71.44923524,
+  "lat": -28.15913654,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TCAXPR7"
+ },
+ {
+  "lon": 153.71157856,
+  "lat": -28.57078979,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3AWVQW"
+ },
+ {
+  "lon": 162.18295598,
+  "lat": 55.5791713,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6A82MD"
+ },
+ {
+  "lon": -79.08909785,
+  "lat": 32.97219495,
+  "country": "USA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBA9B79"
+ },
+ {
+  "lon": -72.39450955,
+  "lat": -48.49103955,
+  "country": "ARG",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TDAA40Y"
+ },
+ {
+  "lon": 134.26255083,
+  "lat": 48.42056528,
+  "country": "RUS",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0AJEF4"
+ },
+ {
+  "lon": -82.38027406,
+  "lat": 26.416084,
+  "country": "USA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBAYFT9"
+ },
+ {
+  "lon": -179.48952587,
+  "lat": -20.34813637,
+  "country": "FJI",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T4AB0HJ"
+ },
+ {
+  "lon": -89.28923767,
+  "lat": 82.26796139,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AHTGD"
+ },
+ {
+  "lon": -23.67583118,
+  "lat": 16.95505834,
+  "country": "CPV",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TEAXAZJ"
+ },
+ {
+  "lon": 125.94166898,
+  "lat": 37.63965334,
+  "country": "KOR",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0AWTJZ"
+ },
+ {
+  "lon": 11.85002584,
+  "lat": -3.73133388,
+  "country": "COG",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKA88T6"
+ },
+ {
+  "lon": 128.91727806,
+  "lat": -31.76187233,
+  "country": "AUS",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3ASRBZ"
+ },
+ {
+  "lon": 177.66166454,
+  "lat": -37.52923225,
+  "country": "NZL",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3AMRZV"
+ },
+ {
+  "lon": 177.22805531,
+  "lat": -37.77300942,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3AMR89"
+ },
+ {
+  "lon": 72.8791896,
+  "lat": 17.0741091,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1AK97B"
+ },
+ {
+  "lon": -148.42102332,
+  "lat": -15.94435176,
+  "country": "PYF",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T7AD369"
+ },
+ {
+  "lon": 135.12010481,
+  "lat": 71.78929256,
+  "country": "RUS",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6A6RSB"
+ },
+ {
+  "lon": -78.09636093,
+  "lat": -3.26425659,
+  "country": "PER",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TCA2Y8M"
+ },
+ {
+  "lon": 0.99376585,
+  "lat": 39.07797972,
+  "country": "ESP",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAA5SD"
+ },
+ {
+  "lon": -94.30303342,
+  "lat": -86.0115069,
+  "country": "ATA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T8AJX97"
+ },
+ {
+  "lon": 145.62464629,
+  "lat": -15.7884054,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3A5RRS"
+ },
+ {
+  "lon": 148.39079942,
+  "lat": -41.96234011,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3AV127"
+ },
+ {
+  "lon": 36.76980055,
+  "lat": 41.53276957,
+  "country": "TUR",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AJCAP"
+ },
+ {
+  "lon": 165.38205485,
+  "lat": -19.98751298,
+  "country": "NCL",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T4A9HXT"
+ },
+ {
+  "lon": 60.59571351,
+  "lat": 25.07010247,
+  "country": "IRN",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5A397B"
+ },
+ {
+  "lon": -5.41614591,
+  "lat": 4.91273659,
+  "country": "CIV",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TEAVFSQ"
+ },
+ {
+  "lon": -69.35194925,
+  "lat": -15.7155475,
+  "country": "BOL",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TCA4M6X"
+ },
+ {
+  "lon": 146.17105927,
+  "lat": 44.71442747,
+  "country": "RUS",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0AVXYW"
+ },
+ {
+  "lon": 35.67159244,
+  "lat": 26.70704456,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AHKBE"
+ },
+ {
+  "lon": 12.58351376,
+  "lat": 68.24399494,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAZK8Y"
+ },
+ {
+  "lon": 121.98233393,
+  "lat": -34.37908626,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3A884T"
+ },
+ {
+  "lon": -16.44175571,
+  "lat": 27.81580483,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TAA8RWS"
+ },
+ {
+  "lon": -41.73643188,
+  "lat": -74.68343182,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TJAC4EB"
+ },
+ {
+  "lon": 162.96125166,
+  "lat": 55.79508136,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6A880E"
+ },
+ {
+  "lon": -58.33376552,
+  "lat": -26.81297822,
+  "country": "PRY",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TDA2WD2"
+ },
+ {
+  "lon": 165.90560274,
+  "lat": -20.2500519,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T4A9HRB"
+ },
+ {
+  "lon": -108.05376172,
+  "lat": 24.42444455,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TGA2KPM"
+ },
+ {
+  "lon": -79.85714175,
+  "lat": 26.02569101,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBAY8VD"
+ },
+ {
+  "lon": -50.18164633,
+  "lat": 61.85954352,
+  "country": "GRL",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFA630N"
+ },
+ {
+  "lon": 17.7097202,
+  "lat": 45.82632732,
+  "country": "HRV",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAEQDQ"
+ },
+ {
+  "lon": -117.51322209,
+  "lat": 32.74343365,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TGASPS9"
+ },
+ {
+  "lon": 21.70418561,
+  "lat": 36.59666087,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AMGFG"
+ },
+ {
+  "lon": 50.14324562,
+  "lat": 46.71151965,
+  "country": "KAZ",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AVJ63"
+ },
+ {
+  "lon": 3.44832843,
+  "lat": -54.46973005,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TJA6HB3"
+ },
+ {
+  "lon": 51.31730917,
+  "lat": 43.15491297,
+  "country": "KAZ",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AT9X4"
+ },
+ {
+  "lon": -74.55843831,
+  "lat": -42.52823755,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TCAQEC9"
+ },
+ {
+  "lon": 153.40480627,
+  "lat": -9.56433565,
+  "country": "PNG",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T4A3Q4K"
+ },
+ {
+  "lon": 145.60222094,
+  "lat": 16.57196378,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0A3Y15"
+ },
+ {
+  "lon": -142.27705169,
+  "lat": -15.57896471,
+  "country": "PYF",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T7ATQVS"
+ },
+ {
+  "lon": 128.77457331,
+  "lat": 38.45884789,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0AWS5W"
+ },
+ {
+  "lon": -154.63326696,
+  "lat": -15.67195028,
+  "country": "PYF",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T7AC6R7"
+ },
+ {
+  "lon": 20.80657915,
+  "lat": 61.41052986,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFATDFG"
+ },
+ {
+  "lon": 146.1156063,
+  "lat": 7.22825026,
+  "country": "FSM",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T4A445Z"
+ },
+ {
+  "lon": 107.92749418,
+  "lat": 49.77190133,
+  "country": "MNG",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0AM8VK"
+ },
+ {
+  "lon": -70.28933146,
+  "lat": -21.24978371,
+  "country": "CHL",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TCAWBXS"
+ },
+ {
+  "lon": 25.98217412,
+  "lat": -19.08251899,
+  "country": "ZWE",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKACJ41"
+ },
+ {
+  "lon": 29.26659352,
+  "lat": -3.66995196,
+  "country": "BDI",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKAZGM9"
+ },
+ {
+  "lon": -44.63023168,
+  "lat": -60.02005847,
+  "country": "ATA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TJA8WR7"
+ },
+ {
+  "lon": 32.1464076,
+  "lat": -21.58559515,
+  "country": "ZWE",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKAD5EV"
+ },
+ {
+  "lon": -39.56366432,
+  "lat": 64.48510847,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFA3T0H"
+ },
+ {
+  "lon": 37.71120398,
+  "lat": 17.37285464,
+  "country": "SDN",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKA5AD5"
+ },
+ {
+  "lon": -91.18126997,
+  "lat": -1.26220875,
   "country": "ECU",
   "kind": "border",
   "refined": true,
   "confidence": 0.99,
-  "cell": "TBA5BHA"
+  "cell": "TCA9G91"
  },
  {
-  "lon": 109.33855001,
-  "lat": 15.46878045,
+  "lon": 53.08043956,
+  "lat": 39.38406505,
+  "country": "XCA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AY7DS"
+ },
+ {
+  "lon": 50.35751298,
+  "lat": 8.27550079,
+  "country": "SOM",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKAH9Q2"
+ },
+ {
+  "lon": 113.1212062,
+  "lat": 21.39346241,
   "country": null,
   "kind": "border",
   "refined": true,
   "confidence": 0.99,
-  "cell": "T1A38NQ"
+  "cell": "T1A3NPR"
+ },
+ {
+  "lon": 34.64878467,
+  "lat": 30.32494237,
+  "country": "ISR",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AGRRX"
+ },
+ {
+  "lon": 13.96464127,
+  "lat": 43.37309633,
+  "country": "ITA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFABET8"
+ },
+ {
+  "lon": 40.85288145,
+  "lat": -11.53677522,
+  "country": "MOZ",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKAJJ9R"
+ },
+ {
+  "lon": 149.19311321,
+  "lat": 7.65048277,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T4A5J38"
+ },
+ {
+  "lon": 29.46252988,
+  "lat": 46.53504486,
+  "country": "MDA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AKPER"
+ },
+ {
+  "lon": -140.85048727,
+  "lat": -7.80897909,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T7AJ5R8"
+ },
+ {
+  "lon": -116.71617545,
+  "lat": 32.53425434,
+  "country": "MEX",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TGASX3W"
+ },
+ {
+  "lon": 12.17756183,
+  "lat": 62.6704997,
+  "country": "SWE",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAY41F"
+ },
+ {
+  "lon": 151.65489437,
+  "lat": 7.88437003,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T4A5WZC"
+ },
+ {
+  "lon": -86.61531375,
+  "lat": 47.57764687,
+  "country": "USA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBAB1VW"
+ },
+ {
+  "lon": 25.05244677,
+  "lat": 24.70717709,
+  "country": "EGY",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKA40J3"
+ },
+ {
+  "lon": 33.28646053,
+  "lat": 42.20813465,
+  "country": "TUR",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AKRXA"
+ },
+ {
+  "lon": -5.4211931,
+  "lat": -75.78509572,
+  "country": "ATA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TJATB7E"
+ },
+ {
+  "lon": 71.26583191,
+  "lat": -6.89454038,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T2ABPZQ"
+ },
+ {
+  "lon": 34.13294421,
+  "lat": 44.20216257,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AKY5Y"
+ },
+ {
+  "lon": -169.81000147,
+  "lat": -13.99179493,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T7A8PWV"
+ },
+ {
+  "lon": 57.4594489,
+  "lat": -19.83270635,
+  "country": "MUS",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T9AF4N6"
+ },
+ {
+  "lon": 0.06737201,
+  "lat": 39.5514746,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAA705"
+ },
+ {
+  "lon": 176.81745945,
+  "lat": -2.41909682,
+  "country": "KIR",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T4AVJYP"
+ },
+ {
+  "lon": 46.87052609,
+  "lat": -25.37578012,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T9AVJT0"
+ },
+ {
+  "lon": 35.31297056,
+  "lat": -20.78807806,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T9AJS8Y"
+ },
+ {
+  "lon": 29.81411394,
+  "lat": -13.3698639,
+  "country": "COD",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKACAGE"
+ },
+ {
+  "lon": -5.58543784,
+  "lat": -75.21804933,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TJAT8CA"
+ },
+ {
+  "lon": 36.41484247,
+  "lat": 32.39788973,
+  "country": "SYR",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AGX7F"
+ },
+ {
+  "lon": 155.25818072,
+  "lat": 49.70058666,
+  "country": "RUS",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0ATM1V"
+ },
+ {
+  "lon": -146.82870285,
+  "lat": -15.98205553,
+  "country": "PYF",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T7AD2SK"
+ },
+ {
+  "lon": -0.72099668,
+  "lat": 37.39132179,
+  "country": "ESP",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TAAB505"
+ },
+ {
+  "lon": 55.63375041,
+  "lat": -21.58724818,
+  "country": "REU",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T9AC1AB"
+ },
+ {
+  "lon": 169.64778577,
+  "lat": -20.39796036,
+  "country": "VUT",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T4A8S4E"
+ },
+ {
+  "lon": -175.18470296,
+  "lat": -20.60300045,
+  "country": "TON",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T4ABF6X"
+ },
+ {
+  "lon": -140.85037532,
+  "lat": -16.06183848,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T7AJN1W"
+ },
+ {
+  "lon": 29.29369707,
+  "lat": 9.7751136,
+  "country": "SDN",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKAWDP4"
+ },
+ {
+  "lon": 39.91136163,
+  "lat": -9.24572873,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKAKGS3"
+ },
+ {
+  "lon": -16.15276481,
+  "lat": 16.57112886,
+  "country": "MRT",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TEAHJ4H"
+ },
+ {
+  "lon": -79.86079287,
+  "lat": -68.03808231,
+  "country": "ATA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TJAB7T2"
+ },
+ {
+  "lon": 41.16817393,
+  "lat": 13.75320538,
+  "country": "ERI",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKAGFWM"
+ },
+ {
+  "lon": 14.09288803,
+  "lat": 54.30328066,
+  "country": "POL",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAC4P7"
+ },
+ {
+  "lon": -97.40745368,
+  "lat": 25.82156725,
+  "country": "MEX",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBATV5A"
+ },
+ {
+  "lon": -87.06929918,
+  "lat": 47.79795442,
+  "country": "USA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBABC59"
+ },
+ {
+  "lon": 12.5246438,
+  "lat": -19.57767643,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKAA8PB"
+ },
+ {
+  "lon": -62.26858404,
+  "lat": 58.54153059,
+  "country": "CAN",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TAAMS17"
+ },
+ {
+  "lon": 49.36186529,
+  "lat": 50.95335859,
+  "country": "RUS",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AD3H4"
+ },
+ {
+  "lon": -83.16539852,
+  "lat": 12.08085582,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBAXHHD"
+ },
+ {
+  "lon": 37.80385684,
+  "lat": -17.6891246,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKADAXV"
+ },
+ {
+  "lon": 13.94575341,
+  "lat": -22.04940363,
+  "country": "NAM",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKABT20"
+ },
+ {
+  "lon": -179.85575417,
+  "lat": 51.8836338,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6A95CK"
+ },
+ {
+  "lon": 29.5423878,
+  "lat": 22.01639419,
+  "country": "EGY",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKA4BTV"
+ },
+ {
+  "lon": 52.95009103,
+  "lat": 41.02311606,
+  "country": "TKM",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AY4BC"
+ },
+ {
+  "lon": 22.88051847,
+  "lat": 41.36355862,
+  "country": "MKD",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5APQQ4"
+ },
+ {
+  "lon": 24.12596525,
+  "lat": 51.63713403,
+  "country": "UKR",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFADMNM"
+ },
+ {
+  "lon": -68.43788608,
+  "lat": -19.33035326,
+  "country": "BOL",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TCA4S1E"
+ },
+ {
+  "lon": -165.27291853,
+  "lat": 63.25905294,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AT8GY"
+ },
+ {
+  "lon": 11.29179745,
+  "lat": 57.41378254,
+  "country": "DNK",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAC3GW"
+ },
+ {
+  "lon": 146.92748117,
+  "lat": 8.08912553,
+  "country": "FSM",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T4A4CAZ"
+ },
+ {
+  "lon": 93.42281077,
+  "lat": 23.48841444,
+  "country": "MMR",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1AZGXB"
+ },
+ {
+  "lon": -64.94188095,
+  "lat": 17.92593578,
+  "country": "VIR",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBA3SHM"
+ },
+ {
+  "lon": 18.86733091,
+  "lat": 62.80959953,
+  "country": "SWE",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAT9XB"
+ },
+ {
+  "lon": 34.45452338,
+  "lat": -9.88468672,
+  "country": "TZA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKAVWFD"
+ },
+ {
+  "lon": -79.97985212,
+  "lat": -82.55529063,
+  "country": "ATA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TJAD5FX"
+ },
+ {
+  "lon": 165.94349778,
+  "lat": -19.62003653,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T4A9HVX"
+ },
+ {
+  "lon": 5.65723157,
+  "lat": 53.70400315,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAFE6C"
+ },
+ {
+  "lon": -115.61023209,
+  "lat": 28.00208019,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TGAS0KT"
+ },
+ {
+  "lon": -163.33194924,
+  "lat": -18.16481492,
+  "country": "COK",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T7AFJEB"
+ },
+ {
+  "lon": 175.75175942,
+  "lat": -2.1224004,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T4AVYN5"
+ },
+ {
+  "lon": 131.95219716,
+  "lat": 45.35679735,
+  "country": "CHN",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0AP37R"
+ },
+ {
+  "lon": -66.98584877,
+  "lat": -10.19548168,
+  "country": "BRA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TCA7HJ6"
+ },
+ {
+  "lon": -61.06842684,
+  "lat": -13.55706352,
+  "country": "BOL",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TCA7D71"
+ },
+ {
+  "lon": 9.64760903,
+  "lat": 41.6381793,
+  "country": "FRA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFABSFY"
+ },
+ {
+  "lon": 124.99931051,
+  "lat": 34.89976409,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0AX724"
+ },
+ {
+  "lon": 170.52349854,
+  "lat": -67.64537504,
+  "country": "ATA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T8ARSMD"
+ },
+ {
+  "lon": 28.99475275,
+  "lat": -13.33904978,
+  "country": "COD",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKACA65"
+ },
+ {
+  "lon": -73.16960174,
+  "lat": 11.98856079,
+  "country": "COL",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBA4QHB"
+ },
+ {
+  "lon": 19.65277655,
+  "lat": 30.71361001,
+  "country": "LBY",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AMDV7"
+ },
+ {
+  "lon": 141.77435362,
+  "lat": 53.60053129,
+  "country": "RUS",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0AKW3H"
+ },
+ {
+  "lon": 118.9215371,
+  "lat": 4.32963683,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1A14ZP"
+ },
+ {
+  "lon": 114.90832871,
+  "lat": -64.79188941,
+  "country": "ATA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T8ABRXF"
+ },
+ {
+  "lon": -45.98634142,
+  "lat": -24.51254841,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TDA38BC"
+ },
+ {
+  "lon": 71.95169856,
+  "lat": 36.79498939,
+  "country": "TJK",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5A8AA1"
+ },
+ {
+  "lon": 78.45719075,
+  "lat": 73.67278437,
+  "country": "RUS",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAQE72"
+ },
+ {
+  "lon": 81.16639433,
+  "lat": 51.1631616,
+  "country": "KAZ",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AAB2Y"
+ },
+ {
+  "lon": 14.62296538,
+  "lat": 40.13388586,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAB68V"
+ },
+ {
+  "lon": -57.17534094,
+  "lat": -29.74027183,
+  "country": "ARG",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TDAR2K1"
+ },
+ {
+  "lon": 99.10881449,
+  "lat": 80.84955513,
+  "country": "RUS",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6A4A4V"
+ },
+ {
+  "lon": 33.5076596,
+  "lat": 42.1851983,
+  "country": "TUR",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AJ9DF"
+ },
+ {
+  "lon": -158.4979547,
+  "lat": -19.75077946,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T7AERCT"
+ },
+ {
+  "lon": 174.50204156,
+  "lat": -41.88145578,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3AMQ23"
+ },
+ {
+  "lon": 44.78083223,
+  "lat": -12.80501948,
+  "country": "MYT",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKAKN2E"
+ },
+ {
+  "lon": -73.7677292,
+  "lat": -7.74077879,
+  "country": "PER",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TCA31AZ"
+ },
+ {
+  "lon": 45.13755693,
+  "lat": 5.1346975,
+  "country": "SOM",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKAHN87"
+ },
+ {
+  "lon": 66.91793559,
+  "lat": 31.27263219,
+  "country": "PAK",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5ASRWM"
+ },
+ {
+  "lon": 28.79475114,
+  "lat": -16.48921607,
+  "country": "ZMB",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKADRA8"
+ },
+ {
+  "lon": 52.597683,
+  "lat": 41.68430485,
+  "country": "TKM",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AT8MQ"
+ },
+ {
+  "lon": 102.36104661,
+  "lat": 1.80042558,
+  "country": "IDN",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1A5E0E"
+ },
+ {
+  "lon": -20.90853871,
+  "lat": 72.5289374,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAZATN"
+ },
+ {
+  "lon": -170.10141131,
+  "lat": 66.46951496,
+  "country": "RUS",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AZJG4"
+ },
+ {
+  "lon": -81.09353565,
+  "lat": -12.25276701,
+  "country": "PER",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TCASPV7"
+ },
+ {
+  "lon": -174.13414969,
+  "lat": 26.22211504,
+  "country": "UMI",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T4AN7VE"
+ },
+ {
+  "lon": 61.41674138,
+  "lat": 53.60435656,
+  "country": "KAZ",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5ACKQZ"
+ },
+ {
+  "lon": -14.16292017,
+  "lat": 11.67010275,
+  "country": "GNB",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TEAWV81"
+ },
+ {
+  "lon": 20.78486883,
+  "lat": 45.69941814,
+  "country": "SRB",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFACQ8B"
+ },
+ {
+  "lon": 143.66039404,
+  "lat": -40.11179599,
+  "country": "AUS",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3AY5T0"
+ },
+ {
+  "lon": 65.41850155,
+  "lat": 25.23346882,
+  "country": "PAK",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5A3487"
+ },
+ {
+  "lon": -119.1768309,
+  "lat": 33.87675732,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TGASNXN"
+ },
+ {
+  "lon": 17.79646564,
+  "lat": 8.00185114,
+  "country": "TCD",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKA3D6P"
+ },
+ {
+  "lon": -171.55136345,
+  "lat": 25.63555357,
+  "country": "UMI",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T7A07RD"
+ },
+ {
+  "lon": 42.28878534,
+  "lat": 37.2692184,
+  "country": "SYR",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AYMEF"
+ },
+ {
+  "lon": -169.85383794,
+  "lat": 53.25801172,
+  "country": "USA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6AF662"
+ },
+ {
+  "lon": -58.39777091,
+  "lat": -27.25099806,
+  "country": "PRY",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TDA2WBB"
+ },
+ {
+  "lon": 143.37390838,
+  "lat": 59.08558489,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6A3GV9"
+ },
+ {
+  "lon": -52.14161312,
+  "lat": -32.45483122,
+  "country": "BRA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TDASYKG"
+ },
+ {
+  "lon": 35.33063181,
+  "lat": -16.19846769,
+  "country": "MOZ",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKAD81A"
+ },
+ {
+  "lon": 131.5876497,
+  "lat": 37.37619675,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0AWY65"
+ },
+ {
+  "lon": 169.11485362,
+  "lat": -19.70647587,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T4A8VXA"
+ },
+ {
+  "lon": 74.77059794,
+  "lat": 12.45729799,
+  "country": "IND",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1APZ2W"
+ },
+ {
+  "lon": -87.30941988,
+  "lat": 47.86753025,
+  "country": "USA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBABCXT"
+ },
+ {
+  "lon": 113.82908374,
+  "lat": 44.86016113,
+  "country": "MNG",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0AQ8M4"
+ },
+ {
+  "lon": -70.48880859,
+  "lat": -19.04168093,
+  "country": "CHL",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TCAWENB"
+ },
+ {
+  "lon": 11.04591923,
+  "lat": 56.10311899,
+  "country": "DNK",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAC1ZB"
+ },
+ {
+  "lon": 76.27052807,
+  "lat": 40.35331033,
+  "country": "CHN",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5A9HCV"
+ },
+ {
+  "lon": 14.63466426,
+  "lat": 48.57523286,
+  "country": "AUT",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAEV3S"
+ },
+ {
+  "lon": 3.11749507,
+  "lat": 19.09931206,
+  "country": "MLI",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TEAMHCK"
+ },
+ {
+  "lon": -8.38105665,
+  "lat": 51.399029,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFA9WGD"
+ },
+ {
+  "lon": -105.96617111,
+  "lat": 48.97610094,
+  "country": "USA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TGAFYQA"
+ },
+ {
+  "lon": 1.79321621,
+  "lat": 42.45793826,
+  "country": "ESP",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAAF9N"
+ },
+ {
+  "lon": 15.44841634,
+  "lat": 46.66215094,
+  "country": "AUT",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAEX44"
+ },
+ {
+  "lon": 24.69962489,
+  "lat": -67.96915642,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TJAWH65"
+ },
+ {
+  "lon": 33.71919256,
+  "lat": 42.15478814,
+  "country": "TUR",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AJ9DY"
+ },
+ {
+  "lon": 35.85844636,
+  "lat": 35.90683688,
+  "country": "SYR",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AP3C0"
+ },
+ {
+  "lon": -156.5283212,
+  "lat": 20.30059081,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T7A76DW"
+ },
+ {
+  "lon": -163.4429177,
+  "lat": 55.31193599,
+  "country": "USA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6ACDXF"
+ },
+ {
+  "lon": -16.97145472,
+  "lat": -77.79124395,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TJAT4MQ"
+ },
+ {
+  "lon": 33.23251432,
+  "lat": 35.54555901,
+  "country": "XNC",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5APF9B"
+ },
+ {
+  "lon": -54.05035878,
+  "lat": -27.32793606,
+  "country": "BRA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TDA2VKJ"
+ },
+ {
+  "lon": 48.0151565,
+  "lat": 39.6699736,
+  "country": "IRN",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AYG87"
+ },
+ {
+  "lon": 35.27534176,
+  "lat": -11.59347148,
+  "country": "MOZ",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKATR0H"
+ },
+ {
+  "lon": 125.23802846,
+  "lat": 37.553542,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0AGG7Y"
+ },
+ {
+  "lon": 47.35952202,
+  "lat": 29.03130805,
+  "country": "KWT",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AXKHS"
+ },
+ {
+  "lon": -72.26524838,
+  "lat": -34.54734609,
+  "country": "CHL",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TCAHHPX"
+ },
+ {
+  "lon": -71.57303347,
+  "lat": -65.99274765,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TJABXYJ"
+ },
+ {
+  "lon": 91.70326123,
+  "lat": 22.26670433,
+  "country": "BGD",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1AYG9T"
+ },
+ {
+  "lon": -83.38656631,
+  "lat": 12.49347249,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBAXHXB"
+ },
+ {
+  "lon": 80.17794532,
+  "lat": 30.65001624,
+  "country": "IND",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1AD8X9"
+ },
+ {
+  "lon": 59.43665936,
+  "lat": 37.3017749,
+  "country": "TKM",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AY8QE"
+ },
+ {
+  "lon": -68.52845194,
+  "lat": -25.30698763,
+  "country": "ARG",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TCAX119"
+ },
+ {
+  "lon": -114.87678184,
+  "lat": 18.57137978,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TGA677Y"
+ },
+ {
+  "lon": 139.64208646,
+  "lat": -36.24412516,
+  "country": "AUS",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3AZRZC"
+ },
+ {
+  "lon": 35.23712989,
+  "lat": -19.83885916,
+  "country": "MOZ",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKADDBH"
+ },
+ {
+  "lon": 147.95628674,
+  "lat": 76.81562447,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6A4Z8K"
+ },
+ {
+  "lon": 28.41637999,
+  "lat": 48.0721169,
+  "country": "MDA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AK5S1"
+ },
+ {
+  "lon": -149.85717012,
+  "lat": -80.96133364,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T8AVNZP"
+ },
+ {
+  "lon": 65.99699428,
+  "lat": 37.46831619,
+  "country": "TKM",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5ARKTG"
+ },
+ {
+  "lon": 10.66300742,
+  "lat": 58.71534015,
+  "country": "SWE",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAT0ET"
+ },
+ {
+  "lon": 20.02885732,
+  "lat": -26.64787631,
+  "country": "ZAF",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKAB99G"
+ },
+ {
+  "lon": -120.41092315,
+  "lat": 33.80650617,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TGASNCT"
+ },
+ {
+  "lon": -72.00881675,
+  "lat": 12.5364146,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBA4M9Y"
+ },
+ {
+  "lon": -6.54224433,
+  "lat": 41.96249724,
+  "country": "ESP",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TAAEN1E"
+ },
+ {
+  "lon": -26.30523321,
+  "lat": 68.52298304,
+  "country": "GRL",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFA39Z2"
+ },
+ {
+  "lon": 106.66959064,
+  "lat": 50.30218728,
+  "country": "MNG",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0AMBMP"
+ },
+ {
+  "lon": -52.72524514,
+  "lat": 46.68840309,
+  "country": "CAN",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TAAPDQ6"
+ },
+ {
+  "lon": -64.63488619,
+  "lat": 18.67531045,
+  "country": "VGB",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBA3S6H"
+ },
+ {
+  "lon": 85.6543065,
+  "lat": 48.26888441,
+  "country": "KAZ",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AAC50"
+ },
+ {
+  "lon": 173.37388733,
+  "lat": -43.86201189,
+  "country": "NZL",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3AKAHM"
+ },
+ {
+  "lon": -8.96754601,
+  "lat": 12.29417824,
+  "country": "GIN",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TEAGPY8"
+ },
+ {
+  "lon": 54.39728041,
+  "lat": 12.2175871,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5A7939"
+ },
+ {
+  "lon": 14.3108898,
+  "lat": 55.17068677,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFACCDG"
+ },
+ {
+  "lon": 12.21133049,
+  "lat": 35.34477539,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AN7TZ"
+ },
+ {
+  "lon": -159.09202242,
+  "lat": 54.69852082,
+  "country": "USA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T6ADRZ5"
+ },
+ {
+  "lon": 20.12026949,
+  "lat": 74.40026337,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAWHRA"
+ },
+ {
+  "lon": 126.25718374,
+  "lat": -64.97767655,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T8AECEQ"
+ },
+ {
+  "lon": 102.35425001,
+  "lat": 13.20636899,
+  "country": "THA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1AWFGJ"
+ },
+ {
+  "lon": 34.44684105,
+  "lat": 3.29497141,
+  "country": "KEN",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKAWHY3"
+ },
+ {
+  "lon": -151.76104759,
+  "lat": -16.75649866,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T7ADYF9"
+ },
+ {
+  "lon": 23.51769407,
+  "lat": 8.77068704,
+  "country": "SSD",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKAZAKH"
+ },
+ {
+  "lon": 45.05981979,
+  "lat": -25.72487664,
+  "country": "MDG",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T9AVWK8"
+ },
+ {
+  "lon": 143.97741155,
+  "lat": -9.81175857,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T4A237K"
+ },
+ {
+  "lon": -138.57446999,
+  "lat": -20.53412172,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "THATMPG"
+ },
+ {
+  "lon": -145.42435579,
+  "lat": -14.81116661,
+  "country": "PYF",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T7ATHVM"
+ },
+ {
+  "lon": 25.84450073,
+  "lat": -11.83441695,
+  "country": "ZMB",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKAC2KK"
+ },
+ {
+  "lon": 22.03573476,
+  "lat": 56.42723008,
+  "country": "LVA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFACAC6"
+ },
+ {
+  "lon": -93.83101751,
+  "lat": 29.41172033,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBAVGEJ"
+ },
+ {
+  "lon": 141.73562825,
+  "lat": 47.46478762,
+  "country": "RUS",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0AV79J"
+ },
+ {
+  "lon": 133.17606054,
+  "lat": 45.32637399,
+  "country": "RUS",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0AJ0MY"
+ },
+ {
+  "lon": 144.95608296,
+  "lat": 13.80821603,
+  "country": "GUM",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0A261M"
+ },
+ {
+  "lon": 143.83734839,
+  "lat": -9.09068522,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T4A23G5"
+ },
+ {
+  "lon": -87.0253781,
+  "lat": 20.05093991,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBAYJ97"
+ },
+ {
+  "lon": 14.0425285,
+  "lat": 36.23109323,
+  "country": "MLT",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5ANNPT"
+ },
+ {
+  "lon": -76.13241886,
+  "lat": 19.8018733,
+  "country": "CUB",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBAZ2JF"
+ },
+ {
+  "lon": -86.98920868,
+  "lat": 13.03195556,
+  "country": "HND",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBAWZP7"
+ },
+ {
+  "lon": 138.5582147,
+  "lat": 38.52553878,
+  "country": "JPN",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T0AYY9F"
+ },
+ {
+  "lon": 45.2957536,
+  "lat": -65.26442647,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TJAGJKJ"
+ },
+ {
+  "lon": -179.24207056,
+  "lat": -24.01127046,
+  "country": "FJI",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T4ABYBC"
+ },
+ {
+  "lon": -59.59234029,
+  "lat": 43.86556738,
+  "country": "CAN",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TAAH5SC"
+ },
+ {
+  "lon": -66.19133668,
+  "lat": 0.73720338,
+  "country": "BRA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBA1AJJ"
+ },
+ {
+  "lon": 39.51248306,
+  "lat": 43.4577375,
+  "country": "RUS",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AV5P7"
+ },
+ {
+  "lon": -170.70949579,
+  "lat": -14.56925108,
+  "country": "ASM",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T7A8P8N"
+ },
+ {
+  "lon": -80.68218161,
+  "lat": -34.01999129,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TCAGPDQ"
+ },
+ {
+  "lon": -1.77410829,
+  "lat": 57.02388925,
+  "country": "GBR",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFA9EXC"
+ },
+ {
+  "lon": 137.5446905,
+  "lat": -5.54810105,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T4A0H41"
+ },
+ {
+  "lon": 2.29187603,
+  "lat": 41.15695444,
+  "country": "ESP",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAA65Z"
+ },
+ {
+  "lon": 27.8165879,
+  "lat": 42.00564314,
+  "country": "BGR",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AK3K2"
+ },
+ {
+  "lon": -150.76367449,
+  "lat": -16.73958961,
+  "country": "PYF",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T7ADV0C"
+ },
+ {
+  "lon": 105.81038031,
+  "lat": 11.56087212,
+  "country": "KHM",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1A4P5R"
+ },
+ {
+  "lon": -93.34560921,
+  "lat": 29.52021764,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBAVGCA"
+ },
+ {
+  "lon": 110.27866527,
+  "lat": 42.68970306,
+  "country": "CHN",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1A8Q34"
+ },
+ {
+  "lon": 29.5594745,
+  "lat": 41.36639024,
+  "country": "TUR",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AK0S4"
+ },
+ {
+  "lon": 124.97755878,
+  "lat": -9.0510631,
+  "country": "TLS",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T2A13VF"
+ },
+ {
+  "lon": -149.96110962,
+  "lat": -9.94956399,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T7AT6G5"
+ },
+ {
+  "lon": 14.61194698,
+  "lat": 15.95177353,
+  "country": "TCD",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKA66WM"
+ },
+ {
+  "lon": -115.07912693,
+  "lat": -86.04794161,
+  "country": "ATA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T8AJZ1T"
+ },
+ {
+  "lon": -57.89316187,
+  "lat": -20.02855186,
+  "country": "BRA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TCA48HC"
+ },
+ {
+  "lon": 14.32312851,
+  "lat": 48.55268284,
+  "country": "AUT",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TFAEV6Y"
+ },
+ {
+  "lon": 22.80472345,
+  "lat": -25.52249676,
+  "country": "BWA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKABAWK"
+ },
+ {
+  "lon": 25.34589306,
+  "lat": -18.11454961,
+  "country": "BWA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKADGCQ"
+ },
+ {
+  "lon": 24.00646058,
+  "lat": 16.0493394,
+  "country": "SDN",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKA4GDC"
+ },
+ {
+  "lon": 42.96076312,
+  "lat": 11.03713406,
+  "country": "DJI",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKAHYK9"
+ },
+ {
+  "lon": -4.62512725,
+  "lat": 4.99407912,
+  "country": "CIV",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TEAVD18"
+ },
+ {
+  "lon": -163.00801655,
+  "lat": -18.23996412,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T7AFKB6"
+ },
+ {
+  "lon": -69.83276384,
+  "lat": 6.63005614,
+  "country": "VEN",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBA45RH"
+ },
+ {
+  "lon": 30.67143823,
+  "lat": -7.8541238,
+  "country": "TZA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TKAT9KY"
+ },
+ {
+  "lon": 3.48666851,
+  "lat": 9.84979616,
+  "country": "NGA",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TEAKPQB"
+ },
+ {
+  "lon": 152.50344245,
+  "lat": -24.70429816,
+  "country": "AUS",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T3AX4S5"
+ },
+ {
+  "lon": 37.74548457,
+  "lat": 31.70490012,
+  "country": "JOR",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T5AGWRR"
+ },
+ {
+  "lon": -71.1091381,
+  "lat": 7.01971905,
+  "country": "VEN",
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "TBA5GY4"
+ },
+ {
+  "lon": 119.24514755,
+  "lat": 23.72338271,
+  "country": null,
+  "kind": "border",
+  "refined": true,
+  "confidence": 0.99,
+  "cell": "T1A2KYZ"
  }
 ]

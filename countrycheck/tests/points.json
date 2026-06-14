@@ -71,9 +71,9 @@
   "lat": 25.0,
   "country": "DZA",
   "iso2": "DZ",
-  "kind": "border",
-  "confidence": 0.96875,
-  "share": 0.96875,
+  "kind": "country",
+  "confidence": 1.0,
+  "share": 1.0,
   "cell": "TKA1J22"
  },
  {
@@ -168,11 +168,11 @@
   "name": "Lake Victoria",
   "lon": 33.0,
   "lat": -1.0,
-  "country": "TZA",
-  "iso2": "TZ",
+  "country": "UGA",
+  "iso2": "UG",
   "kind": "border",
-  "confidence": 0.59375,
-  "share": 0.59375,
+  "confidence": 0.53125,
+  "share": 0.53125,
   "cell": "TKAYZN6"
  },
  {
@@ -1807,12 +1807,12 @@
   "name": "rand144",
   "lon": -9.323574,
   "lat": -71.274329,
-  "country": "ATA",
-  "iso2": "AQ",
-  "kind": "country",
+  "country": null,
+  "iso2": null,
+  "kind": "none",
   "confidence": 1.0,
-  "share": 1.0,
-  "cell": "TJAYFP5"
+  "share": 0.0,
+  "cell": null
  },
  {
   "name": "rand145",
@@ -2808,12 +2808,12 @@
   "name": "rand235",
   "lon": -81.956148,
   "lat": -77.08015,
-  "country": "ATA",
-  "iso2": "AQ",
-  "kind": "country",
+  "country": null,
+  "iso2": null,
+  "kind": "none",
   "confidence": 1.0,
-  "share": 1.0,
-  "cell": "TJACPTZ"
+  "share": 0.0,
+  "cell": null
  },
  {
   "name": "rand236",
@@ -4139,12 +4139,12 @@
   "name": "rand356",
   "lon": -123.563563,
   "lat": -75.402911,
-  "country": "ATA",
-  "iso2": "AQ",
-  "kind": "country",
+  "country": null,
+  "iso2": null,
+  "kind": "none",
   "confidence": 1.0,
-  "share": 1.0,
-  "cell": "T8AJBGE"
+  "share": 0.0,
+  "cell": null
  },
  {
   "name": "rand357",
@@ -4505,8 +4505,8 @@
   "country": "CAF",
   "iso2": "CF",
   "kind": "border",
-  "confidence": 0.96875,
-  "share": 0.96875,
+  "confidence": 0.78125,
+  "share": 0.78125,
   "cell": "TKAZ9NB"
  },
  {
@@ -4722,12 +4722,12 @@
   "name": "rand409",
   "lon": -13.478021,
   "lat": -76.98119,
-  "country": "ATA",
-  "iso2": "AQ",
-  "kind": "country",
+  "country": null,
+  "iso2": null,
+  "kind": "none",
   "confidence": 1.0,
-  "share": 1.0,
-  "cell": "TJATF66"
+  "share": 0.0,
+  "cell": null
  },
  {
   "name": "rand410",
@@ -5019,23 +5019,23 @@
   "name": "rand436",
   "lon": -105.715098,
   "lat": -76.830853,
-  "country": "ATA",
-  "iso2": "AQ",
-  "kind": "country",
+  "country": null,
+  "iso2": null,
+  "kind": "none",
   "confidence": 1.0,
-  "share": 1.0,
-  "cell": "T8AK337"
+  "share": 0.0,
+  "cell": null
  },
  {
   "name": "rand437",
   "lon": -85.131436,
   "lat": -74.847007,
-  "country": "ATA",
-  "iso2": "AQ",
-  "kind": "country",
+  "country": null,
+  "iso2": null,
+  "kind": "none",
   "confidence": 1.0,
-  "share": 1.0,
-  "cell": "T8AKAWH"
+  "share": 0.0,
+  "cell": null
  },
  {
   "name": "rand438",
@@ -5789,12 +5789,12 @@
   "name": "rand506",
   "lon": -103.346897,
   "lat": -77.802465,
-  "country": "ATA",
-  "iso2": "AQ",
-  "kind": "country",
+  "country": null,
+  "iso2": null,
+  "kind": "none",
   "confidence": 1.0,
-  "share": 1.0,
-  "cell": "T8AK1V0"
+  "share": 0.0,
+  "cell": null
  },
  {
   "name": "rand507",
@@ -6174,12 +6174,12 @@
   "name": "rand541",
   "lon": -9.771395,
   "lat": -84.841042,
-  "country": "ATA",
-  "iso2": "AQ",
-  "kind": "country",
+  "country": null,
+  "iso2": null,
+  "kind": "none",
   "confidence": 1.0,
-  "share": 1.0,
-  "cell": "TJATWHY"
+  "share": 0.0,
+  "cell": null
  },
  {
   "name": "rand542",
@@ -6669,12 +6669,12 @@
   "name": "rand586",
   "lon": -85.027134,
   "lat": -79.82044,
-  "country": "ATA",
-  "iso2": "AQ",
-  "kind": "country",
+  "country": null,
+  "iso2": null,
+  "kind": "none",
   "confidence": 1.0,
-  "share": 1.0,
-  "cell": "T8AK7B9"
+  "share": 0.0,
+  "cell": null
  },
  {
   "name": "rand587",
@@ -7472,23 +7472,23 @@
   "name": "rand659",
   "lon": -7.132774,
   "lat": -79.62661,
-  "country": "ATA",
-  "iso2": "AQ",
-  "kind": "country",
+  "country": null,
+  "iso2": null,
+  "kind": "none",
   "confidence": 1.0,
-  "share": 1.0,
-  "cell": "TJAVJSB"
+  "share": 0.0,
+  "cell": null
  },
  {
   "name": "rand660",
   "lon": -142.37673,
   "lat": -81.819129,
-  "country": "ATA",
-  "iso2": "AQ",
-  "kind": "country",
+  "country": null,
+  "iso2": null,
+  "kind": "none",
   "confidence": 1.0,
-  "share": 1.0,
-  "cell": "T8ATTKR"
+  "share": 0.0,
+  "cell": null
  },
  {
   "name": "rand661",
@@ -8618,9 +8618,9 @@
   "lat": 52.119432,
   "country": "RUS",
   "iso2": "RU",
-  "kind": "country",
-  "confidence": 1.0,
-  "share": 1.0,
+  "kind": "border",
+  "confidence": 0.96875,
+  "share": 0.96875,
   "cell": "TFADD85"
  },
  {
@@ -9276,12 +9276,12 @@
   "name": "rand823",
   "lon": -7.636226,
   "lat": -81.383787,
-  "country": "ATA",
-  "iso2": "AQ",
-  "kind": "country",
+  "country": null,
+  "iso2": null,
+  "kind": "none",
   "confidence": 1.0,
-  "share": 1.0,
-  "cell": "TJAVK67"
+  "share": 0.0,
+  "cell": null
  },
  {
   "name": "rand824",
@@ -12367,11 +12367,11 @@
   "name": "rand1104",
   "lon": 101.107637,
   "lat": 6.056109,
-  "country": "MYS",
-  "iso2": "MY",
+  "country": "THA",
+  "iso2": "TH",
   "kind": "border",
-  "confidence": 0.53125,
-  "share": 0.53125,
+  "confidence": 0.59375,
+  "share": 0.59375,
   "cell": "T1A55MX"
  },
  {
@@ -14809,12 +14809,12 @@
   "name": "rand1326",
   "lon": -12.740041,
   "lat": -84.708489,
-  "country": "ATA",
-  "iso2": "AQ",
-  "kind": "country",
+  "country": null,
+  "iso2": null,
+  "kind": "none",
   "confidence": 1.0,
-  "share": 1.0,
-  "cell": "TJATHJJ"
+  "share": 0.0,
+  "cell": null
  },
  {
   "name": "rand1327",
@@ -15205,12 +15205,12 @@
   "name": "rand1362",
   "lon": -132.559788,
   "lat": -83.532261,
-  "country": "ATA",
-  "iso2": "AQ",
-  "kind": "country",
+  "country": null,
+  "iso2": null,
+  "kind": "none",
   "confidence": 1.0,
-  "share": 1.0,
-  "cell": "T8AJKSR"
+  "share": 0.0,
+  "cell": null
  },
  {
   "name": "rand1363",
@@ -15260,12 +15260,12 @@
   "name": "rand1367",
   "lon": -142.08745,
   "lat": -79.220351,
-  "country": "ATA",
-  "iso2": "AQ",
-  "kind": "country",
+  "country": null,
+  "iso2": null,
+  "kind": "none",
   "confidence": 1.0,
-  "share": 1.0,
-  "cell": "T8AV5PT"
+  "share": 0.0,
+  "cell": null
  },
  {
   "name": "rand1368",
@@ -15955,9 +15955,9 @@
   "lat": 46.509433,
   "country": "CHN",
   "iso2": "CN",
-  "kind": "border",
-  "confidence": 0.84375,
-  "share": 0.84375,
+  "kind": "country",
+  "confidence": 1.0,
+  "share": 1.0,
   "cell": "T0AQ3RC"
  },
  {
@@ -16140,12 +16140,12 @@
   "name": "rand1447",
   "lon": -1.150292,
   "lat": -69.46161,
-  "country": null,
-  "iso2": null,
-  "kind": "none",
+  "country": "ATA",
+  "iso2": "AQ",
+  "kind": "country",
   "confidence": 1.0,
-  "share": 0.0,
-  "cell": null
+  "share": 1.0,
+  "cell": "TJAY9DC"
  },
  {
   "name": "rand1448",
@@ -16371,12 +16371,12 @@
   "name": "rand1468",
   "lon": -144.863414,
   "lat": -77.963563,
-  "country": "ATA",
-  "iso2": "AQ",
-  "kind": "country",
+  "country": null,
+  "iso2": null,
+  "kind": "none",
   "confidence": 1.0,
-  "share": 1.0,
-  "cell": "T8AV6SK"
+  "share": 0.0,
+  "cell": null
  },
  {
   "name": "rand1469",
@@ -17119,23 +17119,23 @@
   "name": "rand1536",
   "lon": -119.406935,
   "lat": -78.940785,
-  "country": "ATA",
-  "iso2": "AQ",
-  "kind": "country",
+  "country": null,
+  "iso2": null,
+  "kind": "none",
   "confidence": 1.0,
-  "share": 1.0,
-  "cell": "T8AKYVP"
+  "share": 0.0,
+  "cell": null
  },
  {
   "name": "rand1537",
   "lon": -123.207541,
   "lat": -78.212282,
-  "country": "ATA",
-  "iso2": "AQ",
-  "kind": "country",
+  "country": null,
+  "iso2": null,
+  "kind": "none",
   "confidence": 1.0,
-  "share": 1.0,
-  "cell": "T8AKR0A"
+  "share": 0.0,
+  "cell": null
  },
  {
   "name": "rand1538",
@@ -17482,12 +17482,12 @@
   "name": "rand1569",
   "lon": -144.835458,
   "lat": -84.907093,
-  "country": "ATA",
-  "iso2": "AQ",
-  "kind": "country",
+  "country": null,
+  "iso2": null,
+  "kind": "none",
   "confidence": 1.0,
-  "share": 1.0,
-  "cell": "T8ATSFX"
+  "share": 0.0,
+  "cell": null
  },
  {
   "name": "rand1570",
@@ -17515,12 +17515,12 @@
   "name": "rand1572",
   "lon": -115.569614,
   "lat": -75.761948,
-  "country": "ATA",
-  "iso2": "AQ",
-  "kind": "country",
+  "country": null,
+  "iso2": null,
+  "kind": "none",
   "confidence": 1.0,
-  "share": 1.0,
-  "cell": "T8AJAJV"
+  "share": 0.0,
+  "cell": null
  },
  {
   "name": "rand1573",
@@ -17823,12 +17823,12 @@
   "name": "rand1600",
   "lon": -138.886943,
   "lat": -78.697886,
-  "country": "ATA",
-  "iso2": "AQ",
-  "kind": "country",
+  "country": null,
+  "iso2": null,
+  "kind": "none",
   "confidence": 1.0,
-  "share": 1.0,
-  "cell": "T8AJ715"
+  "share": 0.0,
+  "cell": null
  },
  {
   "name": "rand1601",
@@ -18010,12 +18010,12 @@
   "name": "rand1617",
   "lon": -80.286745,
   "lat": -75.822035,
-  "country": "ATA",
-  "iso2": "AQ",
-  "kind": "country",
+  "country": null,
+  "iso2": null,
+  "kind": "none",
   "confidence": 1.0,
-  "share": 1.0,
-  "cell": "TJACQ8P"
+  "share": 0.0,
+  "cell": null
  },
  {
   "name": "rand1618",
@@ -18197,12 +18197,12 @@
   "name": "rand1634",
   "lon": -103.445149,
   "lat": -80.169077,
-  "country": "ATA",
-  "iso2": "AQ",
-  "kind": "country",
+  "country": null,
+  "iso2": null,
+  "kind": "none",
   "confidence": 1.0,
-  "share": 1.0,
-  "cell": "T8AKPW9"
+  "share": 0.0,
+  "cell": null
  },
  {
   "name": "rand1635",
@@ -18343,8 +18343,8 @@
   "country": "RUS",
   "iso2": "RU",
   "kind": "border",
-  "confidence": 0.78125,
-  "share": 0.78125,
+  "confidence": 0.90625,
+  "share": 0.90625,
   "cell": "T0AM8TD"
  },
  {
@@ -18472,12 +18472,12 @@
   "name": "rand1659",
   "lon": -112.505267,
   "lat": -75.063833,
-  "country": "ATA",
-  "iso2": "AQ",
-  "kind": "country",
+  "country": null,
+  "iso2": null,
+  "kind": "none",
   "confidence": 1.0,
-  "share": 1.0,
-  "cell": "T8APG0J"
+  "share": 0.0,
+  "cell": null
  },
  {
   "name": "rand1660",
@@ -18912,12 +18912,12 @@
   "name": "rand1699",
   "lon": -81.01911,
   "lat": -85.604246,
-  "country": "ATA",
-  "iso2": "AQ",
-  "kind": "country",
+  "country": null,
+  "iso2": null,
+  "kind": "none",
   "confidence": 1.0,
-  "share": 1.0,
-  "cell": "TJAD6MH"
+  "share": 0.0,
+  "cell": null
  },
  {
   "name": "rand1700",
@@ -19099,12 +19099,12 @@
   "name": "rand1716",
   "lon": 68.136546,
   "lat": -50.041112,
-  "country": null,
-  "iso2": null,
-  "kind": "none",
+  "country": "ATF",
+  "iso2": "TF",
+  "kind": "country",
   "confidence": 1.0,
-  "share": 0.0,
-  "cell": null
+  "share": 1.0,
+  "cell": "T9A7MK4"
  },
  {
   "name": "rand1717",
@@ -19825,12 +19825,12 @@
   "name": "rand1782",
   "lon": -136.164494,
   "lat": -84.162403,
-  "country": "ATA",
-  "iso2": "AQ",
-  "kind": "country",
+  "country": null,
+  "iso2": null,
+  "kind": "none",
   "confidence": 1.0,
-  "share": 1.0,
-  "cell": "T8AJHZ9"
+  "share": 0.0,
+  "cell": null
  },
  {
   "name": "rand1783",
@@ -20023,12 +20023,12 @@
   "name": "rand1800",
   "lon": -123.275969,
   "lat": -75.53017,
-  "country": "ATA",
-  "iso2": "AQ",
-  "kind": "country",
+  "country": null,
+  "iso2": null,
+  "kind": "none",
   "confidence": 1.0,
-  "share": 1.0,
-  "cell": "T8AJBX7"
+  "share": 0.0,
+  "cell": null
  },
  {
   "name": "rand1801",
@@ -20265,12 +20265,12 @@
   "name": "rand1822",
   "lon": -89.611873,
   "lat": -82.476008,
-  "country": "ATA",
-  "iso2": "AQ",
-  "kind": "country",
+  "country": null,
+  "iso2": null,
+  "kind": "none",
   "confidence": 1.0,
-  "share": 1.0,
-  "cell": "T8AJTXB"
+  "share": 0.0,
+  "cell": null
  },
  {
   "name": "rand1823",
@@ -20815,12 +20815,12 @@
   "name": "rand1872",
   "lon": -90.922647,
   "lat": -73.786057,
-  "country": "ATA",
-  "iso2": "AQ",
-  "kind": "country",
+  "country": null,
+  "iso2": null,
+  "kind": "none",
   "confidence": 1.0,
-  "share": 1.0,
-  "cell": "T8APQSE"
+  "share": 0.0,
+  "cell": null
  },
  {
   "name": "rand1873",
@@ -21024,12 +21024,12 @@
   "name": "rand1891",
   "lon": -123.143484,
   "lat": -84.518324,
-  "country": "ATA",
-  "iso2": "AQ",
-  "kind": "country",
+  "country": null,
+  "iso2": null,
+  "kind": "none",
   "confidence": 1.0,
-  "share": 1.0,
-  "cell": "T8AJWMT"
+  "share": 0.0,
+  "cell": null
  },
  {
   "name": "rand1892",
@@ -21191,9 +21191,9 @@
   "lat": 20.371062,
   "country": "VNM",
   "iso2": "VN",
-  "kind": "border",
-  "confidence": 0.90625,
-  "share": 0.90625,
+  "kind": "country",
+  "confidence": 1.0,
+  "share": 1.0,
   "cell": "T1ASD58"
  },
  {
@@ -21552,12 +21552,12 @@
   "name": "rand1939",
   "lon": -107.79398,
   "lat": -82.765848,
-  "country": "ATA",
-  "iso2": "AQ",
-  "kind": "country",
+  "country": null,
+  "iso2": null,
+  "kind": "none",
   "confidence": 1.0,
-  "share": 1.0,
-  "cell": "T8AJR5V"
+  "share": 0.0,
+  "cell": null
  },
  {
   "name": "rand1940",
@@ -21893,12 +21893,12 @@
   "name": "rand1970",
   "lon": -124.293276,
   "lat": -79.933172,
-  "country": "ATA",
-  "iso2": "AQ",
-  "kind": "country",
+  "country": null,
+  "iso2": null,
+  "kind": "none",
   "confidence": 1.0,
-  "share": 1.0,
-  "cell": "T8AKJ9E"
+  "share": 0.0,
+  "cell": null
  },
  {
   "name": "rand1971",
