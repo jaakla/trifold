@@ -312,16 +312,28 @@ class CountryClassifier:
 
 # ------------------------------------------------------------ border cells
 def encode_zone_rings(geoms, bbox):
-    """Quantize one zone's rings to the cell-local u16 grid; None if degenerate."""
+    """Quantize one zone's rings to the cell-local u16 grid; None if degenerate.
+
+    The clip returns one geometry per bbox-halved split-piece of the same
+    country; union them first so the artificial split-piece seams don't become
+    spurious interior rings (which otherwise render as straight spikes off the
+    border). The split pieces are disjoint, so the union is the same region and
+    lookups are unchanged."""
     minx, miny, maxx, maxy = bbox
     sx = 65535.0 / (maxx - minx)
     sy = 65535.0 / (maxy - miny)
+    if len(geoms) > 1:
+        from shapely.ops import unary_union
+        geoms = [unary_union(geoms)]
     rings = []
     for geom in geoms:
-        polys = geom.geoms if geom.geom_type == "MultiPolygon" else [geom]
+        if geom.geom_type == "Polygon":
+            polys = [geom]
+        elif geom.geom_type in ("MultiPolygon", "GeometryCollection"):
+            polys = [g for g in geom.geoms if g.geom_type == "Polygon"]
+        else:
+            polys = []
         for poly in polys:
-            if poly.geom_type != "Polygon":
-                continue
             for ring in (poly.exterior, *poly.interiors):
                 pts = []
                 for x, y in ring.coords[:-1]:

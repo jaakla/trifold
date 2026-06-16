@@ -671,33 +671,6 @@ function borderFeatures(){
     });
     const EPS=1.5;
     const onEdge=(x,y,E)=>Math.abs((x-E[0])*E[3]-(y-E[1])*E[2])/E[4]<EPS;
-    const onTriEdge=(x1,y1,x2,y2)=>edges.some(E=>onEdge(x1,y1,E)&&onEdge(x2,y2,E));
-    // A non-edge segment shared by two rings of the SAME country is an internal
-    // clip-cut (one country's piece split into parts within the cell); it floats
-    // inside that country's fill, not a real border. Tally segments by their
-    // quantized endpoints: a real country/country border is shared by two
-    // DIFFERENT cids, a coastline appears once, an internal cut appears >=2 times
-    // all from one cid -> drop it.
-    const segTally=new Map();
-    for(const [cid,rings] of cc._refine.get(index)){
-      if(rings===null)continue;
-      for(const pts of rings){
-        const m=pts.length/2;
-        for(let i=0;i<m;i++){
-          const j=(i+1)%m;
-          const x1=pts[2*i],y1=pts[2*i+1],x2=pts[2*j],y2=pts[2*j+1];
-          if(onTriEdge(x1,y1,x2,y2))continue;
-          const a=x1*65536+y1,b=x2*65536+y2,key=a<=b?a+'_'+b:b+'_'+a;
-          const t=segTally.get(key);
-          if(t===undefined)segTally.set(key,[1,cid,true]);
-          else{t[0]++;if(cid!==t[1])t[2]=false;}
-        }
-      }
-    }
-    const internalCut=(x1,y1,x2,y2)=>{
-      const a=x1*65536+y1,b=x2*65536+y2,t=segTally.get(a<=b?a+'_'+b:b+'_'+a);
-      return t!==undefined&&t[0]>=2&&t[2];
-    };
     for(const [cid,rings] of cc._refine.get(index)){
       if(rings===null)continue;
       const color=countryColor(cid);
@@ -707,7 +680,7 @@ function borderFeatures(){
         for(let i=0;i<m;i++){
           const j=(i+1)%m;
           const x1=pts[2*i],y1=pts[2*i+1],x2=pts[2*j],y2=pts[2*j+1];
-          const artifact=onTriEdge(x1,y1,x2,y2)||internalCut(x1,y1,x2,y2);
+          const artifact=edges.some(E=>onEdge(x1,y1,E)&&onEdge(x2,y2,E));
           if(artifact){
             if(current.length>1){feats.push({type:'Feature',
               properties:{color},geometry:{type:'LineString',coordinates:current}});
