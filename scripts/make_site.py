@@ -1179,6 +1179,10 @@ map.on('load',()=>{
   map.addLayer({id:'coastline',type:'line',source:'coast',
     layout:{'line-cap':'round','line-join':'round'},
     paint:{'line-color':'#7c4a03','line-width':1.4,'line-opacity':0.9}});
+  map.addSource('coastzones',{type:'geojson',
+    data:{type:'FeatureCollection',features:[]}});
+  map.addLayer({id:'coast-zones',type:'fill',source:'coastzones',
+    paint:{'fill-color':KIND_COLOR.land,'fill-opacity':0.45,'fill-antialias':false}});
   map.addSource('cell',{type:'geojson',
     data:{type:'FeatureCollection',features:[]}});
   map.addLayer({id:'cell-fill',type:'fill',source:'cell',
@@ -1235,68 +1239,82 @@ function coastMode(){return (document.getElementById('refinecb').checked&&refine
 function buildCellBoxes(){
   cellBoxes=[];
   for(const [index,entry] of refineCells){
-    if(typeof entry==='number')continue;  // all-land/all-sea: no rings to draw
+    if(entry===0)continue;  // all-sea: nothing to fill (all-land 1 fills its triangle)
     const ring=indexToLonLatRing(index,lc.level);
     const lons=ring.map(p=>p[0]),lats=ring.map(p=>p[1]);
     cellBoxes.push([index,Math.min(...lons),Math.min(...lats),
                     Math.max(...lons),Math.max(...lats)]);
   }
 }
-function osmCoastFeatures(){
+// even-odd ray cast in the cell-local quantized grid (flat [x0,y0,x1,y1,...])
+function pointInRingQ(px,py,pts){
+  const n=pts.length/2;let inside=false;
+  for(let i=0,j=n-1;i<n;j=i++){
+    const xi=pts[2*i],yi=pts[2*i+1],xj=pts[2*j],yj=pts[2*j+1];
+    if(((yi>py)!==(yj>py))&&(px<(xj-xi)*(py-yi)/((yj-yi)||1e-9)+xi))inside=!inside;
+  }
+  return inside;
+}
+function osmCoastZones(){
   if(!cellBoxes)buildCellBoxes();
   const b=map.getBounds();
   const w=b.getWest(),e=b.getEast(),s=b.getSouth(),n=b.getNorth();
-  const lines=[];
+  const feats=[];let nverts=0;
   for(const [index,minx,miny,maxx,maxy] of cellBoxes){
     if(maxy<s||miny>n)continue;
     let hit=false;
-    for(const off of [-360,0,360]){
-      if(maxx+off>=w&&minx+off<=e){hit=true;break;}
-    }
+    for(const off of [-360,0,360]){if(maxx+off>=w&&minx+off<=e){hit=true;break;}}
     if(!hit)continue;
     const sx=(maxx-minx)/65535,sy=(maxy-miny)/65535;
-    // the clipped polygons run along the triangle edges where land continues
-    // into the neighbour cell; those segments are clip artifacts, not
-    // coastline.  Test vertices against the triangle edges in quantized
-    // units and drop segments whose both endpoints lie on the same edge.
-    const tri=indexToLonLatRing(index,lc.level)
-      .map(p=>[(p[0]-minx)/sx,(p[1]-miny)/sy]);
-    const edges=[0,1,2].map(i=>{
-      const a=tri[i],c=tri[(i+1)%3];
-      const dx=c[0]-a[0],dy=c[1]-a[1];
-      return [a[0],a[1],dx,dy,Math.hypot(dx,dy)];
-    });
-    const EPS=1.5;  // quanta; quantization rounding is at most 0.5
-    const onEdge=(x,y,E)=>Math.abs((x-E[0])*E[3]-(y-E[1])*E[2])/E[4]<EPS;
-    for(const pts of refineCells.get(index)){
-      const m=pts.length/2;
-      let current=[];
-      for(let i=0;i<m;i++){
-        const j=(i+1)%m;
-        const x1=pts[2*i],y1=pts[2*i+1],x2=pts[2*j],y2=pts[2*j+1];
-        const artifact=edges.some(E=>onEdge(x1,y1,E)&&onEdge(x2,y2,E));
-        if(artifact){
-          if(current.length>1)lines.push(current);
-          current=[];
-        }else{
-          if(!current.length)current.push([minx+x1*sx,miny+y1*sy]);
-          current.push([minx+x2*sx,miny+y2*sy]);
-        }
+    const entry=refineCells.get(index);
+    if(typeof entry==='number'){   // 1 = whole cell is land: fill the triangle
+      if(entry===1){
+        const tri=indexToLonLatRing(index,lc.level).map(p=>[p[0],p[1]]);
+        tri.push(tri[0]);
+        feats.push({type:'Feature',properties:{},
+          geometry:{type:'Polygon',coordinates:[tri]}});
+        nverts+=3;
       }
-      if(current.length>1)lines.push(current);
+      if(nverts>120000)return null;
+      continue;
     }
-    if(lines.length>60000)return null;  // too much detail for this view
+    // fill the land part of this coastal cell. The dataset's rings are even-odd
+    // (inside = land), so sort by area and nest a ring inside a larger one as a
+    // hole (a lake/inlet); disjoint rings become separate polygons. Triangle-edge
+    // segments need no filtering here — they are interior to the fill.
+    const decoded=entry.map(pts=>{
+      const m=pts.length/2,ll=new Array(m+1);
+      let a=0;
+      for(let i=0;i<m;i++){
+        ll[i]=[minx+pts[2*i]*sx,miny+pts[2*i+1]*sy];
+        const j=(i+1)%m;a+=pts[2*i]*pts[2*j+1]-pts[2*j]*pts[2*i+1];
+      }
+      ll[m]=ll[0];
+      nverts+=m;
+      return {ll,area:Math.abs(a)/2,q:pts};
+    }).sort((p,q)=>q.area-p.area);
+    const polys=[];
+    for(const d of decoded){
+      let host=null;
+      for(const P of polys)if(pointInRingQ(d.q[0],d.q[1],P.q)){host=P;break;}
+      if(host)host.coords.push(d.ll);
+      else polys.push({coords:[d.ll],q:d.q});
+    }
+    for(const P of polys)feats.push({type:'Feature',properties:{},
+      geometry:{type:'Polygon',coordinates:P.coords}});
+    if(nverts>120000)return null;  // too much detail for this view
   }
-  return lines;
+  return feats;
 }
 async function updateCoastline(){
   if(!coastcb.checked){
     map.getSource('coast').setData({type:'FeatureCollection',features:[]});
+    map.getSource('coastzones').setData({type:'FeatureCollection',features:[]});
     return;
   }
   if(coastMode()==='ne'){
     coastsrc.textContent='NE';
-    map.setPaintProperty('coastline','line-color','#7c4a03');
+    map.getSource('coastzones').setData({type:'FeatureCollection',features:[]});
     if(!neGeojson){
       coastnote.textContent='Downloading Natural Earth land polygons…';
       for(const url of NE_URLS){
@@ -1317,17 +1335,16 @@ async function updateCoastline(){
       'the grid was classified against. Click anywhere for the cell triangle.';
   }else{
     coastsrc.textContent='OSM';
-    map.setPaintProperty('coastline','line-color','#8e24aa');
-    const lines=osmCoastFeatures();
-    if(lines===null){
-      map.getSource('coast').setData({type:'FeatureCollection',features:[]});
+    map.getSource('coast').setData({type:'FeatureCollection',features:[]});
+    const feats=osmCoastZones();
+    if(feats===null){
+      map.getSource('coastzones').setData({type:'FeatureCollection',features:[]});
       coastnote.textContent='OSM refinement geometry: zoom in further to draw it.';
       return;
     }
-    map.getSource('coast').setData({type:'Feature',properties:{},
-      geometry:{type:'MultiLineString',coordinates:lines}});
-    coastnote.textContent=`Purple line: ${lines.length.toLocaleString()} OSM coastline ring(s) `+
-      `in view, decoded from the refinement dataset. This is exactly the geometry `+
+    map.getSource('coastzones').setData({type:'FeatureCollection',features:feats});
+    coastnote.textContent=`Green fill: ${feats.length.toLocaleString()} OSM land zone(s) `+
+      `in view — the clipped land area of each coastal cell, exactly the geometry `+
       `the refined lookup tests against.`;
   }
 }
@@ -1981,9 +1998,8 @@ function describe(lon,lat,name){
 map.on('load',()=>{
   map.addSource('borders',{type:'geojson',
     data:{type:'FeatureCollection',features:[]}});
-  map.addLayer({id:'borderlines',type:'line',source:'borders',
-    layout:{'line-cap':'round','line-join':'round'},
-    paint:{'line-color':['get','color'],'line-width':1.3,'line-opacity':0.9}});
+  map.addLayer({id:'borderzones',type:'fill',source:'borders',
+    paint:{'fill-color':['get','color'],'fill-opacity':0.5,'fill-antialias':false}});
   map.addSource('cell',{type:'geojson',
     data:{type:'FeatureCollection',features:[]}});
   map.addLayer({id:'cell-fill',type:'fill',source:'cell',
@@ -2046,55 +2062,54 @@ function buildCellBoxes(){
                     Math.max(...lons),Math.max(...lats)]);
   }
 }
+// even-odd ray cast in the cell-local quantized grid (flat [x0,y0,x1,y1,...])
+function pointInRingQ(px,py,pts){
+  const n=pts.length/2;let inside=false;
+  for(let i=0,j=n-1;i<n;j=i++){
+    const xi=pts[2*i],yi=pts[2*i+1],xj=pts[2*j],yj=pts[2*j+1];
+    if(((yi>py)!==(yj>py))&&(px<(xj-xi)*(py-yi)/((yj-yi)||1e-9)+xi))inside=!inside;
+  }
+  return inside;
+}
 function borderFeatures(){
   if(!cellBoxes)buildCellBoxes();
   const b=map.getBounds();
   const w=b.getWest(),e=b.getEast(),s=b.getSouth(),n=b.getNorth();
-  const feats=[];let segs=0;
+  const feats=[];let nverts=0;
   for(const [index,minx,miny,maxx,maxy] of cellBoxes){
     if(maxy<s||miny>n)continue;
     let hit=false;
     for(const off of [-360,0,360]){if(maxx+off>=w&&minx+off<=e){hit=true;break;}}
     if(!hit)continue;
     const sx=(maxx-minx)/65535,sy=(maxy-miny)/65535;
-    // ring segments running along the triangle edges are clip artifacts where a
-    // country continues into the neighbour cell, not real borders; drop them by
-    // testing each segment's endpoints against the 3 triangle edges (quantized).
-    const tri=indexToLonLatRing(index,cc.level)
-      .map(p=>[(p[0]-minx)/sx,(p[1]-miny)/sy]);
-    const edges=[0,1,2].map(i=>{
-      const a=tri[i],c=tri[(i+1)%3];
-      const dx=c[0]-a[0],dy=c[1]-a[1];
-      return [a[0],a[1],dx,dy,Math.hypot(dx,dy)];
-    });
-    const EPS=1.5;
-    const onEdge=(x,y,E)=>Math.abs((x-E[0])*E[3]-(y-E[1])*E[2])/E[4]<EPS;
+    // fill each country's zone in this border cell, coloured by country. The
+    // dataset's zone rings are even-odd, so sort by area and nest a ring inside
+    // a larger one as its hole; disjoint rings become separate polygons.
     for(const [cid,rings] of cc._refine.get(index)){
       if(rings===null)continue;
       const color=countryColor(cid);
-      for(const pts of rings){
-        const m=pts.length/2;
-        let current=[];
+      const decoded=rings.map(pts=>{
+        const m=pts.length/2,ll=new Array(m+1);
+        let a=0;
         for(let i=0;i<m;i++){
-          const j=(i+1)%m;
-          const x1=pts[2*i],y1=pts[2*i+1],x2=pts[2*j],y2=pts[2*j+1];
-          const artifact=edges.some(E=>onEdge(x1,y1,E)&&onEdge(x2,y2,E));
-          if(artifact){
-            if(current.length>1){feats.push({type:'Feature',
-              properties:{color},geometry:{type:'LineString',coordinates:current}});
-              segs+=current.length;}
-            current=[];
-          }else{
-            if(!current.length)current.push([minx+x1*sx,miny+y1*sy]);
-            current.push([minx+x2*sx,miny+y2*sy]);
-          }
+          ll[i]=[minx+pts[2*i]*sx,miny+pts[2*i+1]*sy];
+          const j=(i+1)%m;a+=pts[2*i]*pts[2*j+1]-pts[2*j]*pts[2*i+1];
         }
-        if(current.length>1){feats.push({type:'Feature',
-          properties:{color},geometry:{type:'LineString',coordinates:current}});
-          segs+=current.length;}
+        ll[m]=ll[0];
+        nverts+=m;
+        return {ll,area:Math.abs(a)/2,q:pts};
+      }).sort((p,q)=>q.area-p.area);
+      const polys=[];
+      for(const d of decoded){
+        let host=null;
+        for(const P of polys)if(pointInRingQ(d.q[0],d.q[1],P.q)){host=P;break;}
+        if(host)host.coords.push(d.ll);
+        else polys.push({coords:[d.ll],q:d.q});
       }
+      for(const P of polys)feats.push({type:'Feature',properties:{color},
+        geometry:{type:'Polygon',coordinates:P.coords}});
     }
-    if(segs>80000)return null;   // too much detail for this view
+    if(nverts>120000)return null;   // too much detail for this view
   }
   return feats;
 }
@@ -2110,13 +2125,13 @@ function updateBorders(){
   const feats=borderFeatures();
   if(feats===null){
     map.getSource('borders').setData({type:'FeatureCollection',features:[]});
-    bordernote.textContent='Source borders: zoom in further to draw them.';
+    bordernote.textContent='Source border zones: zoom in further to draw them.';
     return;
   }
   map.getSource('borders').setData({type:'FeatureCollection',features:feats});
-  bordernote.textContent=`${feats.length.toLocaleString()} source border polyline(s) in view, `+
-    `coloured by country, decoded from the refinement dataset — exactly the geometry the `+
-    `refined lookup tests against.`;
+  bordernote.textContent=`${feats.length.toLocaleString()} border-cell zone(s) in view, `+
+    `filled and coloured by country, decoded from the refinement dataset — exactly the `+
+    `geometry the refined lookup tests against.`;
 }
 bordercb.onchange=updateBorders;
 
