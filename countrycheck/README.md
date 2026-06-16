@@ -188,4 +188,16 @@ Custom data format is used to ensure compactness.
 * Timezone detection from the same source data (`tzids` are already
   in the per-country properties; cells would map to tzid instead of
   country id).
+* **Custom polygon identities** — generalise the builder into a universal
+  "polygon layer → grid identity" indexer for any non-overlapping layer
+  (counties, ZIP/postal areas, admin units, electoral or sales districts,
+  timezones — the item above is just one instance). This is mostly `build.py`
+  parameterised: take an arbitrary id field instead of `gid_0`/`iso2`/`name`,
+  drop the country-specific source prep (coastal/territorial-water extension,
+  GADM↔timezone reconciliation), and choose the level per layer (finer for
+  dense small polygons). The cell runs, the mixed-cell best-call + area share,
+  and the TFCR exact-border refinement are already identity-agnostic; only the
+  65,535-identity ceiling (a u16 header count + the `len(countries) > 0xFFFF`
+  guard — payload ids are already varints) needs widening to u32 for very large
+  layers such as global postal codes.
 * Published packages: `pip install countrycheck` and `npm install countrycheck`; the core SDK is `pip/npm install t3grid`.

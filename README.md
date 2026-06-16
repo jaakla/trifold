@@ -470,6 +470,7 @@ local dataset instead.
 * vectorized `locate` DuckDB UDF for `addr64` joins
 * optional ISEA-style equal-area variant (snyder projection per face)
 * polygon→cells fill (`polyfill` equivalent)
+* generic polygon-identity lookup — countrycheck's builder parameterised for any non-overlapping layer (counties, ZIP/postal, admin units, districts); see the [countrycheck roadmap](countrycheck/README.md#roadmap)
 
 ## License
 
