@@ -200,4 +200,8 @@ Custom data format is used to ensure compactness.
   65,535-identity ceiling (a u16 header count + the `len(countries) > 0xFFFF`
   guard — payload ids are already varints) needs widening to u32 for very large
   layers such as global postal codes.
-* Published packages: `pip install countrycheck` and `npm install countrycheck`; the core SDK is `pip/npm install t3grid`.
+
+countrycheck is published on both registries: `pip install countrycheck` and
+`npm install countrycheck` (the core SDK is `t3grid`). When cutting a release,
+bump the version in both `pyproject.toml` and `package.json`, rebuild
+(`uv build`), then `uv publish` and `npm publish --access public`.
