@@ -169,6 +169,124 @@ export function indexToCompact(index, level) {
   return out;
 }
 
+// ---------------------------------------------------- polyline sampling
+// Self-contained great-circle sampling; mirrors trifold.api.sample_polyline
+// (slerp + xyz conversions match trifold.core exactly).
+const EARTH_R = 6371.0088; // km
+
+function lonLatToXyz(lon, lat) {
+  const lam = (lon * Math.PI) / 180, phi = (lat * Math.PI) / 180;
+  const cp = Math.cos(phi);
+  return [cp * Math.cos(lam), cp * Math.sin(lam), Math.sin(phi)];
+}
+
+function xyzToLonLat(p) {
+  return [
+    (Math.atan2(p[1], p[0]) * 180) / Math.PI,
+    (Math.asin(Math.max(-1, Math.min(1, p[2]))) * 180) / Math.PI,
+  ];
+}
+
+function slerp(p, q, t) {
+  let dot = p[0] * q[0] + p[1] * q[1] + p[2] * q[2];
+  dot = Math.max(-1, Math.min(1, dot));
+  const om = Math.acos(dot);
+  if (om < 1e-12) return [...p];
+  const s = Math.sin(om);
+  const a = Math.sin((1 - t) * om) / s, b = Math.sin(t * om) / s;
+  return [a * p[0] + b * q[0], a * p[1] + b * q[1], a * p[2] + b * q[2]];
+}
+
+function greatCircleKm(lon1, lat1, lon2, lat2) {
+  const p = lonLatToXyz(lon1, lat1), q = lonLatToXyz(lon2, lat2);
+  let dot = p[0] * q[0] + p[1] * q[1] + p[2] * q[2];
+  dot = Math.max(-1, Math.min(1, dot));
+  return Math.acos(dot) * EARTH_R;
+}
+
+/**
+ * Sample a polyline at uniform great-circle intervals.
+ * Mirrors trifold.api.sample_polyline.
+ * @param {Array<[number, number]>} coords  [lon, lat] vertices (WGS84 degrees)
+ * @param {number} stepKm  approximate sample spacing in km (default 3.5)
+ * @param {"uniform"|"vertex"} mode  walk segments ('uniform') or vertices only
+ * @returns {{samples: Array<[number, number]>, cumulativeKm: number[], segmentIds: number[]}}
+ */
+export function samplePolyline(coords, stepKm = 3.5, mode = "uniform") {
+  if (coords.length < 2) throw new Error("polyline must have at least 2 vertices");
+  if (mode !== "uniform" && mode !== "vertex") {
+    throw new Error("mode must be 'uniform' or 'vertex'");
+  }
+  if (mode === "vertex") {
+    const samples = coords.map(([lon, lat]) => [lon, lat]);
+    const n = coords.length;
+    const cumulativeKm = new Array(n).fill(0);
+    const segmentIds = new Array(n).fill(0);
+    for (let i = 1; i < n; i++) {
+      const [lon1, lat1] = coords[i - 1], [lon2, lat2] = coords[i];
+      cumulativeKm[i] = cumulativeKm[i - 1] + greatCircleKm(lon1, lat1, lon2, lat2);
+      segmentIds[i] = i - 1;
+    }
+    return { samples, cumulativeKm, segmentIds };
+  }
+  const samples = [], cumulativeKm = [], segmentIds = [];
+  let runningKm = 0;
+  for (let segIdx = 0; segIdx < coords.length - 1; segIdx++) {
+    const [lon1, lat1] = coords[segIdx], [lon2, lat2] = coords[segIdx + 1];
+    const segLen = greatCircleKm(lon1, lat1, lon2, lat2);
+    if (samples.length === 0) {
+      samples.push([lon1, lat1]); cumulativeKm.push(runningKm); segmentIds.push(segIdx);
+    }
+    if (segLen < 1e-9) continue;
+    const nSteps = Math.max(1, Math.ceil(segLen / stepKm));
+    const p1 = lonLatToXyz(lon1, lat1), p2 = lonLatToXyz(lon2, lat2);
+    for (let step = 1; step < nSteps; step++) {
+      const t = step / nSteps;
+      const [slon, slat] = xyzToLonLat(slerp(p1, p2, t));
+      samples.push([slon, slat]);
+      cumulativeKm.push(runningKm + step * (segLen / nSteps));
+      segmentIds.push(segIdx);
+    }
+    runningKm += segLen;
+    samples.push([lon2, lat2]); cumulativeKm.push(runningKm); segmentIds.push(segIdx);
+  }
+  return { samples, cumulativeKm, segmentIds };
+}
+
+/** Merge consecutive samples sharing the same (land, kind) into segments. */
+function mergeLandSegments(results, cumulativeKm) {
+  const n = results.length;
+  const segments = [];
+  let i = 0;
+  while (i < n) {
+    const { land, kind } = results[i];
+    let j = i;
+    while (j + 1 < n && results[j + 1].land === land && results[j + 1].kind === kind) j++;
+    const startKm = i === 0 ? 0 : (cumulativeKm[i - 1] + cumulativeKm[i]) / 2;
+    const endKm = j === n - 1 ? cumulativeKm[n - 1] : (cumulativeKm[j] + cumulativeKm[j + 1]) / 2;
+    let confSum = 0;
+    const fracs = [];
+    for (let k = i; k <= j; k++) {
+      confSum += results[k].confidence;
+      if (results[k].landFraction !== null && results[k].landFraction !== undefined) {
+        fracs.push(results[k].landFraction);
+      }
+    }
+    const meanFrac = fracs.length
+      ? fracs.reduce((a, b) => a + b, 0) / fracs.length
+      : null;
+    segments.push({
+      land, kind,
+      confidence: confSum / (j - i + 1),
+      landFraction: meanFrac,
+      distanceKm: Math.max(endKm - startKm, 0),
+      fraction: 0,
+    });
+    i = j + 1;
+  }
+  return segments;
+}
+
 // ------------------------------------------------------------- TFLS decoding
 async function inflate(compressed) {
   if (typeof DecompressionStream === "function") {
@@ -405,6 +523,42 @@ export class LandCheck {
     if (!this._coastal[run]) return true;
     const fraction = this._fractionAt(run, index);
     return fraction === null ? true : fraction >= 0.5;
+  }
+
+  /**
+   * Land/sea classification for every segment of a polyline.
+   * Samples the line at `stepKm` intervals (or at vertices when
+   * `mode==='vertex'`), runs the point lookup per sample, then merges
+   * consecutive same-(land, kind) samples into directed,
+   * distance-annotated segments. Mirrors Python `check_polyline`.
+   * @returns {{segments: object[], totalDistanceKm: number, stats: object, refined: boolean}}
+   */
+  checkPolyline(coords, { stepKm = 3.5, mode = "uniform" } = {}) {
+    const { samples, cumulativeKm } = samplePolyline(coords, stepKm, mode);
+    const totalKm = cumulativeKm.length ? cumulativeKm[cumulativeKm.length - 1] : 0;
+    const results = samples.map(([lon, lat]) => this.check(lon, lat));
+    const segments = mergeLandSegments(results, cumulativeKm);
+    for (const seg of segments) seg.fraction = totalKm > 0 ? seg.distanceKm / totalKm : 0;
+    const landKm = segments.reduce((a, s) => a + (s.land ? s.distanceKm : 0), 0);
+    const refined = !!this._refine;
+    return {
+      segments,
+      totalDistanceKm: totalKm,
+      stats: {
+        totalDistanceKm: totalKm,
+        landKm,
+        seaKm: totalKm - landKm,
+        landFraction: totalKm > 0 ? landKm / totalKm : 0,
+        nSegments: segments.length,
+        refined,
+      },
+      refined,
+    };
+  }
+
+  /** Directed land/sea segments for a polyline (segment list only). */
+  isLandPolyline(coords, opts) {
+    return this.checkPolyline(coords, opts).segments;
   }
 
   /** Dataset summary (for diagnostics). */

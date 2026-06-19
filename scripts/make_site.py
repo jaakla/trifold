@@ -237,7 +237,9 @@ html = """<!doctype html>
       run-length intervals: a <b>182&nbsp;KB</b> dataset that answers
       <i>"is this point on land?"</i> in microseconds, fully offline, in Python
       and JavaScript, with a confidence value for every answer. Optional OSM
-      refinement sharpens coastal answers to a near-exact polygon test.</p>
+      refinement sharpens coastal answers to a near-exact polygon test. Both
+      tools also classify whole <b>routes/polylines</b> into distance-annotated
+      segments — try Route mode in either demo.</p>
       <p><a class="cta primary" style="padding:9px 18px;font-size:14px"
         href="landcheck.html">Info and interactive demo</a></p>
       <p class="muted">Its sibling
@@ -776,21 +778,49 @@ landcheck_html = """<!doctype html>
     every point is classified <b>in your browser</b> by the bundled library, with no server
     and no network call per lookup. The lookups-per-second figure is measured tightly around
     the classification loop on <i>your</i> machine (map rendering and file parsing excluded),
-    so it is the real library throughput. Use the 100k-random button for a stable number.</p>
+    so it is the real library throughput. Use the 100k-random button for a stable number.
+    Switch to <b>Route</b> mode to classify a polyline — draw one on the map or pick an
+    example — and see the land/coast/sea stretches it crosses, each with its distance.</p>
   </div>
   <div class="viewerwrap">
     <div id="map"></div>
     <div class="panel">
       <div class="phead"><b>Controls</b>
         <button id="panelmin" aria-label="minimize control panel" title="minimize">–</button></div>
-      <div class="row"><label>Sample points</label>
+      <div class="row"><label>Mode</label>
+        <div class="seg" id="seg-mode">
+          <button data-v="points" class="on">Points</button>
+          <button data-v="route">Route (line)</button>
+        </div>
+        <div class="note">Points: classify many lon/lat points. Route: classify a
+        polyline and see which land/sea stretches it crosses.</div></div>
+      <div class="row" id="row-points"><label>Sample points</label>
         <div class="btns">
           <button id="b-cities">World cities + tricky spots</button>
           <button id="b-r1">1k random</button>
           <button id="b-r10">10k random</button>
           <button id="b-r100">100k random</button>
         </div></div>
-      <div class="row"><label>Your own points</label>
+      <div class="row" id="row-route" style="display:none"><label>Route (polyline)</label>
+        <div class="btns">
+          <button id="b-route-eu">Tallinn → Stockholm (sea crossing)</button>
+          <button id="b-route-med">Barcelona → Algiers</button>
+          <button id="b-route-asia">Lisbon → Cairo</button>
+        </div>
+        <div class="btns" style="margin-top:6px">
+          <button id="b-draw">✏️ Draw on map</button>
+          <button id="b-route-clear">Clear</button>
+        </div>
+        <div class="note" id="routenote">Pick an example, or hit <b>Draw on map</b> and
+        click to drop points; click <b>Finish</b> (or the button again) to classify.</div>
+        <div style="margin-top:9px;display:flex;gap:9px;align-items:center">
+          <label style="margin:0">Sampling step</label>
+          <div class="seg" id="seg-step">
+            <button data-v="1">1 km</button>
+            <button data-v="3.5" class="on">3.5 km</button>
+            <button data-v="10">10 km</button>
+          </div></div></div>
+      <div class="row"><label>Your own points / route</label>
         <div class="btns">
           <label class="filelabel">Open CSV / GeoJSON…
             <input type="file" id="fileinput" accept=".csv,.txt,.json,.geojson" style="display:none">
@@ -798,8 +828,9 @@ landcheck_html = """<!doctype html>
         </div>
         <div id="droperr"></div>
         <div class="note">CSV: <code>lon,lat[,name]</code> per line (or a header naming
-        <code>lat</code>/<code>lon</code> columns in either order). GeoJSON: any
-        FeatureCollection of Points. Files stay on your machine.</div></div>
+        <code>lat</code>/<code>lon</code> columns in either order). GeoJSON: a
+        FeatureCollection of Points (Points mode) or a LineString (Route mode).
+        Files stay on your machine.</div></div>
       <div class="row"><label>OSM coastal refinement</label>
         <label style="display:flex;gap:7px;align-items:flex-start;cursor:pointer;font-size:12.5px;
             font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink)">
@@ -868,7 +899,11 @@ const lc = await LandCheck.fromUrl("landsea_L10.tfls"); // browser
 lc.isLand(24.7536, 59.437);   // true  (lon, lat)
 lc.check(-0.1276, 51.5072);
 // { land: true, kind: 'land', confidence: 1,
-//   landFraction: 1, cell: 'TFA95BM', refined: false }</code></pre>
+//   landFraction: 1, cell: 'TFA95BM', refined: false }
+
+// a whole route: land/sea segments with distances
+lc.checkPolyline([[24.75,59.44],[18.07,59.33]]).segments;
+// [{land:true,kind:'land',...,distanceKm,fraction}, ...]</code></pre>
     </div>
     <div>
       <h3>Python (stdlib only)</h3>
@@ -881,7 +916,10 @@ lc.check(-0.1276, 51.5072)
 #   land_fraction=1.0, cell='TFA95BM', refined=False)
 
 # vectorised: ~2.8 µs/point with numpy
-lc.is_land_batch(lons, lats)</code></pre>
+lc.is_land_batch(lons, lats)
+
+# a whole route: land/sea segments with distances
+lc.check_polyline([(24.75, 59.44), (18.07, 59.33)]).segments</code></pre>
     </div>
   </div>
   <h3>What the answer means</h3>
@@ -989,12 +1027,13 @@ LAND  kind=land  confidence=1.000  land_fraction=1.0  cell=TFAVKGR  refined=Fals
 </footer>
 
 <script type="module">
-import {LandCheck,locateIndex,indexToCompact,indexToLonLatRing} from './sdk/landcheck.mjs';
+import {LandCheck,locateIndex,indexToCompact,indexToLonLatRing,samplePolyline} from './sdk/landcheck.mjs';
 const TFLS_B64="__TFLS_B64__";
 const TFLR_URLS=['data/coastal_osm_L10.tflr','__TFLR_URL__'];
 const NE_URLS=['data/ne_50m_land.geojson','__NE_URL__'];
 
 const KIND_COLOR={land:'#22c55e',coast:'#f59e0b',sea:'#16277e'};
+const EMPTY={type:'FeatureCollection',features:[]};
 const CITIES=[
  ['Tallinn',24.7536,59.4370],['London',-0.1276,51.5072],['Tokyo',139.6917,35.6895],
  ['New York',-74.006,40.7128],['São Paulo',-46.6333,-23.5505],['Cairo',31.2357,30.0444],
@@ -1201,12 +1240,33 @@ map.on('load',()=>{
     'circle-opacity':0.85,
     'circle-stroke-width':['case',flipped,2.2,0.6],
     'circle-stroke-color':['case',flipped,'#c2185b','rgba(0,0,0,.4)']}});
+  // route (polyline) layers: one coloured line feature per classified segment
+  map.addSource('route',{type:'geojson',data:EMPTY});
+  map.addLayer({id:'route-line',type:'line',source:'route',
+    layout:{'line-cap':'round','line-join':'round'},
+    paint:{'line-color':['get','color'],'line-width':5,'line-opacity':0.9}});
+  map.addSource('routeverts',{type:'geojson',data:EMPTY});
+  map.addLayer({id:'route-verts',type:'circle',source:'routeverts',
+    paint:{'circle-color':'#111','circle-radius':4.5,
+      'circle-stroke-width':2,'circle-stroke-color':'#fff'}});
   map.on('click',e=>{
-    // clicks on a classified point are handled by the 'pts' handler below
-    if(map.queryRenderedFeatures(e.point,{layers:['pts']}).length)return;
     let lon=e.lngLat.lng,lat=e.lngLat.lat;
     lon=((lon+180)%360+360)%360-180;
     lat=Math.max(-90,Math.min(90,lat));
+    // route draw mode: each click drops a vertex
+    if(mode==='route'&&drawing){addVertex(lon,lat);return;}
+    // route segment click: show the segment's classification
+    const seg=map.queryRenderedFeatures(e.point,{layers:['route-line']});
+    if(mode==='route'&&seg.length){
+      const p=seg[0].properties;
+      new maplibregl.Popup().setLngLat(e.lngLat).setHTML(
+        `<b style="color:${p.color}">${p.land==='true'||p.land===true?'LAND':'SEA'}</b>`+
+        ` · kind <b>${p.kind}</b><br>${(+p.distanceKm).toFixed(1)} km `+
+        `(${(100*p.fraction).toFixed(1)}% of route)`).addTo(map);
+      return;
+    }
+    // clicks on a classified point are handled by the 'pts' handler below
+    if(map.queryRenderedFeatures(e.point,{layers:['pts']}).length)return;
     drawCell(lon,lat);
     new maplibregl.Popup().setLngLat(e.lngLat)
       .setHTML(describe(lon,lat,null)).addTo(map);
@@ -1388,15 +1448,34 @@ refinecb.onchange=async()=>{
   if(lastPts)show(lastPts,lastLabel);   // re-classify so the effect is visible
   updateCoastline();                    // coastline source follows refinement
 };
+function parseGeojsonLine(text){
+  const gj=JSON.parse(text);
+  const feats=gj.type==='FeatureCollection'?gj.features:gj.type==='Feature'?[gj]:[gj];
+  for(const f of feats){
+    const g=f.geometry||f;
+    if(g.type==='LineString')return g.coordinates.map(c=>[c[0],c[1]]);
+    if(g.type==='MultiLineString')return g.coordinates[0].map(c=>[c[0],c[1]]);
+  }
+  throw new Error('no LineString found');
+}
 document.getElementById('fileinput').onchange=async e=>{
   const file=e.target.files[0];
   if(!file)return;
   document.getElementById('droperr').textContent='';
   try{
     const text=await file.text();
-    const pts=text.trimStart().startsWith('{')?parseGeojson(text):parseCsv(text);
-    if(pts.length>500000)throw new Error('too many points (max 500k)');
-    show(pts,file.name);
+    const isJson=text.trimStart().startsWith('{');
+    if(mode==='route'){
+      const coords=isJson?parseGeojsonLine(text)
+        :parseCsv(text).map(p=>[p[1],p[2]]);
+      if(coords.length<2)throw new Error('need at least two vertices');
+      if(coords.length>100000)throw new Error('too many vertices (max 100k)');
+      loadRoute(coords);
+    }else{
+      const pts=isJson?parseGeojson(text):parseCsv(text);
+      if(pts.length>500000)throw new Error('too many points (max 500k)');
+      show(pts,file.name);
+    }
   }catch(err){
     document.getElementById('droperr').textContent=`Could not read ${file.name}: ${err.message}`;
   }
@@ -1407,6 +1486,119 @@ document.querySelectorAll('#seg-proj button').forEach(b=>{b.onclick=()=>{
   b.classList.add('on');
   try{map.setProjection({type:b.dataset.v});}catch(e){console.warn(e);}
 };});
+
+// ---- Route (polyline) mode ----
+let mode='points',drawing=false,routePts=[];
+const perf=document.getElementById('perf');
+const routenote=document.getElementById('routenote');
+const bDraw=document.getElementById('b-draw');
+const ROUTES={
+  eu:[[24.7536,59.4370],[18.0686,59.3293]],          // Tallinn -> Stockholm, over the Baltic
+  med:[[2.1734,41.3851],[3.0588,36.7538]],            // Barcelona -> Algiers, over the Med
+  long:[[-9.1393,38.7223],[2.3522,48.8566],[31.2357,30.0444]]};  // Lisbon -> Paris -> Cairo
+function stepKm(){return parseFloat(document.querySelector('#seg-step .on').dataset.v);}
+
+function classifyRoute(){
+  const coords=routePts.slice();
+  if(coords.length<2){routenote.textContent='Add at least two points.';return;}
+  const step=stepKm();
+  const t0=performance.now();
+  const res=lc.checkPolyline(coords,{stepKm:step});   // the real library call, timed
+  const ms=performance.now()-t0;
+  // colour the line: re-sample and group consecutive samples sharing land+kind
+  const {samples}=samplePolyline(coords,step,'uniform');
+  const cls=samples.map(s=>lc.check(s[0],s[1]));
+  const feats=[];let i=0;
+  while(i<samples.length){
+    const a=cls[i];let j=i;
+    while(j+1<samples.length&&cls[j+1].land===a.land&&cls[j+1].kind===a.kind)j++;
+    feats.push({type:'Feature',
+      properties:{color:KIND_COLOR[a.kind],kind:a.kind,land:a.land},
+      geometry:{type:'LineString',coordinates:samples.slice(i,j+1)}});
+    i=j+1;
+  }
+  map.getSource('route').setData({type:'FeatureCollection',features:feats});
+  map.getSource('routeverts').setData({type:'FeatureCollection',
+    features:coords.map(c=>({type:'Feature',properties:{},
+      geometry:{type:'Point',coordinates:c}}))});
+  map.getSource('points').setData(EMPTY);
+  const rate=samples.length/(ms/1000);
+  const refineOn=document.getElementById('refinecb').checked;
+  let rows='';
+  for(const s of res.segments)
+    rows+=`<span style="color:${KIND_COLOR[s.kind]}">■</span> `+
+      `<b>${s.kind}</b> · ${s.distanceKm.toFixed(0)} km (${(100*s.fraction).toFixed(0)}%)<br>`;
+  perf.style.display='block';
+  perf.innerHTML=
+    `<b>${Math.round(rate).toLocaleString()}</b> samples/second on this device<br>`+
+    `${samples.length.toLocaleString()} samples · `+
+    `${res.totalDistanceKm.toFixed(0)} km total · `+
+    `${res.segments.length} segment${res.segments.length===1?'':'s'} (step ${step} km)`+
+    `${refineOn?' · <b>OSM refinement on</b>':''}<br>`+rows;
+  routenote.textContent=`${coords.length} vertices · classified in ${ms.toFixed(1)} ms.`;
+}
+function addVertex(lon,lat){
+  routePts.push([lon,lat]);
+  map.getSource('routeverts').setData({type:'FeatureCollection',
+    features:routePts.map(c=>({type:'Feature',properties:{},
+      geometry:{type:'Point',coordinates:c}}))});
+  if(routePts.length>=2)
+    map.getSource('route').setData({type:'FeatureCollection',
+      features:[{type:'Feature',properties:{color:'#888',kind:'',land:false},
+        geometry:{type:'LineString',coordinates:routePts.slice()}}]});
+  routenote.textContent=`${routePts.length} point(s) — click to add more, Finish to classify.`;
+}
+function startDraw(){
+  drawing=true;routePts=[];
+  map.getSource('route').setData(EMPTY);map.getSource('routeverts').setData(EMPTY);
+  perf.style.display='none';bDraw.textContent='✓ Finish';bDraw.classList.add('on');
+  map.getCanvas().style.cursor='crosshair';
+  routenote.textContent='Click the map to drop route points; click Finish to classify.';
+}
+function endDraw(){
+  drawing=false;bDraw.textContent='✏️ Draw on map';bDraw.classList.remove('on');
+  map.getCanvas().style.cursor='';
+}
+bDraw.onclick=()=>{
+  if(drawing){endDraw();if(routePts.length>=2)classifyRoute();
+    else routenote.textContent='Need at least two points — pick an example or draw again.';}
+  else startDraw();
+};
+document.getElementById('b-route-clear').onclick=()=>{
+  endDraw();routePts=[];map.getSource('route').setData(EMPTY);
+  map.getSource('routeverts').setData(EMPTY);perf.style.display='none';
+  routenote.textContent='Pick an example, or hit Draw on map.';
+};
+function loadRoute(coords){
+  endDraw();routePts=coords.map(c=>c.slice());classifyRoute();
+  const b=new maplibregl.LngLatBounds();for(const c of routePts)b.extend(c);
+  map.fitBounds(b,{padding:90,duration:600});
+}
+document.getElementById('b-route-eu').onclick=()=>loadRoute(ROUTES.eu);
+document.getElementById('b-route-med').onclick=()=>loadRoute(ROUTES.med);
+document.getElementById('b-route-asia').onclick=()=>loadRoute(ROUTES.long);
+document.querySelectorAll('#seg-step button').forEach(b=>{b.onclick=()=>{
+  document.querySelectorAll('#seg-step button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');
+  if(mode==='route'&&routePts.length>=2)classifyRoute();
+};});
+function setMode(m){
+  mode=m;
+  document.querySelectorAll('#seg-mode button').forEach(x=>x.classList.toggle('on',x.dataset.v===m));
+  document.getElementById('row-points').style.display=m==='points'?'':'none';
+  document.getElementById('row-route').style.display=m==='route'?'':'none';
+  perf.style.display='none';
+  if(m==='points'){
+    endDraw();routePts=[];
+    map.getSource('route').setData(EMPTY);map.getSource('routeverts').setData(EMPTY);
+    if(lastPts)show(lastPts,lastLabel);
+  }else{
+    map.getSource('points').setData(EMPTY);map.getSource('cell').setData(EMPTY);
+    routenote.textContent='Pick an example, or hit Draw on map.';
+  }
+}
+document.querySelectorAll('#seg-mode button').forEach(b=>{b.onclick=()=>setMode(b.dataset.v);});
+
 window.__landcheck={map,lc};   // console/debug handle
 </script>
 </body>
@@ -1553,21 +1745,49 @@ countrycheck_html = """<!doctype html>
     server and no network call per lookup. Each dot is coloured by the country it lands in; open
     ocean stays grey. The lookups-per-second figure is measured tightly around the classification
     loop on <i>your</i> machine (map rendering and file parsing excluded), so it is the real
-    library throughput. Use the 100k-random button for a stable number.</p>
+    library throughput. Use the 100k-random button for a stable number.
+    Switch to <b>Route</b> mode to classify a polyline — draw one on the map or pick an
+    example — and see the countries it crosses in order, each with its distance.</p>
   </div>
   <div class="viewerwrap">
     <div id="map"></div>
     <div class="panel">
       <div class="phead"><b>Controls</b>
         <button id="panelmin" aria-label="minimize control panel" title="minimize">&ndash;</button></div>
-      <div class="row"><label>Sample points</label>
+      <div class="row"><label>Mode</label>
+        <div class="seg" id="seg-mode">
+          <button data-v="points" class="on">Points</button>
+          <button data-v="route">Route (line)</button>
+        </div>
+        <div class="note">Points: resolve many lon/lat points to a country. Route:
+        classify a polyline and see which countries it crosses, in order.</div></div>
+      <div class="row" id="row-points"><label>Sample points</label>
         <div class="btns">
           <button id="b-cities">Capitals + tricky spots</button>
           <button id="b-r1">1k random</button>
           <button id="b-r10">10k random</button>
           <button id="b-r100">100k random</button>
         </div></div>
-      <div class="row"><label>Your own points</label>
+      <div class="row" id="row-route" style="display:none"><label>Route (polyline)</label>
+        <div class="btns">
+          <button id="b-route-eu">Berlin → Warsaw → Vilnius</button>
+          <button id="b-route-med">Madrid → Rome</button>
+          <button id="b-route-asia">Istanbul → Tehran → Delhi</button>
+        </div>
+        <div class="btns" style="margin-top:6px">
+          <button id="b-draw">✏️ Draw on map</button>
+          <button id="b-route-clear">Clear</button>
+        </div>
+        <div class="note" id="routenote">Pick an example, or hit <b>Draw on map</b> and
+        click to drop points; click <b>Finish</b> (or the button again) to classify.</div>
+        <div style="margin-top:9px;display:flex;gap:9px;align-items:center">
+          <label style="margin:0">Sampling step</label>
+          <div class="seg" id="seg-step">
+            <button data-v="1">1 km</button>
+            <button data-v="3.5" class="on">3.5 km</button>
+            <button data-v="10">10 km</button>
+          </div></div></div>
+      <div class="row"><label>Your own points / route</label>
         <div class="btns">
           <label class="filelabel">Open CSV / GeoJSON&hellip;
             <input type="file" id="fileinput" accept=".csv,.txt,.json,.geojson" style="display:none">
@@ -1575,8 +1795,9 @@ countrycheck_html = """<!doctype html>
         </div>
         <div id="droperr"></div>
         <div class="note">CSV: <code>lon,lat[,name]</code> per line (or a header naming
-        <code>lat</code>/<code>lon</code> columns in either order). GeoJSON: any
-        FeatureCollection of Points. Files stay on your machine.</div></div>
+        <code>lat</code>/<code>lon</code> columns in either order). GeoJSON: a
+        FeatureCollection of Points (Points mode) or a LineString (Route mode).
+        Files stay on your machine.</div></div>
       <div class="row"><label>Exact border refinement</label>
         <label style="display:flex;gap:7px;align-items:flex-start;cursor:pointer;font-size:12.5px;
             font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink)">
@@ -1647,7 +1868,11 @@ cc.country(24.7536, 59.437);   // 'EST'  (lon, lat)
 cc.check(-0.1276, 51.5072);
 // { country: 'GBR', iso2: 'GB', name: 'United Kingdom',
 //   kind: 'country', confidence: 1, share: 1,
-//   cell: 'TFA95BM', refined: false }</code></pre>
+//   cell: 'TFA95BM', refined: false }
+
+// a whole route: countries crossed, in order
+cc.checkPolyline([[13.4,52.5],[21.0,52.2],[25.3,54.7]]).segments;
+// [{country:'DEU',...,distanceKm,fraction}, ...]</code></pre>
     </div>
     <div>
       <h3>Python (stdlib only)</h3>
@@ -1659,7 +1884,11 @@ cc.check(-0.1276, 51.5072)
 # CountryResult(country='GBR', iso2='GB',
 #   name='United Kingdom', kind='country',
 #   confidence=1.0, share=1.0, cell='TFA95BM',
-#   refined=False)</code></pre>
+#   refined=False)
+
+# a whole route: countries crossed, in order
+cc.check_polyline(
+  [(13.4, 52.5), (21.0, 52.2), (25.3, 54.7)]).segments</code></pre>
     </div>
   </div>
   <h3>What the answer means</h3>
@@ -1793,11 +2022,12 @@ EST  iso2=EE  name='Estonia'  kind=country  confidence=1.000  share=1.0  cell=TF
 </footer>
 
 <script type="module">
-import {CountryCheck,locateIndex,indexToCompact,indexToLonLatRing} from './sdk/countrycheck.mjs';
+import {CountryCheck,locateIndex,indexToCompact,indexToLonLatRing,samplePolyline} from './sdk/countrycheck.mjs';
 const TFCS_B64="__TFCS_B64__";
 const TFCR_URLS=['data/borders_L10.tfcr','__TFCR_URL__'];
 
 const NONE_COLOR='#8a93a0';
+const EMPTY={type:'FeatureCollection',features:[]};
 // deterministic, well-spread hue per country id (golden-angle)
 function countryColor(cid){
   if(cid==null||cid<0)return NONE_COLOR;
@@ -2019,11 +2249,30 @@ map.on('load',()=>{
     'circle-opacity':0.85,
     'circle-stroke-width':['case',flipped,2.2,border,1.4,0.6],
     'circle-stroke-color':['case',flipped,'#c2185b',border,'#1c2733','rgba(0,0,0,.4)']}});
+  // route (polyline) layers: one coloured line feature per classified segment
+  map.addSource('route',{type:'geojson',data:EMPTY});
+  map.addLayer({id:'route-line',type:'line',source:'route',
+    layout:{'line-cap':'round','line-join':'round'},
+    paint:{'line-color':['get','color'],'line-width':5,'line-opacity':0.92}});
+  map.addSource('routeverts',{type:'geojson',data:EMPTY});
+  map.addLayer({id:'route-verts',type:'circle',source:'routeverts',
+    paint:{'circle-color':'#111','circle-radius':4.5,
+      'circle-stroke-width':2,'circle-stroke-color':'#fff'}});
   map.on('click',e=>{
-    if(map.queryRenderedFeatures(e.point,{layers:['pts']}).length)return;
     let lon=e.lngLat.lng,lat=e.lngLat.lat;
     lon=((lon+180)%360+360)%360-180;
     lat=Math.max(-90,Math.min(90,lat));
+    if(mode==='route'&&drawing){addVertex(lon,lat);return;}
+    const seg=map.queryRenderedFeatures(e.point,{layers:['route-line']});
+    if(mode==='route'&&seg.length){
+      const p=seg[0].properties;
+      new maplibregl.Popup().setLngLat(e.lngLat).setHTML(
+        `<b>${p.cname||p.country||'no country'}</b>`+
+        `${p.iso2?' ('+p.iso2+')':''} · kind <b>${p.kind}</b><br>`+
+        `${(+p.distanceKm).toFixed(1)} km (${(100*p.fraction).toFixed(1)}% of route)`).addTo(map);
+      return;
+    }
+    if(map.queryRenderedFeatures(e.point,{layers:['pts']}).length)return;
     drawCell(lon,lat);
     new maplibregl.Popup().setLngLat(e.lngLat)
       .setHTML(describe(lon,lat,null)).addTo(map);
@@ -2173,13 +2422,32 @@ refinecb.onchange=async()=>{
   if(lastPts)show(lastPts,lastLabel);   // re-classify so the effect is visible
   updateBorders();                      // border layer follows refinement
 };
+function parseGeojsonLine(text){
+  const gj=JSON.parse(text);
+  const feats=gj.type==='FeatureCollection'?gj.features:gj.type==='Feature'?[gj]:[gj];
+  for(const f of feats){
+    const g=f.geometry||f;
+    if(g.type==='LineString')return g.coordinates.map(c=>[c[0],c[1]]);
+    if(g.type==='MultiLineString')return g.coordinates[0].map(c=>[c[0],c[1]]);
+  }
+  throw new Error('no LineString found');
+}
 document.getElementById('fileinput').onchange=async e=>{
   const file=e.target.files[0];
   if(!file)return;
   document.getElementById('droperr').textContent='';
   try{
     const text=await file.text();
-    const pts=text.trimStart().startsWith('{')?parseGeojson(text):parseCsv(text);
+    const isJson=text.trimStart().startsWith('{');
+    if(mode==='route'){
+      const coords=isJson?parseGeojsonLine(text)
+        :parseCsv(text).map(p=>[p[1],p[2]]);
+      if(coords.length<2)throw new Error('need at least two vertices');
+      if(coords.length>100000)throw new Error('too many vertices (max 100k)');
+      loadRoute(coords);
+      e.target.value='';return;
+    }
+    const pts=isJson?parseGeojson(text):parseCsv(text);
     if(pts.length>500000)throw new Error('too many points (max 500k)');
     show(pts,file.name);
   }catch(err){
@@ -2192,6 +2460,124 @@ document.querySelectorAll('#seg-proj button').forEach(b=>{b.onclick=()=>{
   b.classList.add('on');
   try{map.setProjection({type:b.dataset.v});}catch(e){console.warn(e);}
 };});
+
+// ---- Route (polyline) mode ----
+let mode='points',drawing=false,routePts=[];
+const perf=document.getElementById('perf');
+const routenote=document.getElementById('routenote');
+const bDraw=document.getElementById('b-draw');
+const ROUTES={
+  eu:[[13.405,52.52],[21.0122,52.2297],[25.2797,54.6872]],   // Berlin -> Warsaw -> Vilnius
+  med:[[-3.7038,40.4168],[12.4964,41.9028]],                  // Madrid -> Rome
+  asia:[[28.9784,41.0082],[51.3890,35.6892],[77.2090,28.6139]]};  // Istanbul -> Tehran -> Delhi
+function stepKm(){return parseFloat(document.querySelector('#seg-step .on').dataset.v);}
+function segColor(s){
+  return s.country==null?NONE_COLOR:countryColor(codeToCid.get(s.country));
+}
+function classifyRoute(){
+  const coords=routePts.slice();
+  if(coords.length<2){routenote.textContent='Add at least two points.';return;}
+  const step=stepKm();
+  const t0=performance.now();
+  const res=cc.checkPolyline(coords,{stepKm:step});   // the real library call, timed
+  const ms=performance.now()-t0;
+  // colour the line: re-sample and group consecutive samples sharing country+kind
+  const {samples}=samplePolyline(coords,step,'uniform');
+  const cls=samples.map(s=>cc.check(s[0],s[1]));
+  const feats=[];let i=0;
+  while(i<samples.length){
+    const a=cls[i];let j=i;
+    while(j+1<samples.length&&cls[j+1].country===a.country&&cls[j+1].kind===a.kind)j++;
+    const cid=a.country==null?-1:codeToCid.get(a.country);
+    feats.push({type:'Feature',
+      properties:{color:a.country==null?NONE_COLOR:countryColor(cid),
+        country:a.country,iso2:a.iso2,cname:a.name,kind:a.kind},
+      geometry:{type:'LineString',coordinates:samples.slice(i,j+1)}});
+    i=j+1;
+  }
+  map.getSource('route').setData({type:'FeatureCollection',features:feats});
+  map.getSource('routeverts').setData({type:'FeatureCollection',
+    features:coords.map(c=>({type:'Feature',properties:{},
+      geometry:{type:'Point',coordinates:c}}))});
+  map.getSource('points').setData(EMPTY);
+  const rate=samples.length/(ms/1000);
+  const refineOn=!!cc._refine;
+  let rows='';
+  for(const s of res.segments)
+    rows+=`<span style="color:${segColor(s)}">■</span> `+
+      `<b>${s.name||s.country||'no country'}</b>${s.iso2?' ('+s.iso2+')':''} · `+
+      `${s.distanceKm.toFixed(0)} km (${(100*s.fraction).toFixed(0)}%)<br>`;
+  perf.style.display='block';
+  perf.innerHTML=
+    `<b>${Math.round(rate).toLocaleString()}</b> samples/second on this device<br>`+
+    `${samples.length.toLocaleString()} samples · `+
+    `${res.totalDistanceKm.toFixed(0)} km total · `+
+    `${res.segments.length} segment${res.segments.length===1?'':'s'} (step ${step} km)`+
+    `${refineOn?' · <b>refinement on</b>':''}<br>`+rows;
+  routenote.textContent=`${coords.length} vertices · classified in ${ms.toFixed(1)} ms.`;
+}
+function addVertex(lon,lat){
+  routePts.push([lon,lat]);
+  map.getSource('routeverts').setData({type:'FeatureCollection',
+    features:routePts.map(c=>({type:'Feature',properties:{},
+      geometry:{type:'Point',coordinates:c}}))});
+  if(routePts.length>=2)
+    map.getSource('route').setData({type:'FeatureCollection',
+      features:[{type:'Feature',properties:{color:'#888'},
+        geometry:{type:'LineString',coordinates:routePts.slice()}}]});
+  routenote.textContent=`${routePts.length} point(s) — click to add more, Finish to classify.`;
+}
+function startDraw(){
+  drawing=true;routePts=[];
+  map.getSource('route').setData(EMPTY);map.getSource('routeverts').setData(EMPTY);
+  perf.style.display='none';bDraw.textContent='✓ Finish';bDraw.classList.add('on');
+  map.getCanvas().style.cursor='crosshair';
+  routenote.textContent='Click the map to drop route points; click Finish to classify.';
+}
+function endDraw(){
+  drawing=false;bDraw.textContent='✏️ Draw on map';bDraw.classList.remove('on');
+  map.getCanvas().style.cursor='';
+}
+bDraw.onclick=()=>{
+  if(drawing){endDraw();if(routePts.length>=2)classifyRoute();
+    else routenote.textContent='Need at least two points — pick an example or draw again.';}
+  else startDraw();
+};
+document.getElementById('b-route-clear').onclick=()=>{
+  endDraw();routePts=[];map.getSource('route').setData(EMPTY);
+  map.getSource('routeverts').setData(EMPTY);perf.style.display='none';
+  routenote.textContent='Pick an example, or hit Draw on map.';
+};
+function loadRoute(coords){
+  endDraw();routePts=coords.map(c=>c.slice());classifyRoute();
+  const b=new maplibregl.LngLatBounds();for(const c of routePts)b.extend(c);
+  map.fitBounds(b,{padding:90,duration:600});
+}
+document.getElementById('b-route-eu').onclick=()=>loadRoute(ROUTES.eu);
+document.getElementById('b-route-med').onclick=()=>loadRoute(ROUTES.med);
+document.getElementById('b-route-asia').onclick=()=>loadRoute(ROUTES.asia);
+document.querySelectorAll('#seg-step button').forEach(b=>{b.onclick=()=>{
+  document.querySelectorAll('#seg-step button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');
+  if(mode==='route'&&routePts.length>=2)classifyRoute();
+};});
+function setMode(m){
+  mode=m;
+  document.querySelectorAll('#seg-mode button').forEach(x=>x.classList.toggle('on',x.dataset.v===m));
+  document.getElementById('row-points').style.display=m==='points'?'':'none';
+  document.getElementById('row-route').style.display=m==='route'?'':'none';
+  perf.style.display='none';
+  if(m==='points'){
+    endDraw();routePts=[];
+    map.getSource('route').setData(EMPTY);map.getSource('routeverts').setData(EMPTY);
+    if(lastPts)show(lastPts,lastLabel);
+  }else{
+    map.getSource('points').setData(EMPTY);map.getSource('cell').setData(EMPTY);
+    routenote.textContent='Pick an example, or hit Draw on map.';
+  }
+}
+document.querySelectorAll('#seg-mode button').forEach(b=>{b.onclick=()=>setMode(b.dataset.v);});
+
 window.__countrycheck={map,cc};   // console/debug handle
 </script>
 </body>
