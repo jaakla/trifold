@@ -64,6 +64,47 @@ credit 0.997).
 
 Caveats inherited from the source data: Natural Earth 1:50m treats **lakes as land and omits islets** below its resolution; `coast` cells flag exactly where such risk is concentrated.
 
+## Polyline queries
+
+To measure how much of a *line* runs over land vs. sea (a route, a flight
+path, a cable), use `check_polyline`. It samples the line at uniform
+great-circle intervals (default 3.5 km, half the L10 cell edge), classifies
+each sample with the normal point lookup, then merges consecutive samples of
+the same land/sea class into directed, distance-annotated segments.
+
+```python
+lc = LandCheck()
+# mid-Atlantic into the Iberian peninsula
+res = lc.check_polyline([(-30.0, 40.0), (0.0, 40.0)], step_km=50)
+for s in res.segments:
+    print(s.land, s.kind, round(s.distance_km), round(s.fraction, 2))
+# False sea  1820 0.72
+# True  land  698 0.27
+# True  coast  25 0.01
+res.stats   # {'total_distance_km': ..., 'land_km': ..., 'sea_km': ...,
+            #  'land_fraction': ..., 'n_segments': 3, 'refined': False}
+
+lc.is_land_polyline(coords)                # just the segment list
+lc.check_polyline(coords, mode="vertex")   # classify only at the original vertices
+lc.check_polyline(coords, step_km=1.0)     # finer sampling
+```
+
+```js
+const lc = await LandCheck.fromFile();
+const res = lc.checkPolyline([[-30.0, 40.0], [0.0, 40.0]], { stepKm: 50 });
+res.segments;          // [{land, kind, confidence, landFraction, distanceKm, fraction}, ...]
+lc.isLandPolyline(coords);                       // segment list only
+lc.checkPolyline(coords, { mode: "vertex" });    // vertices only
+```
+
+Each `PolylineLandSegment` carries `land`, `kind` (`land`/`coast`/`sea`), a
+mean `confidence`, mean `land_fraction`, `distance_km` (length along the
+line), and `fraction` (share of the total length). Segment boundaries fall at
+the midpoint between samples of differing classification, so segment
+distances sum to `total_distance_km`. The coastal refinement, when loaded, is
+applied per sample. `sample_polyline` is exposed in `trifold.api` (and
+`samplePolyline` in the JS modules) for reuse.
+
 ## Optional coastal refinement (OSM)
 
 For applications that need near-exact coastlines, a second dataset

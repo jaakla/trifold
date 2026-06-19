@@ -392,6 +392,103 @@ seven runs of 1,000). See the BigQuery section of `benchmark.md` for the full
 loader and job-statistics commands; the only change is `land`→`countries` and the
 `SELECT gid_0` projection.
 
+## 9. Polyline queries (per-sample workload)
+
+`CountryCheck.check_polyline` answers "which countries does this *line* cross?"
+by sampling the polyline at uniform great-circle intervals (default 3.5 km, half
+the L10 cell edge), running the point lookup at each sample, and merging
+consecutive same-country samples into directed, distance-annotated segments.
+
+There is **no polyline-specific path in SQL** — the equivalent job is one
+`ST_Covers` point-in-polygon per sampled point. So the comparable metric across
+all engines is **per-sample throughput**; Trifold is the only engine that also
+pays sampling + segment-merge overhead. This pass was measured separately on
+**2026-06-19** (see machine note below), so its absolute numbers are not directly
+comparable to the 2026-06-13 point run in section 2 — read the ratios.
+
+Workload: 60 random global polylines (NumPy `PCG64`, seed `20260614`, 2-8
+vertices each), sampled at 3.5 km uniform → 669,430 sample points. Trifold is
+timed over all samples; the SQL engines run a bound `ST_Covers` query over the
+first 3,000 samples (per-query rate is the comparable figure, and DuckDB at
+~3.5k q/s would take minutes over the full set). Median of repeated warm runs.
+
+| engine / mode | per-sample rate | us/sample | vs Trifold base |
+|---|---:|---:|---:|
+| Trifold base | **59,577 samples/s** | 16.8 | 1x |
+| Trifold + refinement | **56,293 samples/s** | 17.8 | 0.94x |
+| PostGIS 16 / 3.4 (amd64 emulated) | **5,761 samples/s** | 173.6 | 10.3x slower |
+| DuckDB 1.5.4 Spatial | **3,477 samples/s** | 287.6 | 17.1x slower |
+| BigQuery | TODO | | follow section 8 |
+
+```text
+Trifold base     59,577 samples/s  ████████████████████████████████████████
+Trifold + refine 56,293 samples/s  █████████████████████████████████████▊
+PostGIS           5,761 samples/s  ███▉
+DuckDB Spatial    3,477 samples/s  ██▎
+```
+
+As whole-polyline latency, Trifold averaged **187 ms/polyline base, 198 ms
+refined** — but these are extreme synthetic lines (~11,000 samples each, global
+random spanning thousands of km). A realistic route such as Berlin -> Warsaw ->
+Vilnius (~260 samples) classifies in **~4-5 ms**.
+
+Two effects worth noting:
+
+- **SQL is faster per query on this workload than on the scattered points of
+  section 2** (PostGIS 5,761 vs 1,232 samples/s; DuckDB 3,477 vs ~2,098):
+  consecutive polyline samples cluster spatially and keep the GiST / R-tree warm.
+  Trifold gets no such benefit — each `locate` is independent — so its per-sample
+  rate sits just *below* its point-scalar rate, paying the sampling + merge cost.
+- DuckDB and PostGIS returned **byte-identical** answers over the 3,000 samples
+  (same SHA-256 over the per-sample `gid_0` sequence): `d0c89d12...`.
+
+`check_polyline` calls the scalar `country()` in a Python loop; it does not yet
+use the vectorized `country_batch` path (~450k pts/s in section 2), so there is
+clear headroom to raise Trifold's polyline throughput several-fold.
+
+### Reproduce
+
+Generate the shared sampled-point set, then reuse the section 6/7 DuckDB and
+PostGIS setup (the `countries` table is identical) and the scalar driver:
+
+```bash
+# 1. Materialise the 669,430-sample polyline workload to CSV
+.venv/bin/python - <<'PY'
+import csv, sys; sys.path.insert(0, "src")
+import numpy as np
+from trifold.api import sample_polyline
+rng = np.random.default_rng(20260614)
+polys = []
+for _ in range(60):
+    nv = rng.integers(2, 9)
+    lons = rng.uniform(-180, 180, nv)
+    lats = np.degrees(np.arcsin(rng.uniform(-1, 1, nv)))
+    polys.append([(float(lons[i]), float(lats[i])) for i in range(nv)])
+with open("/private/tmp/cc_poly_samples.csv", "w", newline="") as f:
+    w = csv.writer(f); w.writerow(["lon", "lat"])
+    for p in polys:
+        for lon, lat in sample_polyline(p, step_km=3.5)[0]:
+            w.writerow([float(lon), float(lat)])
+PY
+
+# 2. SQL per-sample rate (first 3,000 samples; reuses the section 6/7 DB + container)
+.venv/bin/python scripts/benchmark_countrycheck_sql_scalar.py duckdb \
+  --points /private/tmp/cc_poly_samples.csv --database "$DB" --count 3000 --repeats 3
+.venv/bin/python scripts/benchmark_countrycheck_sql_scalar.py postgis \
+  --points /private/tmp/cc_poly_samples.csv --count 3000 --repeats 3
+
+# 3. Trifold whole-workload rate
+.venv/bin/python scripts/benchmark_countrycheck_polyline.py --n-polylines 60 --repeats 5
+```
+
+This pass ran the DuckDB DB and a Dockerized PostGIS built from the same
+`countries_coastal.geojson` polygons. PostGIS used `postgis/postgis:16-3.4`,
+which is an **amd64 image emulated on Apple-silicon Docker** (Trifold and DuckDB
+ran native arm64); its point-scalar rate nonetheless matched the section-2 native
+run within noise, so emulation overhead is minor for this latency-bound scalar
+workload. BigQuery for the polyline workload is **TODO** — the procedure is
+identical to section 8, feeding the sampled points instead of the uniform set.
+
 ## Interpretation and limits
 
 - Trifold wins both local modes because the lookup is a compact hierarchical cell
@@ -408,3 +505,8 @@ loader and job-statistics commands; the only change is `land`→`countries` and 
 - Uniform random points emphasize open ocean and continental interiors. A
   border-heavy or population-weighted workload shifts the refinement's relative
   cost and the accuracy split.
+- The polyline workload (section 9) is per-sample point-in-polygon for every
+  engine; Trifold leads by 10-17x there, a narrower gap than the scattered-point
+  modes because spatial locality of consecutive samples warms the SQL indexes
+  while Trifold pays per-sample sampling/merge overhead and does not yet use its
+  vectorized batch path.

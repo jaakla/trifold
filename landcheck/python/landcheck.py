@@ -30,7 +30,9 @@ import zlib
 from array import array
 from bisect import bisect_right
 from dataclasses import dataclass
+from itertools import groupby
 from pathlib import Path
+from typing import Sequence
 
 try:
     from ._fastloc import (locate_index as _locate_index,
@@ -46,7 +48,12 @@ def _ringbox(index: int, level: int) -> tuple[float, float, float, float]:
     lats = [p[1] for p in ring]
     return min(lons), min(lats), max(lons), max(lats)
 
-__all__ = ["LandCheck", "LandResult"]
+__all__ = [
+    "LandCheck",
+    "LandResult",
+    "PolylineLandResult",
+    "PolylineLandSegment",
+]
 
 _B32 = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"  # Crockford, as trifold.address
 
@@ -343,6 +350,163 @@ class LandCheck:
             "has_fractions": self._fractions is not None,
             "has_refinement": self._refine is not None,
         }
+
+    # ----------------------------------------------------- polyline lookups
+    def check_polyline(
+        self,
+        coords: Sequence[tuple[float, float]],
+        *,
+        step_km: float = 3.5,
+        mode: str = "uniform",
+    ) -> PolylineLandResult:
+        """Land/sea classification for every segment of a polyline.
+
+        Samples the line at ``step_km`` intervals (or at vertices only if
+        ``mode='vertex'``), runs the point lookup at each sample, then
+        merges consecutive samples with the same land/sea classification
+        into directed distance-annotated segments. The optional coastal
+        refinement is used when loaded.
+
+        Parameters
+        ----------
+        coords : list of (lon, lat)
+            Polyline vertices in WGS84 degrees.
+        step_km : float
+            Sample spacing (default 3.5 km).
+        mode : str
+            ``"uniform"`` or ``"vertex"``.
+
+        Returns
+        -------
+        PolylineLandResult
+            Segments ordered along the line.
+        """
+        from trifold.api import sample_polyline
+
+        samples, cumulative_km, _segment_ids = sample_polyline(
+            list(coords), step_km=step_km, mode=mode)
+        total_km = float(cumulative_km[-1]) if len(cumulative_km) > 0 else 0.0
+
+        # collect per-sample land results
+        results: list[LandResult] = []
+        for lon, lat in samples:
+            results.append(self.check(float(lon), float(lat)))
+
+        # merge consecutive same-(land,kind) samples into segments
+        segments = _merge_land_segments(results, cumulative_km)
+
+        # compute fractions
+        for seg in segments:
+            seg.fraction = seg.distance_km / total_km if total_km > 0 else 0.0
+
+        # stats
+        land_km = float(sum(s.distance_km for s in segments if s.land))
+        n_segments = len(segments)
+        refined = self._refine is not None
+        stats = {
+            "total_distance_km": total_km,
+            "land_km": land_km,
+            "sea_km": total_km - land_km,
+            "land_fraction": land_km / total_km if total_km > 0 else 0.0,
+            "n_segments": n_segments,
+            "refined": refined,
+        }
+        return PolylineLandResult(
+            segments=segments,
+            total_distance_km=total_km,
+            stats=stats,
+            refined=refined,
+        )
+
+    def is_land_polyline(
+        self,
+        coords: Sequence[tuple[float, float]],
+        *,
+        step_km: float = 3.5,
+        mode: str = "uniform",
+    ) -> list[PolylineLandSegment]:
+        """Return the directed land/sea segments for a polyline.
+
+        Equivalent to :meth:`check_polyline` but returns only the segment
+        list without the wrapper result.
+        """
+        return self.check_polyline(coords, step_km=step_km, mode=mode).segments
+
+
+@dataclass
+class PolylineLandSegment:
+    """One contiguous segment of a polyline with a single land/sea classification."""
+
+    land: bool              #: best land/sea call
+    kind: str               #: 'land' | 'coast' | 'sea'
+    confidence: float       #: mean point confidence across the segment
+    land_fraction: float | None  #: mean land share of cells in the segment
+    distance_km: float      #: length of this segment in km along the line
+    fraction: float = 0.0   #: segment distance / total polyline distance
+
+
+@dataclass
+class PolylineLandResult:
+    """Full result of a polyline land/sea check."""
+
+    segments: list[PolylineLandSegment]
+    total_distance_km: float
+    stats: dict
+    refined: bool = False
+
+
+def _merge_land_segments(
+    results: list[LandResult],
+    cumulative_km: np.ndarray,
+) -> list[PolylineLandSegment]:
+    """Merge consecutive samples that share the same land+kind classification.
+
+    Segment boundaries are placed at midpoints between samples of different
+    classifications, so that single-sample segments get a non-zero distance
+    and edge segments start/end at the polyline endpoints.
+    """
+    import numpy as np
+
+    n = len(results)
+
+    key = lambda r: (r.land, r.kind)
+
+    groups = []
+    for k, g in groupby(enumerate(results), key=lambda x: key(x[1])):
+        idxs = [i for i, _ in g]
+        groups.append((k, idxs[0], idxs[-1]))
+
+    segments = []
+    for (land, kind), start_idx, end_idx in groups:
+        # segment start: midpoint to previous sample (or 0 for first)
+        if start_idx == 0:
+            start_km = 0.0
+        else:
+            start_km = (cumulative_km[start_idx - 1] + cumulative_km[start_idx]) / 2.0
+
+        # segment end: midpoint to next sample (or last cumulative for final)
+        if end_idx == n - 1:
+            end_km = cumulative_km[-1]
+        else:
+            end_km = (cumulative_km[end_idx] + cumulative_km[end_idx + 1]) / 2.0
+
+        seg_len = max(end_km - start_km, 0.0)
+        mean_conf = float(
+            np.mean([results[i].confidence for i in range(start_idx, end_idx + 1)])
+        )
+        fractions = [results[i].land_fraction for i in range(start_idx, end_idx + 1)]
+        frac_vals = [f for f in fractions if f is not None]
+        mean_frac = float(np.mean(frac_vals)) if frac_vals else None
+        segments.append(
+            PolylineLandSegment(
+                land=land,
+                kind=kind,
+                confidence=mean_conf,
+                land_fraction=mean_frac,
+                distance_km=seg_len,
+            )
+        )
+    return segments
 
 
 def _main(argv=None) -> int:

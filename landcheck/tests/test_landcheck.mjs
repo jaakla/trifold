@@ -71,6 +71,35 @@ test("refinement overrides base land near Tallinn", async () => {
   assert.equal(result.cell, "TFAVKGZ");
 });
 
+test("polyline sea to land", () => {
+  // mid-Atlantic into the Iberian peninsula: starts at sea, reaches land
+  const coords = [[-30.0, 40.0], [0.0, 40.0]];
+  const res = lc.checkPolyline(coords, { stepKm: 50 });
+  assert.equal(res.segments[0].land, false);
+  assert.equal(res.segments[0].kind, "sea");
+  assert.ok(res.segments.some((s) => s.land));
+  const fracSum = res.segments.reduce((a, s) => a + s.fraction, 0);
+  assert.ok(Math.abs(fracSum - 1) < 1e-9);
+  assert.ok(Math.abs(res.stats.landKm + res.stats.seaKm - res.totalDistanceKm) < 1e-6);
+});
+
+test("isLandPolyline returns segments", () => {
+  const coords = [[-30.0, 40.0], [0.0, 40.0]];
+  const segs = lc.isLandPolyline(coords, { stepKm: 50 });
+  assert.deepEqual(segs, lc.checkPolyline(coords, { stepKm: 50 }).segments);
+});
+
+test("polyline all sea", () => {
+  const res = lc.checkPolyline([[-30.0, 30.0], [-29.5, 30.0]], { stepKm: 3.5 });
+  assert.equal(res.segments.length, 1);
+  assert.equal(res.segments[0].land, false);
+  assert.equal(res.segments[0].fraction, 1);
+});
+
+test("polyline requires two vertices", () => {
+  assert.throws(() => lc.checkPolyline([[0.0, 0.0]]), Error);
+});
+
 test("fixture parity with Python", () => {
   for (const p of points) {
     const r = lc.check(p.lon, p.lat);
