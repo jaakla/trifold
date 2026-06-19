@@ -369,40 +369,33 @@ EST  iso2=EE  name='Estonia'  kind=country  confidence=1.000  share=1.0  cell=TF
   <div class="twocol">
     <div class="bench">
       <h3>Batch &middot; 100,000 points per call</h3>
-      <div class="brow"><span class="bname">Trifold base</span>
-        <div class="btrack"><div class="bfill tf" style="width:100%"></div></div>
-        <span class="bval">452,594 pts/s</span></div>
-      <div class="brow"><span class="bname">Trifold + refine</span>
-        <div class="btrack"><div class="bfill tf" style="width:94.6%"></div></div>
-        <span class="bval">428,151</span></div>
-      <div class="brow"><span class="bname">PostGIS 3.6</span>
-        <div class="btrack"><div class="bfill" style="width:13.0%"></div></div>
-        <span class="bval">59,043</span></div>
-      <div class="brow"><span class="bname">DuckDB Spatial</span>
-        <div class="btrack"><div class="bfill" style="width:1.03%"></div></div>
-        <span class="bval">4,651</span></div>
+      <div class="brow"><span class="bname">Trifold base</span><div class="btrack"><div class="bfill tf" style="width:100%"></div></div><span class="bval">452,594 pts/s</span></div>
+      <div class="brow"><span class="bname">Trifold + border refinement</span><div class="btrack"><div class="bfill tf" style="width:94.6%"></div></div><span class="bval">428,151</span></div>
+      <div class="brow"><span class="bname">PostGIS</span><div class="btrack"><div class="bfill" style="width:13%"></div></div><span class="bval">59,043</span></div>
+      <div class="brow"><span class="bname">DuckDB Spatial</span><div class="btrack"><div class="bfill" style="width:1.03%"></div></div><span class="bval">4,651</span></div>
     </div>
     <div class="bench">
       <h3>Singular &middot; one point per call</h3>
-      <div class="brow"><span class="bname">Trifold base</span>
-        <div class="btrack"><div class="bfill tf" style="width:100%"></div></div>
-        <span class="bval">87,848 q/s</span></div>
-      <div class="brow"><span class="bname">Trifold + refine</span>
-        <div class="btrack"><div class="bfill tf" style="width:97.2%"></div></div>
-        <span class="bval">85,361</span></div>
-      <div class="brow"><span class="bname">DuckDB Spatial</span>
-        <div class="btrack"><div class="bfill" style="width:2.57%"></div></div>
-        <span class="bval">2,261</span></div>
-      <div class="brow"><span class="bname">PostGIS 3.6</span>
-        <div class="btrack"><div class="bfill" style="width:1.44%"></div></div>
-        <span class="bval">1,265</span></div>
+      <div class="brow"><span class="bname">Trifold base</span><div class="btrack"><div class="bfill tf" style="width:100%"></div></div><span class="bval">87,848 q/s</span></div>
+      <div class="brow"><span class="bname">Trifold + refinement</span><div class="btrack"><div class="bfill tf" style="width:97.2%"></div></div><span class="bval">85,361</span></div>
+      <div class="brow"><span class="bname">DuckDB Spatial</span><div class="btrack"><div class="bfill" style="width:2.57%"></div></div><span class="bval">2,261</span></div>
+      <div class="brow"><span class="bname">PostGIS</span><div class="btrack"><div class="bfill" style="width:1.44%"></div></div><span class="bval">1,265</span></div>
     </div>
   </div>
-  <p class="muted" style="margin-top:12px">DuckDB 1.5.3 and PostGIS 3.6.3 compute exact containment
+  <div class="bench" style="margin-top:18px">
+    <h3>Route (polyline) &middot; per sampled point</h3>
+      <div class="brow"><span class="bname">Trifold base</span><div class="btrack"><div class="bfill tf" style="width:100%"></div></div><span class="bval">38,172 samples/s</span></div>
+      <div class="brow"><span class="bname">Trifold + refinement</span><div class="btrack"><div class="bfill tf" style="width:98.6%"></div></div><span class="bval">37,633</span></div>
+      <div class="brow"><span class="bname">PostGIS</span><div class="btrack"><div class="bfill" style="width:15.1%"></div></div><span class="bval">5,761</span></div>
+      <div class="brow"><span class="bname">DuckDB Spatial</span><div class="btrack"><div class="bfill" style="width:9.11%"></div></div><span class="bval">3,477</span></div>
+  </div>
+  <p class="muted" style="margin-top:12px">DuckDB and PostGIS compute exact containment
   and returned byte-identical answers; BigQuery is documented but was not run in this pass. PostGIS
-  singular includes localhost TCP + Docker transport; DuckDB runs embedded in-process. The live
-  figure in the demo panel is the same throughput measured on your own device. Full methodology,
-  dataset manifest, the airport test and the BigQuery procedure:
+  singular includes localhost TCP + Docker transport; DuckDB runs embedded in-process. The
+  <b>Route (polyline)</b> row is per sampled point — a line query is one point-in-polygon per
+  sample for every engine; the live figure in the demo panel is the same per-sample throughput
+  measured on your own device. These bars are generated from the benchmark doc at build time.
+  Full methodology, dataset manifest, the airport test and the BigQuery procedure:
   <a href="https://github.com/jaakla/trifold/blob/main/countrycheck_benchmark.md" target="_blank"><code>countrycheck_benchmark.md</code></a>.</p>
 </section>
 

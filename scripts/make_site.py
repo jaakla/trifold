@@ -6,10 +6,69 @@ import base64
 import gzip
 import json
 import os
+import re
 import shutil
 
 DATA = 'data'
 OUT = 'docs/index.html'
+
+
+# --- benchmark bars rendered from the markdown docs (single source of truth) ---
+def _bench_rows(md_path, section_substr, value_header):
+    """Parse the first markdown table under the heading containing
+    `section_substr`, returning [(label, value_float)] for rows whose
+    `value_header` column holds a number. Non-numeric rows (TODO, not run)
+    are skipped."""
+    lines = open(md_path, encoding='utf-8').read().splitlines()
+    start = next(i for i, l in enumerate(lines)
+                 if l.startswith('#') and section_substr.lower() in l.lower())
+    table = []
+    for l in lines[start + 1:]:
+        if l.lstrip().startswith('|'):
+            table.append(l)
+        elif table:
+            break
+    cells = lambda row: [c.strip() for c in row.strip().strip('|').split('|')]
+    header = [h.lower() for h in cells(table[0])]
+    vcol = next(i for i, h in enumerate(header) if value_header.lower() in h)
+    rows = []
+    for row in table[2:]:                       # skip header + |---| separator
+        c = cells(row)
+        label = re.sub(r'\*\*', '', c[0]).strip()
+        m = re.search(r'[\d][\d,]*(?:\.\d+)?', re.sub(r'\*\*', '', c[vcol]))
+        if not m:
+            continue                            # TODO / not run / managed
+        rows.append((label, float(m.group(0).replace(',', ''))))
+    return rows
+
+
+def _clean_label(label):
+    """Shorten a benchmark row label for the narrow bar column: drop
+    parentheticals, version tokens, and transport/mode qualifiers."""
+    label = re.sub(r'\([^)]*\)', '', label)                 # (amd64 emulated)
+    label = label.split(',')[0]                             # ", uncached" tail
+    label = re.sub(r'\b\d[\d.]*(?:\s*/\s*\d[\d.]*)*\b', '', label)  # 1.5.4, 16 / 3.4
+    for noise in (' over localhost/Docker', ' scalar', ' on-demand'):
+        label = label.replace(noise, '')
+    return re.sub(r'\s{2,}', ' ', label).strip()
+
+
+def render_bench(md_path, section_substr, value_header, unit, title):
+    """Render a `.bench` block (title + sorted bars) from a markdown table."""
+    rows = sorted(_bench_rows(md_path, section_substr, value_header),
+                  key=lambda r: -r[1])
+    top = rows[0][1] if rows else 1.0
+    out = [f'<h3>{title}</h3>']
+    for i, (label, val) in enumerate(rows):
+        name = _clean_label(label)
+        tf = ' tf' if name.lower().startswith('trifold') else ''
+        width = max(val / top * 100, 0.4)
+        shown = f'{val:,.0f}{(" " + unit) if i == 0 else ""}'
+        out.append(
+            f'<div class="brow"><span class="bname">{name}</span>'
+            f'<div class="btrack"><div class="bfill{tf}" style="width:{width:.3g}%">'
+            f'</div></div><span class="bval">{shown}</span></div>')
+    return '\n      '.join(out)
 OUT_LANDCHECK = 'docs/landcheck.html'
 OUT_COUNTRYCHECK = 'docs/countrycheck.html'
 JS_SDK = 'js/trifold.js'
@@ -978,43 +1037,22 @@ LAND  kind=land  confidence=1.000  land_fraction=1.0  cell=TFAVKGR  refined=Fals
   DuckDB rate.</p>
   <div class="twocol">
     <div class="bench">
-      <h3>Batch &middot; 100,000 points per call</h3>
-      <div class="brow"><span class="bname">Trifold base</span>
-        <div class="btrack"><div class="bfill tf" style="width:100%"></div></div>
-        <span class="bval">459,096 pts/s</span></div>
-      <div class="brow"><span class="bname">Trifold + OSM</span>
-        <div class="btrack"><div class="bfill tf" style="width:94.9%"></div></div>
-        <span class="bval">435,463</span></div>
-      <div class="brow"><span class="bname">BigQuery</span>
-        <div class="btrack"><div class="bfill" style="width:31.4%"></div></div>
-        <span class="bval">144,092</span></div>
-      <div class="brow"><span class="bname">PostGIS</span>
-        <div class="btrack"><div class="bfill" style="width:23.9%"></div></div>
-        <span class="bval">109,731</span></div>
-      <div class="brow"><span class="bname">DuckDB Spatial</span>
-        <div class="btrack"><div class="bfill" style="width:3.2%"></div></div>
-        <span class="bval">14,605</span></div>
+      __LC_BENCH_BATCH__
     </div>
     <div class="bench">
-      <h3>Singular &middot; one point per call</h3>
-      <div class="brow"><span class="bname">Trifold base</span>
-        <div class="btrack"><div class="bfill tf" style="width:100%"></div></div>
-        <span class="bval">86,391 q/s</span></div>
-      <div class="brow"><span class="bname">Trifold + OSM</span>
-        <div class="btrack"><div class="bfill tf" style="width:99.2%"></div></div>
-        <span class="bval">85,666</span></div>
-      <div class="brow"><span class="bname">DuckDB Spatial</span>
-        <div class="btrack"><div class="bfill" style="width:2.5%"></div></div>
-        <span class="bval">2,146</span></div>
-      <div class="brow"><span class="bname">PostGIS</span>
-        <div class="btrack"><div class="bfill" style="width:1.0%"></div></div>
-        <span class="bval">826</span></div>
+      __LC_BENCH_SINGULAR__
     </div>
+  </div>
+  <div class="bench" style="margin-top:18px">
+    __LC_BENCH_POLYLINE__
   </div>
   <p class="muted">The SQL engines compute exact polygon containment on the loaded OSM snapshot;
   Trifold's compact dataset agrees with that result on 99.5% of points (refined). PostGIS singular
-  includes localhost TCP + Docker transport; DuckDB runs embedded in-process. BigQuery's singular
-  mode was not run. Full methodology, dataset manifest and caveats:
+  includes localhost TCP + Docker transport; DuckDB runs embedded in-process. The
+  <b>Route (polyline)</b> row is per sampled point — a line query is one point-in-polygon per
+  sample for every engine; the live Route mode above reports the same per-sample rate on your
+  device. These bars are generated from the benchmark doc at build time. Full methodology,
+  dataset manifest and caveats:
   <a href="__GH__/blob/main/benchmark.md" target="_blank"><code>benchmark.md</code></a>.</p>
 </section>
 
@@ -1983,41 +2021,22 @@ EST  iso2=EE  name='Estonia'  kind=country  confidence=1.000  share=1.0  cell=TF
   Called one point at a time, the gap holds.</p>
   <div class="twocol">
     <div class="bench">
-      <h3>Batch &middot; 100,000 points per call</h3>
-      <div class="brow"><span class="bname">Trifold base</span>
-        <div class="btrack"><div class="bfill tf" style="width:100%"></div></div>
-        <span class="bval">452,594 pts/s</span></div>
-      <div class="brow"><span class="bname">Trifold + refine</span>
-        <div class="btrack"><div class="bfill tf" style="width:94.6%"></div></div>
-        <span class="bval">428,151</span></div>
-      <div class="brow"><span class="bname">PostGIS 3.6</span>
-        <div class="btrack"><div class="bfill" style="width:13.0%"></div></div>
-        <span class="bval">59,043</span></div>
-      <div class="brow"><span class="bname">DuckDB Spatial</span>
-        <div class="btrack"><div class="bfill" style="width:1.03%"></div></div>
-        <span class="bval">4,651</span></div>
+      __CC_BENCH_BATCH__
     </div>
     <div class="bench">
-      <h3>Singular &middot; one point per call</h3>
-      <div class="brow"><span class="bname">Trifold base</span>
-        <div class="btrack"><div class="bfill tf" style="width:100%"></div></div>
-        <span class="bval">87,848 q/s</span></div>
-      <div class="brow"><span class="bname">Trifold + refine</span>
-        <div class="btrack"><div class="bfill tf" style="width:97.2%"></div></div>
-        <span class="bval">85,361</span></div>
-      <div class="brow"><span class="bname">DuckDB Spatial</span>
-        <div class="btrack"><div class="bfill" style="width:2.57%"></div></div>
-        <span class="bval">2,261</span></div>
-      <div class="brow"><span class="bname">PostGIS 3.6</span>
-        <div class="btrack"><div class="bfill" style="width:1.44%"></div></div>
-        <span class="bval">1,265</span></div>
+      __CC_BENCH_SINGULAR__
     </div>
   </div>
-  <p class="muted" style="margin-top:12px">DuckDB 1.5.3 and PostGIS 3.6.3 compute exact containment
+  <div class="bench" style="margin-top:18px">
+    __CC_BENCH_POLYLINE__
+  </div>
+  <p class="muted" style="margin-top:12px">DuckDB and PostGIS compute exact containment
   and returned byte-identical answers; BigQuery is documented but was not run in this pass. PostGIS
-  singular includes localhost TCP + Docker transport; DuckDB runs embedded in-process. The live
-  figure in the demo panel is the same throughput measured on your own device. Full methodology,
-  dataset manifest, the airport test and the BigQuery procedure:
+  singular includes localhost TCP + Docker transport; DuckDB runs embedded in-process. The
+  <b>Route (polyline)</b> row is per sampled point — a line query is one point-in-polygon per
+  sample for every engine; the live figure in the demo panel is the same per-sample throughput
+  measured on your own device. These bars are generated from the benchmark doc at build time.
+  Full methodology, dataset manifest, the airport test and the BigQuery procedure:
   <a href="__GH__/blob/main/countrycheck_benchmark.md" target="_blank"><code>countrycheck_benchmark.md</code></a>.</p>
 </section>
 
@@ -2629,6 +2648,24 @@ for src, name in [('landcheck/data/coastal_osm_L10.tflr', 'coastal_osm_L10.tflr'
     if os.path.isfile(src):
         os.makedirs('docs/data', exist_ok=True)
         shutil.copy2(src, os.path.join('docs/data', name))
+# benchmark bars are generated from the markdown docs so the page can never
+# drift from the recorded numbers (single source of truth)
+LC_MD, CC_MD = 'benchmark.md', 'countrycheck_benchmark.md'
+BATCH_T = 'Batch &middot; 100,000 points per call'
+SING_T = 'Singular &middot; one point per call'
+POLY_T = 'Route (polyline) &middot; per sampled point'
+bench = {
+    '__LC_BENCH_BATCH__': render_bench(LC_MD, 'Batch: 100,000', 'points/s', 'pts/s', BATCH_T),
+    '__LC_BENCH_SINGULAR__': render_bench(LC_MD, 'Singular: one point per call', 'queries/s', 'q/s', SING_T),
+    '__LC_BENCH_POLYLINE__': render_bench(LC_MD, 'Polyline', 'per-sample rate', 'samples/s', POLY_T),
+    '__CC_BENCH_BATCH__': render_bench(CC_MD, 'Batch: 100,000', 'points/s', 'pts/s', BATCH_T),
+    '__CC_BENCH_SINGULAR__': render_bench(CC_MD, 'Singular: one point per call', 'queries/s', 'q/s', SING_T),
+    '__CC_BENCH_POLYLINE__': render_bench(CC_MD, 'Polyline', 'per-sample rate', 'samples/s', POLY_T),
+}
+for k, v in bench.items():
+    landcheck_html = landcheck_html.replace(k, v)
+    countrycheck_html = countrycheck_html.replace(k, v)
+
 with open(OUT_LANDCHECK, 'w') as f:
     f.write(landcheck_html.replace('__TFLS_B64__', tfls_b64)
             .replace('__TFLR_URL__', f'{PMTILES_BASE_URL}/coastal_osm_L10.tflr')
