@@ -1505,16 +1505,24 @@ function classifyRoute(){
   const t0=performance.now();
   const res=lc.checkPolyline(coords,{stepKm:step});   // the real library call, timed
   const ms=performance.now()-t0;
-  // colour the line: re-sample and group consecutive samples sharing land+kind
+  // colour the line: re-sample and group consecutive samples sharing land+kind.
+  // segments join at the midpoint between samples (no gaps); stats come from
+  // res.segments, whose order matches this grouping one-to-one.
   const {samples}=samplePolyline(coords,step,'uniform');
   const cls=samples.map(s=>lc.check(s[0],s[1]));
-  const feats=[];let i=0;
+  const mid=(p,q)=>[(p[0]+q[0])/2,(p[1]+q[1])/2];
+  const feats=[];let i=0,k=0;
   while(i<samples.length){
     const a=cls[i];let j=i;
     while(j+1<samples.length&&cls[j+1].land===a.land&&cls[j+1].kind===a.kind)j++;
+    const line=samples.slice(i,j+1);
+    if(i>0)line.unshift(mid(samples[i-1],samples[i]));
+    if(j<samples.length-1)line.push(mid(samples[j],samples[j+1]));
+    const seg=res.segments[k++]||{};
     feats.push({type:'Feature',
-      properties:{color:KIND_COLOR[a.kind],kind:a.kind,land:a.land},
-      geometry:{type:'LineString',coordinates:samples.slice(i,j+1)}});
+      properties:{color:KIND_COLOR[a.kind],kind:a.kind,land:a.land,
+        distanceKm:seg.distanceKm,fraction:seg.fraction},
+      geometry:{type:'LineString',coordinates:line}});
     i=j+1;
   }
   map.getSource('route').setData({type:'FeatureCollection',features:feats});
@@ -2481,18 +2489,26 @@ function classifyRoute(){
   const t0=performance.now();
   const res=cc.checkPolyline(coords,{stepKm:step});   // the real library call, timed
   const ms=performance.now()-t0;
-  // colour the line: re-sample and group consecutive samples sharing country+kind
+  // colour the line: re-sample and group consecutive samples sharing country+kind.
+  // segments join at the midpoint between samples (no gaps); stats come from
+  // res.segments, whose order matches this grouping one-to-one.
   const {samples}=samplePolyline(coords,step,'uniform');
   const cls=samples.map(s=>cc.check(s[0],s[1]));
-  const feats=[];let i=0;
+  const mid=(p,q)=>[(p[0]+q[0])/2,(p[1]+q[1])/2];
+  const feats=[];let i=0,k=0;
   while(i<samples.length){
     const a=cls[i];let j=i;
     while(j+1<samples.length&&cls[j+1].country===a.country&&cls[j+1].kind===a.kind)j++;
     const cid=a.country==null?-1:codeToCid.get(a.country);
+    const line=samples.slice(i,j+1);
+    if(i>0)line.unshift(mid(samples[i-1],samples[i]));
+    if(j<samples.length-1)line.push(mid(samples[j],samples[j+1]));
+    const seg=res.segments[k++]||{};
     feats.push({type:'Feature',
       properties:{color:a.country==null?NONE_COLOR:countryColor(cid),
-        country:a.country,iso2:a.iso2,cname:a.name,kind:a.kind},
-      geometry:{type:'LineString',coordinates:samples.slice(i,j+1)}});
+        country:a.country,iso2:a.iso2,cname:a.name,kind:a.kind,
+        distanceKm:seg.distanceKm,fraction:seg.fraction},
+      geometry:{type:'LineString',coordinates:line}});
     i=j+1;
   }
   map.getSource('route').setData({type:'FeatureCollection',features:feats});
