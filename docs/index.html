@@ -169,18 +169,11 @@
     and 40&ndash;100&times; faster called one point at a time &mdash; true to the name, never
     less than a three-fold margin. The same gap should apply to similar
     point-classification problems.</p>
-    <div class="brow"><span class="bname">Trifold + OSM</span>
-      <div class="btrack"><div class="bfill tf" style="width:94.9%"></div></div>
-      <span class="bval">435,463 pts/s</span></div>
-    <div class="brow"><span class="bname">BigQuery</span>
-      <div class="btrack"><div class="bfill" style="width:31.4%"></div></div>
-      <span class="bval">144,092</span></div>
-    <div class="brow"><span class="bname">PostGIS</span>
-      <div class="btrack"><div class="bfill" style="width:23.9%"></div></div>
-      <span class="bval">109,731</span></div>
-    <div class="brow"><span class="bname">DuckDB Spatial</span>
-      <div class="btrack"><div class="bfill" style="width:3.2%"></div></div>
-      <span class="bval">14,605</span></div>
+    <div class="brow"><span class="bname">Trifold base</span><div class="btrack"><div class="bfill tf" style="width:100%"></div></div><span class="bval">459,096 pts/s</span></div>
+      <div class="brow"><span class="bname">Trifold + OSM refinement</span><div class="btrack"><div class="bfill tf" style="width:94.9%"></div></div><span class="bval">435,463</span></div>
+      <div class="brow"><span class="bname">BigQuery</span><div class="btrack"><div class="bfill" style="width:31.4%"></div></div><span class="bval">144,092</span></div>
+      <div class="brow"><span class="bname">PostGIS</span><div class="btrack"><div class="bfill" style="width:23.9%"></div></div><span class="bval">109,731</span></div>
+      <div class="brow"><span class="bname">DuckDB Spatial</span><div class="btrack"><div class="bfill" style="width:3.18%"></div></div><span class="bval">14,605</span></div>
     <p class="muted" style="margin-top:10px">Batch mode, median of 7 warm runs, Apple M5 Pro,
     June 2026. The SQL engines compute exact polygon containment; landcheck agrees with them
     on 99.5% of points from a far smaller dataset.

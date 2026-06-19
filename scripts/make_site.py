@@ -53,12 +53,13 @@ def _clean_label(label):
     return re.sub(r'\s{2,}', ' ', label).strip()
 
 
-def render_bench(md_path, section_substr, value_header, unit, title):
-    """Render a `.bench` block (title + sorted bars) from a markdown table."""
+def render_bench(md_path, section_substr, value_header, unit, title=None):
+    """Render `.bench` bars from a markdown table (single source of truth).
+    With `title`, prepends an `<h3>`; without, emits only the bar rows."""
     rows = sorted(_bench_rows(md_path, section_substr, value_header),
                   key=lambda r: -r[1])
     top = rows[0][1] if rows else 1.0
-    out = [f'<h3>{title}</h3>']
+    out = [f'<h3>{title}</h3>'] if title else []
     for i, (label, val) in enumerate(rows):
         name = _clean_label(label)
         tf = ' tf' if name.lower().startswith('trifold') else ''
@@ -320,18 +321,7 @@ html = """<!doctype html>
     and 40&ndash;100&times; faster called one point at a time &mdash; true to the name, never
     less than a three-fold margin. The same gap should apply to similar
     point-classification problems.</p>
-    <div class="brow"><span class="bname">Trifold + OSM</span>
-      <div class="btrack"><div class="bfill tf" style="width:94.9%"></div></div>
-      <span class="bval">435,463 pts/s</span></div>
-    <div class="brow"><span class="bname">BigQuery</span>
-      <div class="btrack"><div class="bfill" style="width:31.4%"></div></div>
-      <span class="bval">144,092</span></div>
-    <div class="brow"><span class="bname">PostGIS</span>
-      <div class="btrack"><div class="bfill" style="width:23.9%"></div></div>
-      <span class="bval">109,731</span></div>
-    <div class="brow"><span class="bname">DuckDB Spatial</span>
-      <div class="btrack"><div class="bfill" style="width:3.2%"></div></div>
-      <span class="bval">14,605</span></div>
+    __INDEX_BENCH__
     <p class="muted" style="margin-top:10px">Batch mode, median of 7 warm runs, Apple M5 Pro,
     June 2026. The SQL engines compute exact polygon containment; landcheck agrees with them
     on 99.5% of points from a far smaller dataset.
@@ -2635,7 +2625,9 @@ os.makedirs(os.path.dirname(DOCS_SDK), exist_ok=True)
 shutil.copy2(JS_SDK, DOCS_SDK)
 with open(OUT, 'w') as f:
     f.write(html.replace('__DATA__', data_js).replace('__GH__', GH)
-            .replace('__GHICON__', GH_ICON))
+            .replace('__GHICON__', GH_ICON)
+            .replace('__INDEX_BENCH__',
+                     render_bench('benchmark.md', 'Batch: 100,000', 'points/s', 'pts/s')))
 print(f"{OUT}: {os.path.getsize(OUT)/1e6:.1f} MB")
 
 shutil.copy2(LANDCHECK_SDK, DOCS_LANDCHECK_SDK)
