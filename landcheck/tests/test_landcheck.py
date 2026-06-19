@@ -126,6 +126,41 @@ def test_refined_batch_matches_scalar():
     assert list(lc.is_land_batch(lons, lats)) == [lc.is_land(*p) for p in points]
 
 
+def test_polyline_sea_to_land(lc):
+    # mid-Atlantic into the Iberian peninsula: starts at sea, reaches land
+    coords = [(-30.0, 40.0), (0.0, 40.0)]
+    res = lc.check_polyline(coords, step_km=50)
+    assert res.segments[0].land is False
+    assert res.segments[0].kind == "sea"
+    assert any(s.land for s in res.segments)
+    # distances and fractions are consistent
+    assert abs(sum(s.fraction for s in res.segments) - 1.0) < 1e-9
+    assert abs(sum(s.distance_km for s in res.segments) - res.total_distance_km) < 1e-6
+    assert res.stats["land_km"] + res.stats["sea_km"] == pytest.approx(res.total_distance_km)
+    assert res.stats["land_fraction"] == pytest.approx(
+        res.stats["land_km"] / res.total_distance_km)
+
+
+def test_polyline_all_sea(lc):
+    # a short line in the open mid-Atlantic -> single sea segment
+    coords = [(-30.0, 30.0), (-29.5, 30.0)]
+    res = lc.check_polyline(coords, step_km=3.5)
+    assert len(res.segments) == 1
+    assert res.segments[0].land is False
+    assert res.segments[0].fraction == pytest.approx(1.0)
+
+
+def test_is_land_polyline_returns_segments(lc):
+    coords = [(-30.0, 40.0), (0.0, 40.0)]
+    segs = lc.is_land_polyline(coords, step_km=50)
+    assert segs == lc.check_polyline(coords, step_km=50).segments
+
+
+def test_polyline_requires_two_vertices(lc):
+    with pytest.raises(ValueError):
+        lc.check_polyline([(0.0, 0.0)])
+
+
 def test_batch_matches_scalar(lc):
     np = pytest.importorskip("numpy")
     pytest.importorskip("trifold.api")

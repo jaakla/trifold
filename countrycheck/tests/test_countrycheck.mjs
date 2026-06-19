@@ -77,6 +77,38 @@ test("refined fixture parity with Python", async (t) => {
   }
 });
 
+test("polyline segments", () => {
+  // Berlin -> Warsaw -> Vilnius crosses DEU, POL, ends in LTU
+  const coords = [[13.4, 52.5], [21.0, 52.2], [25.3, 54.7]];
+  const res = cc.checkPolyline(coords, { stepKm: 25 });
+  const countries = res.segments.map((s) => s.country);
+  assert.equal(countries[0], "DEU");
+  assert.ok(countries.includes("POL"));
+  assert.equal(countries[countries.length - 1], "LTU");
+  assert.equal(res.stats.nSegments, res.segments.length);
+  const fracSum = res.segments.reduce((a, s) => a + s.fraction, 0);
+  assert.ok(Math.abs(fracSum - 1) < 1e-9);
+  const distSum = res.segments.reduce((a, s) => a + s.distanceKm, 0);
+  assert.ok(Math.abs(distSum - res.totalDistanceKm) < 1e-6);
+});
+
+test("countryPolyline returns segments", () => {
+  const coords = [[13.4, 52.5], [21.0, 52.2], [25.3, 54.7]];
+  const segs = cc.countryPolyline(coords, { stepKm: 25 });
+  assert.deepEqual(segs, cc.checkPolyline(coords, { stepKm: 25 }).segments);
+});
+
+test("polyline short line in one country", () => {
+  const res = cc.checkPolyline([[13.40, 52.50], [13.45, 52.52]], { stepKm: 3.5 });
+  assert.equal(res.segments.length, 1);
+  assert.equal(res.segments[0].country, "DEU");
+  assert.equal(res.segments[0].fraction, 1);
+});
+
+test("polyline requires two vertices", () => {
+  assert.throws(() => cc.checkPolyline([[13.4, 52.5]]), Error);
+});
+
 test("fixture parity with Python", () => {
   for (const p of points) {
     const r = cc.check(p.lon, p.lat);

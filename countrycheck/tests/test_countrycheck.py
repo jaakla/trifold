@@ -135,6 +135,50 @@ def test_refined_fixture():
     assert n_refined > len(points) * 0.9
 
 
+def test_polyline_segments(cc):
+    # Berlin -> Warsaw -> Vilnius crosses DEU, POL and ends in LTU
+    coords = [(13.4, 52.5), (21.0, 52.2), (25.3, 54.7)]
+    res = cc.check_polyline(coords, step_km=25)
+    countries = [s.country for s in res.segments]
+    assert countries[0] == "DEU"
+    assert "POL" in countries
+    assert countries[-1] == "LTU"
+    # segments are ordered and directed (no cross-segment merging)
+    assert res.stats["n_segments"] == len(res.segments)
+    # fractions sum to ~1, distances sum to total
+    assert abs(sum(s.fraction for s in res.segments) - 1.0) < 1e-9
+    assert abs(sum(s.distance_km for s in res.segments) - res.total_distance_km) < 1e-6
+    assert res.total_distance_km > 0
+
+
+def test_polyline_vertex_mode(cc):
+    coords = [(13.4, 52.5), (21.0, 52.2)]
+    res = cc.check_polyline(coords, mode="vertex")
+    # only two vertices sampled, both in-country -> distinct/merged by country
+    assert res.total_distance_km > 0
+    assert all(0.0 <= s.fraction <= 1.0 for s in res.segments)
+
+
+def test_country_polyline_returns_segments(cc):
+    coords = [(13.4, 52.5), (21.0, 52.2), (25.3, 54.7)]
+    segs = cc.country_polyline(coords, step_km=25)
+    assert segs == cc.check_polyline(coords, step_km=25).segments
+
+
+def test_polyline_short_line_in_one_country(cc):
+    # a short line entirely inside Germany -> single country segment
+    coords = [(13.40, 52.50), (13.45, 52.52)]
+    res = cc.check_polyline(coords, step_km=3.5)
+    assert len(res.segments) == 1
+    assert res.segments[0].country == "DEU"
+    assert res.segments[0].fraction == pytest.approx(1.0)
+
+
+def test_polyline_requires_two_vertices(cc):
+    with pytest.raises(ValueError):
+        cc.check_polyline([(13.4, 52.5)])
+
+
 def test_refinement_changes_border_answer():
     """A border cell's bundled best call can differ from the exact polygon."""
     tfcr = Path(__file__).resolve().parent.parent / "data" / "borders_L10.tfcr"

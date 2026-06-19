@@ -32,7 +32,9 @@ import zlib
 from array import array
 from bisect import bisect_right
 from dataclasses import dataclass
+from itertools import groupby
 from pathlib import Path
+from typing import Sequence
 
 try:
     from ._fastloc import (locate_index as _locate_index,
@@ -48,7 +50,12 @@ def _ringbox(index: int, level: int) -> tuple[float, float, float, float]:
     lats = [p[1] for p in ring]
     return min(lons), min(lats), max(lons), max(lats)
 
-__all__ = ["CountryCheck", "CountryResult"]
+__all__ = [
+    "CountryCheck",
+    "CountryResult",
+    "PolylineCountryResult",
+    "PolylineCountrySegment",
+]
 
 _B32 = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"  # Crockford, as trifold.address
 
@@ -391,6 +398,162 @@ class CountryCheck:
             "has_shares": self._shares is not None,
             "has_refinement": self._refine is not None,
         }
+
+    # ----------------------------------------------------- polyline lookups
+    def check_polyline(
+        self,
+        coords: Sequence[tuple[float, float]],
+        *,
+        step_km: float = 3.5,
+        mode: str = "uniform",
+    ) -> PolylineCountryResult:
+        """Country classification for every segment of a polyline.
+
+        Samples the line at ``step_km`` intervals (or at vertices only if
+        ``mode='vertex'``), runs the point lookup at each sample, then
+        merges consecutive samples with the same country code into directed
+        distance-annotated segments. The optional border refinement is used
+        when loaded.
+
+        Parameters
+        ----------
+        coords : list of (lon, lat)
+            Polyline vertices in WGS84 degrees.
+        step_km : float
+            Sample spacing (default 3.5 km).
+        mode : str
+            ``"uniform"`` or ``"vertex"``.
+
+        Returns
+        -------
+        PolylineCountryResult
+            Segments ordered along the line.
+        """
+        from trifold.api import sample_polyline
+
+        samples, cumulative_km, _segment_ids = sample_polyline(
+            list(coords), step_km=step_km, mode=mode)
+        total_km = float(cumulative_km[-1]) if len(cumulative_km) > 0 else 0.0
+
+        # collect per-sample country results
+        results: list[CountryResult] = []
+        for lon, lat in samples:
+            results.append(self.check(float(lon), float(lat)))
+
+        # merge consecutive same-(country,kind) samples into segments
+        segments = _merge_country_segments(results, cumulative_km)
+
+        # compute fractions
+        for seg in segments:
+            seg.fraction = seg.distance_km / total_km if total_km > 0 else 0.0
+
+        # stats
+        unique = sorted(set(s.country for s in segments if s.country))
+        n_segments = len(segments)
+        refined = self._refine is not None
+        stats = {
+            "total_distance_km": total_km,
+            "n_segments": n_segments,
+            "unique_countries": len(unique),
+            "countries": unique,
+            "refined": refined,
+        }
+        return PolylineCountryResult(
+            segments=segments,
+            total_distance_km=total_km,
+            stats=stats,
+            refined=refined,
+        )
+
+    def country_polyline(
+        self,
+        coords: Sequence[tuple[float, float]],
+        *,
+        step_km: float = 3.5,
+        mode: str = "uniform",
+    ) -> list[PolylineCountrySegment]:
+        """Return the directed country segments for a polyline.
+
+        Equivalent to :meth:`check_polyline` but returns only the segment
+        list without the wrapper result.
+        """
+        return self.check_polyline(coords, step_km=step_km, mode=mode).segments
+
+
+@dataclass
+class PolylineCountrySegment:
+    """One contiguous segment of a polyline classified to a single country."""
+
+    country: str | None   #: country code (gid_0), None = no country
+    iso2: str | None      #: ISO 3166-1 alpha-2
+    name: str | None      #: English name
+    kind: str             #: 'country' | 'border' | 'none'
+    confidence: float     #: mean point confidence across the segment
+    distance_km: float    #: length of this segment in km along the line
+    fraction: float = 0.0  #: segment distance / total polyline distance
+
+
+@dataclass
+class PolylineCountryResult:
+    """Full result of a polyline country check."""
+
+    segments: list[PolylineCountrySegment]
+    total_distance_km: float
+    stats: dict
+    refined: bool = False
+
+
+def _merge_country_segments(
+    results: list[CountryResult],
+    cumulative_km: np.ndarray,
+) -> list[PolylineCountrySegment]:
+    """Merge consecutive samples that share the same country code+kind.
+
+    Segment boundaries are placed at midpoints between samples of different
+    classifications, so that single-sample segments get a non-zero distance
+    and edge segments start/end at the polyline endpoints.
+    """
+    import numpy as np
+
+    n = len(results)
+
+    key = lambda r: (r.country, r.kind)
+
+    groups = []
+    for k, g in groupby(enumerate(results), key=lambda x: key(x[1])):
+        idxs = [i for i, _ in g]
+        groups.append((k, idxs[0], idxs[-1]))
+
+    segments = []
+    for (country, kind), start_idx, end_idx in groups:
+        # segment start: midpoint to previous sample (or 0 for first)
+        if start_idx == 0:
+            start_km = 0.0
+        else:
+            start_km = (cumulative_km[start_idx - 1] + cumulative_km[start_idx]) / 2.0
+
+        # segment end: midpoint to next sample (or last cumulative for final)
+        if end_idx == n - 1:
+            end_km = cumulative_km[-1]
+        else:
+            end_km = (cumulative_km[end_idx] + cumulative_km[end_idx + 1]) / 2.0
+
+        seg_len = max(end_km - start_km, 0.0)
+        mean_conf = float(
+            np.mean([results[i].confidence for i in range(start_idx, end_idx + 1)])
+        )
+        r = results[start_idx]
+        segments.append(
+            PolylineCountrySegment(
+                country=country,
+                iso2=r.iso2,
+                name=r.name,
+                kind=kind,
+                confidence=mean_conf,
+                distance_km=seg_len,
+            )
+        )
+    return segments
 
 
 def _main(argv=None) -> int:

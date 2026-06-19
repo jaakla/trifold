@@ -90,6 +90,56 @@ encode (e.g. Crimea, Western Sahara, the Korean DMZ); lakes belong to
 their surrounding country except the Caspian Sea, which is its own `XCA`
 entry.
 
+## Polyline queries
+
+To find which countries a *line* crosses (a route, a flight path, a border
+trace), use `check_polyline`. It samples the line at uniform great-circle
+intervals (default 3.5 km, half the L10 cell edge), classifies each sample
+with the normal point lookup, then merges consecutive same-country samples
+into directed, distance-annotated segments. Same-country runs separated by a
+different country stay distinct — the result follows the line's direction
+and is not deduplicated.
+
+```python
+cc = CountryCheck()
+# Berlin -> Warsaw -> Vilnius
+res = cc.check_polyline([(13.4, 52.5), (21.0, 52.2), (25.3, 54.7)])
+for s in res.segments:
+    print(s.country, s.kind, round(s.distance_km), round(s.fraction, 2))
+# DEU country 86 0.09
+# POL country 667 0.73
+# BLR border 50 0.05
+# LTU country 112 0.12
+res.total_distance_km   # 914.8
+res.stats               # {'total_distance_km': ..., 'n_segments': 4, 'unique_countries': 4, ...}
+
+cc.country_polyline(coords)            # just the segment list
+cc.check_polyline(coords, mode="vertex")   # classify only at the original vertices
+cc.check_polyline(coords, step_km=1.0)     # finer sampling
+```
+
+```js
+const cc = await CountryCheck.fromFile();
+const res = cc.checkPolyline([[13.4, 52.5], [21.0, 52.2], [25.3, 54.7]]);
+res.segments;          // [{country, iso2, name, kind, confidence, distanceKm, fraction}, ...]
+cc.countryPolyline(coords);                       // segment list only
+cc.checkPolyline(coords, { mode: "vertex" });     // vertices only
+cc.checkPolyline(coords, { stepKm: 1.0 });        // finer sampling
+```
+
+Each `PolylineCountrySegment` carries `country`, `iso2`, `name`, `kind`
+(`country`/`border`/`none`), a mean `confidence` over the segment's samples,
+`distance_km` (length along the line), and `fraction` (share of the total
+length). Segment boundaries fall at the midpoint between samples of differing
+classification, so segment distances sum to `total_distance_km`. The border
+refinement, when loaded, is applied per sample. `sample_polyline` is exposed
+in `trifold.api` (and `samplePolyline` in the JS modules) for reuse.
+
+Performance: the per-sample lookup runs at ~60,000 samples/s, 10–17× faster than
+the same point-in-polygon job in PostGIS / DuckDB Spatial (per-sample comparison
+in [`countrycheck_benchmark.md` §9](../countrycheck_benchmark.md)). Use a coarser
+`step_km` for faster, lower-resolution scans.
+
 ## Optional border refinement
 
 For applications that need exact borders, a second dataset

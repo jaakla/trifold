@@ -102,6 +102,7 @@ __all__ = [
     "rhombus64",
     "rhombus_coords",
     "rhombus_id",
+    "sample_polyline",
     "slerp",
     "subdivide",
     "to_compact",
@@ -249,3 +250,112 @@ def cell_feature(address: AddressLike, *, precision: int = 6) -> dict[str, Any]:
         },
         "geometry": {"type": "Polygon", "coordinates": [coordinates]},
     }
+
+
+def sample_polyline(
+    coords: list[tuple[float, float]],
+    step_km: float = 3.5,
+    mode: str = "uniform",
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """Sample a polyline at uniform great-circle intervals.
+
+    Parameters
+    ----------
+    coords : list of (lon, lat) pairs
+        The polyline vertices in WGS84 degrees.
+    step_km : float
+        Approximate sample spacing in km (default 3.5, half the L10 ~7 km
+        cell edge).
+    mode : str
+        ``"uniform"`` — walk each segment at ``step_km`` intervals via
+        great-circle slerp (vertices are always included).
+        ``"vertex"`` — only the original vertices are returned.
+
+    Returns
+    -------
+    samples : (N, 2) ndarray of [lon, lat]
+        Sample points along the polyline.
+    cumulative_km : (N,) ndarray
+        Distance from the start of the polyline to each sample.
+    segment_ids : (N,) ndarray of int
+        Index of the original polyline segment each sample belongs to
+        (0-based, i.e. the edge between vertex i and i+1).
+    """
+    if len(coords) < 2:
+        raise ValueError("polyline must have at least 2 vertices")
+    if mode not in ("uniform", "vertex"):
+        raise ValueError("mode must be 'uniform' or 'vertex'")
+
+    if mode == "vertex":
+        samples = np.array(coords, dtype=np.float64)
+        # compute great-circle distances between consecutive vertices
+        n = len(coords)
+        cumulative_km = np.zeros(n, dtype=np.float64)
+        segment_ids = np.zeros(n, dtype=np.int64)
+        for i in range(1, n):
+            lon1, lat1 = coords[i - 1]
+            lon2, lat2 = coords[i]
+            d = _great_circle_km(lon1, lat1, lon2, lat2)
+            cumulative_km[i] = cumulative_km[i - 1] + d
+            segment_ids[i] = i - 1
+        return samples, cumulative_km, segment_ids
+
+    # uniform mode: walk each segment at step_km intervals
+    samples_list: list[tuple[float, float]] = []
+    dists_list: list[float] = []
+    seg_list: list[int] = []
+    running_km = 0.0
+
+    for seg_idx in range(len(coords) - 1):
+        lon1, lat1 = coords[seg_idx]
+        lon2, lat2 = coords[seg_idx + 1]
+        seg_len = _great_circle_km(lon1, lat1, lon2, lat2)
+
+        # include the segment start vertex
+        if len(samples_list) == 0:
+            samples_list.append((lon1, lat1))
+            dists_list.append(running_km)
+            seg_list.append(seg_idx)
+
+        if seg_len < 1e-9:
+            continue
+
+        n_steps = max(1, int(np.ceil(seg_len / step_km)))
+        # walk along the great-circle arc
+        p1 = _lonlat_to_xyz(lon1, lat1)
+        p2 = _lonlat_to_xyz(lon2, lat2)
+        for step in range(1, n_steps):
+            t = step / n_steps
+            pt = slerp(p1, p2, t)
+            slon, slat = xyz_to_lonlat(pt)
+            samples_list.append((float(slon), float(slat)))
+            dists_list.append(running_km + step * (seg_len / n_steps))
+            seg_list.append(seg_idx)
+
+        running_km += seg_len
+
+        # include the segment end vertex
+        samples_list.append((lon2, lat2))
+        dists_list.append(running_km)
+        seg_list.append(seg_idx)
+
+    samples = np.array(samples_list, dtype=np.float64)
+    cumulative_km = np.array(dists_list, dtype=np.float64)
+    segment_ids = np.array(seg_list, dtype=np.int64)
+    return samples, cumulative_km, segment_ids
+
+
+def _lonlat_to_xyz(lon: float, lat: float) -> np.ndarray:
+    """Convert WGS84 lon/lat (degrees) to unit-sphere XYZ."""
+    lam = np.radians(lon)
+    phi = np.radians(lat)
+    cp = np.cos(phi)
+    return np.array([cp * np.cos(lam), cp * np.sin(lam), np.sin(phi)])
+
+
+def _great_circle_km(lon1: float, lat1: float, lon2: float, lat2: float) -> float:
+    """Great-circle distance in km between two lon/lat points (WGS84)."""
+    p1 = _lonlat_to_xyz(lon1, lat1)
+    p2 = _lonlat_to_xyz(lon2, lat2)
+    dot = np.clip(np.dot(p1, p2), -1.0, 1.0)
+    return float(np.arccos(dot)) * EARTH_R
