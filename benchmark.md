@@ -63,6 +63,42 @@ query-call overhead. It is not a pure GEOS predicate benchmark. In particular,
 PostGIS includes local TCP and Docker VM transport while DuckDB is embedded in
 the Python process.
 
+### Polyline queries (per-sample workload)
+
+`LandCheck.check_polyline` answers "how much of this *line* is over land vs
+sea?" by sampling the polyline at uniform great-circle intervals (default
+3.5 km), classifying each sample, and merging consecutive same-class samples
+into directed, distance-annotated segments. There is **no polyline-specific
+path in SQL** — the equivalent job is one `ST_Covers` point-in-polygon per
+sample — so the comparable metric across engines is **per-sample throughput**.
+
+Workload: 60 random global polylines (NumPy `PCG64`, seed `20260615`, 2-8
+vertices each), sampled at 3.5 km uniform → 642,855 sample points, against the
+same OSM simplified land polygons. Trifold is timed over all samples; the SQL
+engines run a bound `ST_Covers` query over the first 3,000 (per-query rate is
+the comparable figure). Median of warm runs, this laptop, 2026-06-19; PostGIS
+ran amd64-emulated under Docker (Trifold and DuckDB native arm64).
+
+| engine / mode | per-sample rate | us/sample | vs Trifold base |
+|---|---:|---:|---:|
+| Trifold base | **38,016 samples/s** | 26.3 | 1x |
+| Trifold + OSM refinement | **37,231 samples/s** | 26.9 | 0.98x |
+| DuckDB 1.5.4 Spatial | **1,848 samples/s** | 541.1 | 20.6x slower |
+| PostGIS 16 / 3.4 (amd64 emulated) | **890 samples/s** | 1123.6 | 42.7x slower |
+| BigQuery | TODO | | follow the procedure below |
+
+```text
+Trifold base     38,016 samples/s  ████████████████████████████████████████
+Trifold + OSM    37,231 samples/s  ███████████████████████████████████████▏
+DuckDB Spatial    1,848 samples/s  ██
+PostGIS             890 samples/s  ▉
+```
+
+The per-sample gap is wider than for countrycheck because the OSM land
+polygons are far heavier than the country layer for the SQL engines. As
+whole-polyline latency Trifold averaged ~290 ms over these extreme synthetic
+lines (~10,700 samples each); a realistic coastal route classifies in a few ms.
+
 The two local SQL engines, DuckDB and PostGIS, produced identical sorted
 land-point IDs:
 

@@ -414,31 +414,34 @@ first 3,000 samples (per-query rate is the comparable figure, and DuckDB at
 
 | engine / mode | per-sample rate | us/sample | vs Trifold base |
 |---|---:|---:|---:|
-| Trifold base | **59,577 samples/s** | 16.8 | 1x |
-| Trifold + refinement | **56,293 samples/s** | 17.8 | 0.94x |
-| PostGIS 16 / 3.4 (amd64 emulated) | **5,761 samples/s** | 173.6 | 10.3x slower |
-| DuckDB 1.5.4 Spatial | **3,477 samples/s** | 287.6 | 17.1x slower |
+| Trifold base | **38,172 samples/s** | 26.2 | 1x |
+| Trifold + refinement | **37,633 samples/s** | 26.6 | 0.99x |
+| PostGIS 16 / 3.4 (amd64 emulated) | **5,761 samples/s** | 173.6 | 6.6x slower |
+| DuckDB 1.5.4 Spatial | **3,477 samples/s** | 287.6 | 11.0x slower |
 | BigQuery | TODO | | follow section 8 |
 
 ```text
-Trifold base     59,577 samples/s  ████████████████████████████████████████
-Trifold + refine 56,293 samples/s  █████████████████████████████████████▊
-PostGIS           5,761 samples/s  ███▉
-DuckDB Spatial    3,477 samples/s  ██▎
+Trifold base     38,172 samples/s  ████████████████████████████████████████
+Trifold + refine 37,633 samples/s  ███████████████████████████████████████▍
+PostGIS           5,761 samples/s  ██████
+DuckDB Spatial    3,477 samples/s  ███▋
 ```
 
-As whole-polyline latency, Trifold averaged **187 ms/polyline base, 198 ms
+As whole-polyline latency, Trifold averaged **~290 ms/polyline base, ~300 ms
 refined** — but these are extreme synthetic lines (~11,000 samples each, global
 random spanning thousands of km). A realistic route such as Berlin -> Warsaw ->
-Vilnius (~260 samples) classifies in **~4-5 ms**.
+Vilnius (~260 samples) classifies in **~7 ms**.
 
 Two effects worth noting:
 
 - **SQL is faster per query on this workload than on the scattered points of
   section 2** (PostGIS 5,761 vs 1,232 samples/s; DuckDB 3,477 vs ~2,098):
   consecutive polyline samples cluster spatially and keep the GiST / R-tree warm.
-  Trifold gets no such benefit — each `locate` is independent — so its per-sample
-  rate sits just *below* its point-scalar rate, paying the sampling + merge cost.
+  Trifold gets no such benefit — each `locate` is independent — and its per-sample
+  rate sits well below its raw point-scalar rate because each sample also pays the
+  great-circle sampling and segment-merge overhead on top of the lookup. The
+  trifold figure is the sustained warm-run median; an earlier single pass clocked
+  a cold ~59k/s, so treat ~38k as the reproducible sustained rate on this laptop.
 - DuckDB and PostGIS returned **byte-identical** answers over the 3,000 samples
   (same SHA-256 over the per-sample `gid_0` sequence): `d0c89d12...`.
 

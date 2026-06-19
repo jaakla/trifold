@@ -135,9 +135,10 @@ classification, so segment distances sum to `total_distance_km`. The border
 refinement, when loaded, is applied per sample. `sample_polyline` is exposed
 in `trifold.api` (and `samplePolyline` in the JS modules) for reuse.
 
-Performance: the per-sample lookup runs at ~60,000 samples/s, 10–17× faster than
-the same point-in-polygon job in PostGIS / DuckDB Spatial (per-sample comparison
-in [`countrycheck_benchmark.md` §9](../countrycheck_benchmark.md)). Use a coarser
+Performance: the per-sample lookup runs at tens of thousands of samples/s
+(~38k sustained on an M-class laptop), 7–11× faster than the same
+point-in-polygon job in PostGIS / DuckDB Spatial (per-sample comparison in
+[`countrycheck_benchmark.md` §9](../countrycheck_benchmark.md)). Use a coarser
 `step_km` for faster, lower-resolution scans.
 
 ## Optional border refinement
