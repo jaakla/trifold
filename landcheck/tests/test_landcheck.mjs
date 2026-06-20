@@ -76,8 +76,11 @@ test("polyline sea to land", () => {
   const coords = [[-30.0, 40.0], [0.0, 40.0]];
   const res = lc.checkPolyline(coords, { stepKm: 50 });
   assert.equal(res.segments[0].land, false);
-  assert.equal(res.segments[0].kind, "sea");
+  assert.ok(["sea", "coast"].includes(res.segments[0].kind));
   assert.ok(res.segments.some((s) => s.land));
+  // consecutive segments alternate land/sea (merge by identity, not kind)
+  for (let i = 1; i < res.segments.length; i++)
+    assert.notEqual(res.segments[i].land, res.segments[i - 1].land);
   const fracSum = res.segments.reduce((a, s) => a + s.fraction, 0);
   assert.ok(Math.abs(fracSum - 1) < 1e-9);
   assert.ok(Math.abs(res.stats.landKm + res.stats.seaKm - res.totalDistanceKm) < 1e-6);

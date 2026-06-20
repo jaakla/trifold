@@ -253,21 +253,25 @@ export function samplePolyline(coords, stepKm = 3.5, mode = "uniform") {
   return { samples, cumulativeKm, segmentIds };
 }
 
-/** Merge consecutive samples sharing the same (land, kind) into segments. */
+/** Merge consecutive samples sharing the same land/sea class into segments.
+ *  The segment kind is the uniform sample kind, or "coast" when the run mixes
+ *  interior and coastal cells. */
 function mergeLandSegments(results, cumulativeKm) {
   const n = results.length;
   const segments = [];
   let i = 0;
   while (i < n) {
-    const { land, kind } = results[i];
+    const { land } = results[i];
     let j = i;
-    while (j + 1 < n && results[j + 1].land === land && results[j + 1].kind === kind) j++;
+    while (j + 1 < n && results[j + 1].land === land) j++;
     const startKm = i === 0 ? 0 : (cumulativeKm[i - 1] + cumulativeKm[i]) / 2;
     const endKm = j === n - 1 ? cumulativeKm[n - 1] : (cumulativeKm[j] + cumulativeKm[j + 1]) / 2;
     let confSum = 0;
     const fracs = [];
+    const kinds = new Set();
     for (let k = i; k <= j; k++) {
       confSum += results[k].confidence;
+      kinds.add(results[k].kind);
       if (results[k].landFraction !== null && results[k].landFraction !== undefined) {
         fracs.push(results[k].landFraction);
       }
@@ -276,7 +280,7 @@ function mergeLandSegments(results, cumulativeKm) {
       ? fracs.reduce((a, b) => a + b, 0) / fracs.length
       : null;
     segments.push({
-      land, kind,
+      land, kind: kinds.size === 1 ? results[i].kind : "coast",
       confidence: confSum / (j - i + 1),
       landFraction: meanFrac,
       distanceKm: Math.max(endKm - startKm, 0),

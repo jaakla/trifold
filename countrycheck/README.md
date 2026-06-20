@@ -127,8 +127,12 @@ cc.checkPolyline(coords, { mode: "vertex" });     // vertices only
 cc.checkPolyline(coords, { stepKm: 1.0 });        // finer sampling
 ```
 
+Consecutive samples are merged by **country identity** (not by `(country,
+kind)`), so one continuous country run is a single segment even where it
+crosses interior and border cells; a different country breaks the run.
 Each `PolylineCountrySegment` carries `country`, `iso2`, `name`, `kind`
-(`country`/`border`/`none`), a mean `confidence` over the segment's samples,
+(the run's uniform kind, or `border` when it spans interior and border
+cells), a mean `confidence` over the segment's samples,
 `distance_km` (length along the line), and `fraction` (share of the total
 length). Segment boundaries fall at the midpoint between samples of differing
 classification, so segment distances sum to `total_distance_km`. The border

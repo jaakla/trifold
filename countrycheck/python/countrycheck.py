@@ -507,25 +507,27 @@ def _merge_country_segments(
     results: list[CountryResult],
     cumulative_km: np.ndarray,
 ) -> list[PolylineCountrySegment]:
-    """Merge consecutive samples that share the same country code+kind.
+    """Merge consecutive samples that share the same country.
 
-    Segment boundaries are placed at midpoints between samples of different
-    classifications, so that single-sample segments get a non-zero distance
-    and edge segments start/end at the polyline endpoints.
+    Grouping is by country identity only, so one continuous country run is a
+    single segment even where it crosses interior and border cells. The
+    segment ``kind`` is the uniform sample kind, or ``"border"`` when the run
+    mixes kinds (it touched at least one mixed cell). Segment boundaries are
+    placed at midpoints between samples of different countries, so single-
+    sample segments get a non-zero distance and edge segments start/end at the
+    polyline endpoints.
     """
     import numpy as np
 
     n = len(results)
 
-    key = lambda r: (r.country, r.kind)
-
     groups = []
-    for k, g in groupby(enumerate(results), key=lambda x: key(x[1])):
+    for country, g in groupby(enumerate(results), key=lambda x: x[1].country):
         idxs = [i for i, _ in g]
-        groups.append((k, idxs[0], idxs[-1]))
+        groups.append((country, idxs[0], idxs[-1]))
 
     segments = []
-    for (country, kind), start_idx, end_idx in groups:
+    for country, start_idx, end_idx in groups:
         # segment start: midpoint to previous sample (or 0 for first)
         if start_idx == 0:
             start_km = 0.0
@@ -539,10 +541,11 @@ def _merge_country_segments(
             end_km = (cumulative_km[end_idx] + cumulative_km[end_idx + 1]) / 2.0
 
         seg_len = max(end_km - start_km, 0.0)
-        mean_conf = float(
-            np.mean([results[i].confidence for i in range(start_idx, end_idx + 1)])
-        )
-        r = results[start_idx]
+        run = [results[i] for i in range(start_idx, end_idx + 1)]
+        mean_conf = float(np.mean([s.confidence for s in run]))
+        kinds = {s.kind for s in run}
+        kind = next(iter(kinds)) if len(kinds) == 1 else "border"
+        r = run[0]
         segments.append(
             PolylineCountrySegment(
                 country=country,

@@ -459,25 +459,27 @@ def _merge_land_segments(
     results: list[LandResult],
     cumulative_km: np.ndarray,
 ) -> list[PolylineLandSegment]:
-    """Merge consecutive samples that share the same land+kind classification.
+    """Merge consecutive samples that share the same land/sea classification.
 
-    Segment boundaries are placed at midpoints between samples of different
-    classifications, so that single-sample segments get a non-zero distance
-    and edge segments start/end at the polyline endpoints.
+    Grouping is by the ``land`` boolean only, so one continuous land (or sea)
+    run is a single segment even where it crosses interior and coastal cells.
+    The segment ``kind`` is the uniform sample kind, or ``"coast"`` when the
+    run mixes kinds (it touched at least one coastal cell). Segment boundaries
+    are placed at midpoints between samples of different land/sea class, so
+    single-sample segments get a non-zero distance and edge segments start/end
+    at the polyline endpoints.
     """
     import numpy as np
 
     n = len(results)
 
-    key = lambda r: (r.land, r.kind)
-
     groups = []
-    for k, g in groupby(enumerate(results), key=lambda x: key(x[1])):
+    for land, g in groupby(enumerate(results), key=lambda x: x[1].land):
         idxs = [i for i, _ in g]
-        groups.append((k, idxs[0], idxs[-1]))
+        groups.append((land, idxs[0], idxs[-1]))
 
     segments = []
-    for (land, kind), start_idx, end_idx in groups:
+    for land, start_idx, end_idx in groups:
         # segment start: midpoint to previous sample (or 0 for first)
         if start_idx == 0:
             start_km = 0.0
@@ -491,11 +493,11 @@ def _merge_land_segments(
             end_km = (cumulative_km[end_idx] + cumulative_km[end_idx + 1]) / 2.0
 
         seg_len = max(end_km - start_km, 0.0)
-        mean_conf = float(
-            np.mean([results[i].confidence for i in range(start_idx, end_idx + 1)])
-        )
-        fractions = [results[i].land_fraction for i in range(start_idx, end_idx + 1)]
-        frac_vals = [f for f in fractions if f is not None]
+        run = [results[i] for i in range(start_idx, end_idx + 1)]
+        mean_conf = float(np.mean([s.confidence for s in run]))
+        kinds = {s.kind for s in run}
+        kind = next(iter(kinds)) if len(kinds) == 1 else "coast"
+        frac_vals = [s.land_fraction for s in run if s.land_fraction is not None]
         mean_frac = float(np.mean(frac_vals)) if frac_vals else None
         segments.append(
             PolylineLandSegment(

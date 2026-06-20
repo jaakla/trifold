@@ -1542,7 +1542,7 @@ function classifyRoute(){
   const feats=[];let i=0,k=0;
   while(i<samples.length){
     const a=cls[i];let j=i;
-    while(j+1<samples.length&&cls[j+1].land===a.land&&cls[j+1].kind===a.kind)j++;
+    while(j+1<samples.length&&cls[j+1].land===a.land)j++;
     const line=samples.slice(i,j+1);
     if(i>0)line.unshift(mid(samples[i-1],samples[i]));
     if(j<samples.length-1)line.push(mid(samples[j],samples[j+1]));
@@ -2507,7 +2507,7 @@ function classifyRoute(){
   const feats=[];let i=0,k=0;
   while(i<samples.length){
     const a=cls[i];let j=i;
-    while(j+1<samples.length&&cls[j+1].country===a.country&&cls[j+1].kind===a.kind)j++;
+    while(j+1<samples.length&&cls[j+1].country===a.country)j++;
     const cid=a.country==null?-1:codeToCid.get(a.country);
     const line=samples.slice(i,j+1);
     if(i>0)line.unshift(mid(samples[i-1],samples[i]));

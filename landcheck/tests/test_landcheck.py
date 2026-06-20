@@ -131,8 +131,11 @@ def test_polyline_sea_to_land(lc):
     coords = [(-30.0, 40.0), (0.0, 40.0)]
     res = lc.check_polyline(coords, step_km=50)
     assert res.segments[0].land is False
-    assert res.segments[0].kind == "sea"
+    assert res.segments[0].kind in ("sea", "coast")
     assert any(s.land for s in res.segments)
+    # consecutive segments alternate land/sea (merge by identity, not kind)
+    assert all(a.land != b.land
+               for a, b in zip(res.segments, res.segments[1:]))
     # distances and fractions are consistent
     assert abs(sum(s.fraction for s in res.segments) - 1.0) < 1e-9
     assert abs(sum(s.distance_km for s in res.segments) - res.total_distance_km) < 1e-6
