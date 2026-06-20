@@ -254,22 +254,26 @@ export function samplePolyline(coords, stepKm = 3.5, mode = "uniform") {
   return { samples, cumulativeKm, segmentIds };
 }
 
-/** Merge consecutive samples sharing the same (country, kind) into segments. */
+/** Merge consecutive samples sharing the same country into segments. The
+ *  segment kind is the uniform sample kind, or "border" when the run mixes
+ *  interior and border cells. */
 function mergeCountrySegments(results, cumulativeKm) {
   const n = results.length;
   const segments = [];
   let i = 0;
   while (i < n) {
-    const { country, kind } = results[i];
+    const { country } = results[i];
     let j = i;
-    while (j + 1 < n && results[j + 1].country === country && results[j + 1].kind === kind) j++;
+    while (j + 1 < n && results[j + 1].country === country) j++;
     const startKm = i === 0 ? 0 : (cumulativeKm[i - 1] + cumulativeKm[i]) / 2;
     const endKm = j === n - 1 ? cumulativeKm[n - 1] : (cumulativeKm[j] + cumulativeKm[j + 1]) / 2;
     let confSum = 0;
-    for (let k = i; k <= j; k++) confSum += results[k].confidence;
+    const kinds = new Set();
+    for (let k = i; k <= j; k++) { confSum += results[k].confidence; kinds.add(results[k].kind); }
     const r = results[i];
     segments.push({
-      country, iso2: r.iso2, name: r.name, kind,
+      country, iso2: r.iso2, name: r.name,
+      kind: kinds.size === 1 ? r.kind : "border",
       confidence: confSum / (j - i + 1),
       distanceKm: Math.max(endKm - startKm, 0),
       fraction: 0,

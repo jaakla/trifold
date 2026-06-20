@@ -86,6 +86,8 @@ test("polyline segments", () => {
   assert.ok(countries.includes("POL"));
   assert.equal(countries[countries.length - 1], "LTU");
   assert.equal(res.stats.nSegments, res.segments.length);
+  // consecutive segments never repeat the same country (merge by identity)
+  for (let i = 1; i < countries.length; i++) assert.notEqual(countries[i], countries[i - 1]);
   const fracSum = res.segments.reduce((a, s) => a + s.fraction, 0);
   assert.ok(Math.abs(fracSum - 1) < 1e-9);
   const distSum = res.segments.reduce((a, s) => a + s.distanceKm, 0);

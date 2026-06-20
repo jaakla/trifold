@@ -145,6 +145,10 @@ def test_polyline_segments(cc):
     assert countries[-1] == "LTU"
     # segments are ordered and directed (no cross-segment merging)
     assert res.stats["n_segments"] == len(res.segments)
+    # consecutive segments never repeat the same country (merge by identity,
+    # not by (country, kind) — interior and border cells of one country join)
+    assert all(a.country != b.country
+               for a, b in zip(res.segments, res.segments[1:]))
     # fractions sum to ~1, distances sum to total
     assert abs(sum(s.fraction for s in res.segments) - 1.0) < 1e-9
     assert abs(sum(s.distance_km for s in res.segments) - res.total_distance_km) < 1e-6

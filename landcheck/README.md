@@ -97,11 +97,14 @@ lc.isLandPolyline(coords);                       // segment list only
 lc.checkPolyline(coords, { mode: "vertex" });    // vertices only
 ```
 
-Each `PolylineLandSegment` carries `land`, `kind` (`land`/`coast`/`sea`), a
-mean `confidence`, mean `land_fraction`, `distance_km` (length along the
-line), and `fraction` (share of the total length). Segment boundaries fall at
-the midpoint between samples of differing classification, so segment
-distances sum to `total_distance_km`. The coastal refinement, when loaded, is
+Consecutive samples are merged by **land/sea identity** (not by `(land,
+kind)`), so one continuous land (or sea) run is a single segment even where it
+crosses interior and coastal cells; the opposite class breaks the run. Each
+`PolylineLandSegment` carries `land`, `kind` (the run's uniform kind, or
+`coast` when it spans interior and coastal cells), a mean `confidence`, mean
+`land_fraction`, `distance_km` (length along the line), and `fraction` (share
+of the total length). Segment boundaries fall at the midpoint between samples
+of differing class, so segment distances sum to `total_distance_km`. The coastal refinement, when loaded, is
 applied per sample. `sample_polyline` is exposed in `trifold.api` (and
 `samplePolyline` in the JS modules) for reuse.
 
