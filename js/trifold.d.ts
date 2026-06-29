@@ -30,6 +30,20 @@ export function parent64(address: bigint | number | string): bigint;
 export function children64(address: bigint | number | string): bigint[];
 export function isAncestor(ancestor: bigint | number | string, descendant: bigint | number | string): boolean;
 export function descendantRange(address: bigint | number | string): [bigint, bigint];
+export function bboxCover(
+  minLon: number,
+  minLat: number,
+  maxLon: number,
+  maxLat: number,
+  level: number,
+  options?: { mode?: "intersects" | "centroid" },
+): bigint[];
+export function polyfill(
+  geometry: Record<string, unknown>,
+  level: number,
+  options?: { mode?: "intersects" | "centroid" },
+): bigint[];
+export function coverRanges(cells: Iterable<bigint | number | string>): [bigint, bigint][];
 export function latticeTriangle(address: AddressLike): number[][];
 export function latticeTriangle(face: number, digits: number[]): number[][];
 export function rhombusCoords(address: AddressLike): {

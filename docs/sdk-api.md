@@ -104,9 +104,25 @@ Location and geometry:
 
 Coverage generation:
 
+- `bbox_cover`, `polyfill`, `cover_ranges`
 - `build_compacted`
 - `expand_to_base`
 - `cell_geometry_ring`
+
+`bbox_cover` covers a WGS84 bbox at a fixed level. `min_lon > max_lon`
+means the bbox crosses the antimeridian. `polyfill` accepts GeoJSON
+`Polygon`, `MultiPolygon`, `Feature`, or `FeatureCollection` input.
+Both support `mode="intersects"` for conservative prefilters and
+`mode="centroid"` for compact approximate visualization.
+
+```python
+from trifold.api import bbox_cover, cover_ranges
+
+cells = bbox_cover(-0.3, 51.4, 0.1, 51.6, level=10)
+ranges = cover_ranges(cells)
+# Use addr64 BETWEEN low AND high for each range, then exact-filter points
+# with lon/lat or your source geometry when exact query results are needed.
+```
 
 Land classification is a separate extension because it requires Shapely and
 PyProj:
@@ -167,6 +183,12 @@ Location and geometry:
 Enumeration:
 
 - `levelFeatureCollection(level, {face, maxLevel})`
+
+Coverage:
+
+- `bboxCover(minLon, minLat, maxLon, maxLat, level, {mode})`
+- `polyfill(geometry, level, {mode})`
+- `coverRanges(cells)`
 
 The `maxLevel` option is an application safety limit for enumeration. It does
 not change the address limit of 27.

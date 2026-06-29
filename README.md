@@ -53,10 +53,10 @@ The landcheck and countrycheck applications ship separately as
 `pip install landcheck` / `npm install landcheck` and
 `pip install countrycheck` / `npm install countrycheck`.
 
-The SDKs cover address codecs, hierarchy operations, point location, cell
-geometry, metrics, and GeoJSON. Python land classification is an optional
-extension under `trifold.land`. See the [SDK API reference](docs/sdk-api.md)
-for the supported functions and examples.
+The SDKs cover address codecs, hierarchy operations, point location, bbox
+and polygon cell covers, cell geometry, metrics, and GeoJSON. Python land
+classification is an optional extension under `trifold.land`. See the
+[SDK API reference](docs/sdk-api.md) for the supported functions and examples.
 
 ---
 
@@ -213,6 +213,11 @@ neighbours' vertices bit-exactly.
   coarse where uniform, fine where it matters, with cells that retain
   shared boundaries. Database range scans over `addr64` retrieve
   any subtree as one interval.
+* **Approximate spatial search indexes.** Assign points to fixed-level
+  `addr64` cells, cover a query bbox or GeoJSON polygon with
+  `bbox_cover()` / `polyfill()`, turn cells into numeric intervals with
+  `cover_ranges()`, then apply an exact lon/lat or geometry post-filter
+  when the query must be exact.
 * **Simplicial data structures.** Triangles are *the* primitive of
   numerical geometry: FEM/FVM meshes, terrain TINs, barycentric
   interpolation, subdivision surfaces. A triangular DGGS plugs into that
@@ -326,6 +331,22 @@ applications that know which addresses they need, for example from a
 database join on `addr64`, and fetch geometry lazily. The two approaches
 can be combined: PMTiles for full-grid display and the Worker for
 interactive lookup.
+
+**Spatial search prefilters** — both SDKs expose fixed-level
+`bbox_cover()` / `bboxCover()` and `polyfill()` helpers. They are designed
+for coarse prefiltering in SQL and columnar stores:
+
+```python
+import trifold.api as tg
+
+cells = tg.bbox_cover(-0.3, 51.4, 0.1, 51.6, level=10)
+ranges = tg.cover_ranges(cells)
+# Query addr64 BETWEEN each low/high range, then exact-filter by lon/lat.
+```
+
+The cover is dependency-free and uses exported lon/lat cell rings. For
+point search, keep the original bbox or polygon predicate as a final
+filter if exact results matter.
 
 ---
 
@@ -469,7 +490,7 @@ local dataset instead.
 * level 7–9 products + PMTiles in CI
 * vectorized `locate` DuckDB UDF for `addr64` joins
 * optional ISEA-style equal-area variant (snyder projection per face)
-* polygon→cells fill (`polyfill` equivalent)
+* exact-topology and compacted-output modes for `polyfill`
 * generic polygon-identity lookup — countrycheck's builder parameterised for any non-overlapping layer (counties, ZIP/postal, admin units, districts); see the [countrycheck roadmap](countrycheck/README.md#roadmap)
 
 ## License

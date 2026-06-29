@@ -6,9 +6,9 @@ import subprocess
 import pytest
 
 from trifold import (build_export_ring, cell_triangle, densified_ring_xyz,
-                     children64, decode_rhombus64, encode64, from_compact,
-                     hex_id, locate, parent64, rhombus64, rhombus_id,
-                     to_compact, to_path)
+                     bbox_cover, children64, cover_ranges, decode_rhombus64,
+                     encode64, from_compact, hex_id, locate, parent64,
+                     polyfill, rhombus64, rhombus_id, to_compact, to_path)
 
 
 NODE = shutil.which('node')
@@ -134,4 +134,44 @@ console.log(JSON.stringify({
             ('diamond', 'level', 'x', 'y'),
             decode_rhombus64(rhombus64(addr)))),
         'hexId': hex_id(addr),
+    }
+
+
+@pytest.mark.skipif(NODE is None, reason='node is required for JavaScript SDK test')
+def test_javascript_cover_helpers_match_python():
+    polygon = {
+        'type': 'Polygon',
+        'coordinates': [[
+            [-1.0, 51.0],
+            [0.5, 51.0],
+            [0.5, 52.0],
+            [-1.0, 52.0],
+            [-1.0, 51.0],
+        ]],
+    }
+    script = """
+import { bboxCover, coverRanges, polyfill } from %s;
+const polygon = %s;
+const bboxCells = bboxCover(-1.0, 51.0, 0.5, 52.0, 5);
+const anti = bboxCover(179.0, -1.0, -179.0, 1.0, 5);
+const polygonCells = polyfill(polygon, 5);
+const ranges = coverRanges(bboxCells);
+console.log(JSON.stringify({
+  bbox: bboxCells.map(String),
+  anti: anti.map(String),
+  polygon: polygonCells.map(String),
+  ranges: ranges.map(([low, high]) => [low.toString(), high.toString()]),
+}));
+""" % (json.dumps(SDK.as_uri()), json.dumps(polygon))
+    result = subprocess.run(
+        [NODE, '--input-type=module', '--eval', script],
+        check=True, capture_output=True, text=True)
+    actual = json.loads(result.stdout)
+
+    bbox_cells = bbox_cover(-1.0, 51.0, 0.5, 52.0, 5)
+    assert actual == {
+        'bbox': [str(cell) for cell in bbox_cells],
+        'anti': [str(cell) for cell in bbox_cover(179.0, -1.0, -179.0, 1.0, 5)],
+        'polygon': [str(cell) for cell in polyfill(polygon, 5)],
+        'ranges': [[str(low), str(high)] for low, high in cover_ranges(bbox_cells)],
     }

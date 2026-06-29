@@ -59,6 +59,7 @@ from .core import (
     xyz_to_lonlat,
 )
 from .grid import build_compacted, cell_geometry_ring, expand_to_base
+from .cover import bbox_cover, cover_ranges, polyfill
 
 AddressLike: TypeAlias = int | str | tuple[int, Sequence[int]]
 
@@ -69,6 +70,7 @@ __all__ = [
     "MAX_LEVEL",
     "area_km2",
     "build_compacted",
+    "bbox_cover",
     "build_export_ring",
     "cell_feature",
     "cell_geometry_ring",
@@ -77,6 +79,7 @@ __all__ = [
     "cell_triangle",
     "children64",
     "contains_point",
+    "cover_ranges",
     "decode64",
     "decode_rhombus64",
     "densified_ring_xyz",
@@ -99,6 +102,7 @@ __all__ = [
     "parent64",
     "parse_address",
     "path_of",
+    "polyfill",
     "rhombus64",
     "rhombus_coords",
     "rhombus_id",

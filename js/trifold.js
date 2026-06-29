@@ -16,6 +16,7 @@ const PATH_MASK = (1n << PATH_BITS) - 1n;
 const LON_ROT = 7.3 * Math.PI / 180;
 const B32 = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
 const B32_INV = Object.fromEntries([...B32].map((char, index) => [char, index]));
+const COVER_EPS = 1e-12;
 Object.assign(B32_INV, { I: 1, L: 1, O: 0, U: 27 });
 
 const add = (a, b) => [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
@@ -628,6 +629,295 @@ export function cellFeature(address, { precision = 6 } = {}) {
     },
     geometry: { type: "Polygon", coordinates: [ring] },
   };
+}
+
+/** Return fixed-level cells intersecting a WGS84 bounding box. */
+export function bboxCover(minLon, minLat, maxLon, maxLat, level, { mode = "intersects" } = {}) {
+  validateCoverLevel(level);
+  validateCoverMode(mode);
+  const rects = splitBbox(minLon, minLat, maxLon, maxLat);
+  return coverCells(
+    level,
+    ring => rects.some(rect => ringBBoxOverlapsBBox(ring, rect)),
+    (ring, triangle) => {
+      if (mode === "centroid") {
+        const center = triangleCenterLonLat(triangle);
+        return rects.some(rect => pointInRect(center, rect));
+      }
+      return rects.some(rect => cellIntersectsRect(ring, triangle, rect));
+    },
+  );
+}
+
+/** Return fixed-level cells intersecting a GeoJSON Polygon or MultiPolygon. */
+export function polyfill(geometry, level, { mode = "intersects" } = {}) {
+  validateCoverLevel(level);
+  validateCoverMode(mode);
+  const polygons = polygonsFromGeoJSON(geometry);
+  if (!polygons.length) return [];
+  const bboxes = polygons.map(polygonBBox);
+  return coverCells(
+    level,
+    ring => bboxes.some(bbox => ringBBoxOverlapsBBox(ring, bbox)),
+    (ring, triangle) => {
+      if (mode === "centroid") {
+        const center = triangleCenterLonLat(triangle);
+        return polygons.some(polygon => pointInPolygonAnyShift(center, polygon));
+      }
+      return polygons.some(polygon => cellIntersectsPolygon(ring, triangle, polygon));
+    },
+  );
+}
+
+/** Return sorted, coalesced descendant ranges for covered cells. */
+export function coverRanges(cells) {
+  const ranges = [...cells].map(cell => descendantRange(cell)).sort(compareRanges);
+  if (!ranges.length) return [];
+  const merged = [ranges[0]];
+  for (const [low, high] of ranges.slice(1)) {
+    const previous = merged[merged.length - 1];
+    if (low <= previous[1] + 1n) previous[1] = high > previous[1] ? high : previous[1];
+    else merged.push([low, high]);
+  }
+  return merged;
+}
+
+function coverCells(level, overlapsQuery, accepts) {
+  const out = new Set();
+  const recurse = (face, digits, triangle) => {
+    const ring = cellOpenRing(triangle, digits.length);
+    if (!overlapsQuery(ring)) return;
+    if (digits.length === level) {
+      if (accepts(ring, triangle)) out.add(encode64(face, digits));
+      return;
+    }
+    subdivide(triangle).forEach((child, digit) => recurse(face, [...digits, digit], child));
+  };
+  ICO.faces.forEach(([i, j, k], face) => recurse(face, [], [ICO.vertices[i], ICO.vertices[j], ICO.vertices[k]]));
+  return [...out].sort(compareBigInt);
+}
+
+function cellOpenRing(triangle, level) {
+  const halvings = Math.max(0, EXPORT_DEPTH - level);
+  const points = [
+    ...edgePoints(triangle[0], triangle[1], halvings),
+    ...edgePoints(triangle[1], triangle[2], halvings),
+    ...edgePoints(triangle[2], triangle[0], halvings),
+  ];
+  return exportRing(points, triangle).ring.map(([lon, lat]) => [Number(lon), Number(lat)]);
+}
+
+function validateCoverLevel(level) {
+  if (!Number.isInteger(level) || level < 0 || level > MAX_LEVEL) {
+    throw new RangeError(`level must be within 0..${MAX_LEVEL}`);
+  }
+}
+
+function validateCoverMode(mode) {
+  if (mode !== "intersects" && mode !== "centroid") {
+    throw new RangeError("mode must be 'intersects' or 'centroid'");
+  }
+}
+
+function splitBbox(minLon, minLat, maxLon, maxLat) {
+  const values = [minLon, minLat, maxLon, maxLat].map(Number);
+  if (!values.every(Number.isFinite)) throw new TypeError("bbox coordinates must be numbers");
+  const [a, b, c, d] = values;
+  if (a < -180 || a > 180 || c < -180 || c > 180) {
+    throw new RangeError("bbox longitudes must be within [-180, 180]");
+  }
+  if (b < -90 || b > 90 || d < -90 || d > 90) {
+    throw new RangeError("bbox latitudes must be within [-90, 90]");
+  }
+  if (b > d) throw new RangeError("minLat must be <= maxLat");
+  if (a <= c) return [[a, b, c, d]];
+  return [[a, b, 180, d], [-180, b, c, d]];
+}
+
+function triangleCenterLonLat(triangle) {
+  return toLonLat(norm(add(add(triangle[0], triangle[1]), triangle[2])));
+}
+
+function lonLatToXYZ(lon, lat) {
+  const lambda = lon * Math.PI / 180;
+  const phi = lat * Math.PI / 180;
+  return [Math.cos(phi) * Math.cos(lambda), Math.cos(phi) * Math.sin(lambda), Math.sin(phi)];
+}
+
+function ringBBox(ring) {
+  const lons = ring.map(point => point[0]);
+  const lats = ring.map(point => point[1]);
+  return [Math.min(...lons), Math.min(...lats), Math.max(...lons), Math.max(...lats)];
+}
+
+function bboxOverlap(a, b) {
+  return !(a[2] < b[0] - COVER_EPS || b[2] < a[0] - COVER_EPS ||
+    a[3] < b[1] - COVER_EPS || b[3] < a[1] - COVER_EPS);
+}
+
+function shiftRing(ring, shift) {
+  return shift === 0 ? ring : ring.map(([lon, lat]) => [lon + shift, lat]);
+}
+
+function ringBBoxOverlapsBBox(ring, bbox) {
+  return [-360, 0, 360].some(shift => bboxOverlap(ringBBox(shiftRing(ring, shift)), bbox));
+}
+
+function pointInRect([lon, lat], [minLon, minLat, maxLon, maxLat]) {
+  return lon >= minLon - COVER_EPS && lon <= maxLon + COVER_EPS &&
+    lat >= minLat - COVER_EPS && lat <= maxLat + COVER_EPS;
+}
+
+function rectCorners([minLon, minLat, maxLon, maxLat]) {
+  return [[minLon, minLat], [maxLon, minLat], [maxLon, maxLat], [minLon, maxLat]];
+}
+
+function rectEdges(rect) {
+  const corners = rectCorners(rect);
+  return segments(corners);
+}
+
+function segments(ring) {
+  return ring.map((point, index) => [point, ring[(index + 1) % ring.length]]);
+}
+
+function cellIntersectsRect(ring, triangle, rect) {
+  const edges = rectEdges(rect);
+  for (const shift of [-360, 0, 360]) {
+    const shifted = shiftRing(ring, shift);
+    if (!bboxOverlap(ringBBox(shifted), rect)) continue;
+    if (shifted.some(point => pointInRect(point, rect))) return true;
+    if (rectCorners(rect).some(([lon, lat]) => containsPoint(triangle, lonLatToXYZ(lon, lat)))) return true;
+    for (const edge of segments(shifted)) {
+      if (edges.some(rectEdge => segmentsIntersect(edge[0], edge[1], rectEdge[0], rectEdge[1]))) return true;
+    }
+  }
+  return false;
+}
+
+function polygonsFromGeoJSON(geometry) {
+  if (!geometry || typeof geometry !== "object") throw new TypeError("geometry must be a GeoJSON object");
+  if (geometry.type === "Feature") return polygonsFromGeoJSON(geometry.geometry);
+  if (geometry.type === "FeatureCollection") {
+    return (geometry.features || []).flatMap(feature => polygonsFromGeoJSON(feature));
+  }
+  if (geometry.type === "Polygon") return [normalizePolygon(geometry.coordinates)];
+  if (geometry.type === "MultiPolygon") return (geometry.coordinates || []).map(normalizePolygon);
+  throw new Error("geometry must be Polygon, MultiPolygon, Feature, or FeatureCollection");
+}
+
+function normalizePolygon(coords) {
+  if (!Array.isArray(coords) || !coords.length) throw new Error("polygon coordinates must contain rings");
+  return coords.map(normalizeRing);
+}
+
+function normalizeRing(ring) {
+  if (!Array.isArray(ring) || ring.length < 4) throw new Error("linear rings must contain at least four positions");
+  const points = [];
+  let previous = null;
+  let offset = 0;
+  for (const raw of ring) {
+    if (!Array.isArray(raw) || raw.length < 2) throw new Error("positions must be [lon, lat] pairs");
+    let lon = Number(raw[0]) + offset;
+    const lat = Number(raw[1]);
+    if (!Number.isFinite(lon) || !Number.isFinite(lat)) throw new Error("positions must be finite numbers");
+    if (lat < -90 || lat > 90) throw new RangeError("polygon latitudes must be within [-90, 90]");
+    if (previous !== null) {
+      while (lon - previous > 180) { lon -= 360; offset -= 360; }
+      while (lon - previous < -180) { lon += 360; offset += 360; }
+    }
+    points.push([lon, lat]);
+    previous = lon;
+  }
+  if (samePoint(points[0], points[points.length - 1])) points.pop();
+  if (points.length < 3) throw new Error("linear rings must contain at least three unique positions");
+  return points;
+}
+
+function samePoint(a, b) {
+  return Math.abs(a[0] - b[0]) <= COVER_EPS && Math.abs(a[1] - b[1]) <= COVER_EPS;
+}
+
+function polygonBBox(polygon) {
+  return ringBBox(polygon[0]);
+}
+
+function pointInPolygon(point, polygon) {
+  if (!pointInRing(point, polygon[0])) return false;
+  return !polygon.slice(1).some(hole => pointInRing(point, hole));
+}
+
+function pointInPolygonAnyShift(point, polygon) {
+  return [-360, 0, 360].some(shift => pointInPolygon([point[0] + shift, point[1]], polygon));
+}
+
+function pointInRing([x, y], ring) {
+  let inside = false;
+  for (let index = 0; index < ring.length; index++) {
+    const [x0, y0] = ring[index];
+    const [x1, y1] = ring[(index + 1) % ring.length];
+    if (pointOnSegment([x, y], [x0, y0], [x1, y1])) return true;
+    if ((y0 > y) !== (y1 > y)) {
+      const xAtY = (x1 - x0) * (y - y0) / (y1 - y0) + x0;
+      if (x <= xAtY + COVER_EPS) inside = !inside;
+    }
+  }
+  return inside;
+}
+
+function cellIntersectsPolygon(ring, triangle, polygon) {
+  const bbox = polygonBBox(polygon);
+  for (const shift of [-360, 0, 360]) {
+    const shifted = shiftRing(ring, shift);
+    if (!bboxOverlap(ringBBox(shifted), bbox)) continue;
+    if (shifted.some(point => pointInPolygon(point, polygon))) return true;
+    if (polygon[0].some(([lon, lat]) => containsPoint(triangle, lonLatToXYZ(lon, lat)))) return true;
+    const cellEdges = segments(shifted);
+    for (const polyRing of polygon) {
+      const polyEdges = segments(polyRing);
+      for (const edge of cellEdges) {
+        if (polyEdges.some(polyEdge => segmentsIntersect(edge[0], edge[1], polyEdge[0], polyEdge[1]))) {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}
+
+function pointOnSegment([px, py], [ax, ay], [bx, by]) {
+  const crossValue = (px - ax) * (by - ay) - (py - ay) * (bx - ax);
+  if (Math.abs(crossValue) > COVER_EPS) return false;
+  return px >= Math.min(ax, bx) - COVER_EPS && px <= Math.max(ax, bx) + COVER_EPS &&
+    py >= Math.min(ay, by) - COVER_EPS && py <= Math.max(ay, by) + COVER_EPS;
+}
+
+function orientation(a, b, c) {
+  return (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]);
+}
+
+function segmentsIntersect(a, b, c, d) {
+  const bboxAB = [Math.min(a[0], b[0]), Math.min(a[1], b[1]), Math.max(a[0], b[0]), Math.max(a[1], b[1])];
+  const bboxCD = [Math.min(c[0], d[0]), Math.min(c[1], d[1]), Math.max(c[0], d[0]), Math.max(c[1], d[1])];
+  if (!bboxOverlap(bboxAB, bboxCD)) return false;
+  const o1 = orientation(a, b, c);
+  const o2 = orientation(a, b, d);
+  const o3 = orientation(c, d, a);
+  const o4 = orientation(c, d, b);
+  if (((o1 > COVER_EPS && o2 < -COVER_EPS) || (o1 < -COVER_EPS && o2 > COVER_EPS)) &&
+      ((o3 > COVER_EPS && o4 < -COVER_EPS) || (o3 < -COVER_EPS && o4 > COVER_EPS))) {
+    return true;
+  }
+  return pointOnSegment(c, a, b) || pointOnSegment(d, a, b) ||
+    pointOnSegment(a, c, d) || pointOnSegment(b, c, d);
+}
+
+function compareBigInt(a, b) {
+  return a < b ? -1 : (a > b ? 1 : 0);
+}
+
+function compareRanges(a, b) {
+  return compareBigInt(a[0], b[0]) || compareBigInt(a[1], b[1]);
 }
 
 /** Enumerate all cells on one face, or all faces, at a uniform level. */

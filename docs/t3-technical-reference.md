@@ -125,8 +125,10 @@ against the JavaScript Worker's public endpoint.
   preserves triangle semantics and renders correctly in MapLibre/deck.gl;
   re-split if a strict-RFC consumer requires it. Pole-touching cells are
   meridian wedges reaching exactly ±90°, flagged `pole: "vertex"`;
-  Mercator clips them at ±85° (use globe view). Polygon-fill
-  (`polyfill`-equivalent) is on the roadmap, not yet implemented.
+  Mercator clips them at ±85° (use globe view). Fixed-level bbox and
+  GeoJSON polygon covers are available through `bbox_cover` / `polyfill`;
+  they are dependency-free prefilter helpers, so exact point or geometry
+  queries should still keep their original predicate as a final filter.
 
 ### 6. Comparison
 
@@ -176,9 +178,10 @@ breadth of H3 or S2.
 3. **Serve small extents from the Worker, large extents from PMTiles**;
    embed TopoJSON only below ~30k cells.
 4. **Thresholds that would change this assessment**: an implemented
-   neighbor API plus a polyfill routine would move T3 from
-   "research-grade" to "usable alternative"; an ISEA-style equal-area
-   variant would collapse its main disadvantage versus A5/rHEALPix.
+   neighbor API plus exact-topology and compacted-output polyfill modes
+   would move T3 from "research-grade" to "usable alternative"; an
+   ISEA-style equal-area variant would collapse its main disadvantage
+   versus A5/rHEALPix.
 
 ## Caveats
 
