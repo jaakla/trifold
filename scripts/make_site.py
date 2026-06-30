@@ -256,6 +256,37 @@ html = """<!doctype html>
   .legend i{display:inline-block;width:12px;height:12px;border-radius:2px;
     vertical-align:middle;margin-right:5px;border:1px solid #555}
   .note{font-size:11px;color:#777;margin-top:7px;line-height:1.45}
+  /* coverage demo */
+  #coverage{max-width:none;padding:44px 0 0}
+  #coverage .inner{max-width:1020px;margin:0 auto;padding:0 22px}
+  .coverwrap{position:relative;height:74vh;min-height:540px;margin-top:18px;
+    border-top:1px solid #ddd;border-bottom:1px solid #ddd;background:#d7e5ed}
+  #covermap{position:absolute;inset:0}
+  .coverpanel{position:absolute;top:12px;left:12px;z-index:10;background:rgba(255,255,255,.96);
+    padding:12px 14px;border-radius:10px;box-shadow:0 2px 12px rgba(0,0,0,.22);
+    font-size:13px;width:342px;max-height:calc(74vh - 30px);overflow:auto}
+  .coverpanel .seg button{min-width:70px}
+  .coverpanel.min{width:auto;padding:7px 11px}
+  .coverpanel.min>:not(.phead){display:none!important}
+  .coverpanel.min .phead{margin:0}
+  .coverrange{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}
+  .coverrange input{width:100%}
+  .coverlevel{font-family:ui-monospace,SFMono-Regular,monospace;font-size:12px;color:#333;
+    white-space:nowrap}
+  .coveractions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-top:8px}
+  .coveractions button{border:1px solid #999;background:#fff;border-radius:6px;padding:7px 8px;
+    cursor:pointer;font-size:12px;font-weight:600;color:#333}
+  .coveractions button.primary{background:var(--warm);border-color:var(--warm);color:#fff}
+  .coveractions button:hover{filter:brightness(.97)}
+  .coverhint{font-size:12px;color:#555;margin:6px 0;line-height:1.4}
+  .coverstats{color:#444;font-size:12px;margin-top:8px;line-height:1.5}
+  .coverout{max-height:188px;margin:8px 0 0;white-space:pre-wrap;word-break:break-word;
+    font-size:11.2px;line-height:1.45}
+  @media(max-width:760px){
+    .coverwrap{height:82vh;min-height:620px}
+    .coverpanel{left:10px;right:10px;top:10px;width:auto;max-height:48vh}
+    .coverout{max-height:122px}
+  }
   footer{border-top:1px solid #e4e0d6;margin-top:50px;padding:26px 22px;text-align:center;
     color:var(--mut);font-size:13px}
   footer a{color:var(--acc)}
@@ -268,6 +299,7 @@ html = """<!doctype html>
   <a href="#concept">Concept</a>
   <a href="#addressing">Addressing</a>
   <a href="#demo">Live demo</a>
+  <a href="#coverage">Coverage</a>
   <a href="#compare">Comparison</a>
   <a href="#usecases">Use cases</a>
   <a href="https://github.com/jaakla/trifold/blob/main/docs/t3-technical-reference.md" target="_blank" rel="noopener">Tech reference</a>
@@ -464,6 +496,78 @@ $ curl https://YOUR-WORKER.workers.dev/locate/-0.1276,51.5072?level=6
   </script>
 </section>
 
+<section id="coverage">
+  <div class="inner">
+    <h2>Coverage demo: bbox_cover and polyfill</h2>
+    <p>Draw a query shape and Trifold returns stable indexes for the triangular cells that overlap it.
+    The full output is fixed-level cells; compacted output folds complete sibling sets into variable-level
+    parents; ranges are addr64 intervals for subtree scans. Switch on <b>T3 + S2</b> to cover the same
+    shape with Google S2 cells (computed live in the browser, area-matched level) and compare how much each
+    grid's quadtree <b>compaction</b> folds away.</p>
+  </div>
+  <div class="coverwrap">
+    <div id="covermap"></div>
+    <div class="coverpanel">
+      <div class="phead"><b>Controls</b>
+        <button id="coverpanelmin" aria-label="minimize control panel" title="minimize">–</button></div>
+      <div class="row"><label>Draw</label>
+        <div class="seg" id="cover-draw">
+          <button data-v="bbox" class="on">Bbox</button>
+          <button data-v="polygon">Polygon</button>
+        </div></div>
+      <div class="row"><label>Compare</label>
+        <div class="seg" id="cover-compare">
+          <button data-v="t3" class="on">T3 &#9650;</button>
+          <button data-v="s2">T3 + S2 &#9633;</button>
+        </div></div>
+      <div class="row"><label>Level</label>
+        <div class="coverrange">
+          <input id="cover-level" type="range" min="3" max="11" value="6" step="1">
+          <span class="coverlevel" id="cover-level-label">L6 ~110 km</span>
+        </div></div>
+      <div class="row"><label>Selection</label>
+        <div class="seg" id="cover-mode">
+          <button data-v="intersects" class="on">Intersects</button>
+          <button data-v="centroid">Centroid</button>
+        </div></div>
+      <div class="row"><label>Output</label>
+        <div class="seg" id="cover-output">
+          <button data-v="full" class="on">Full</button>
+          <button data-v="compacted">Compacted</button>
+          <button data-v="ranges">Ranges</button>
+        </div></div>
+      <div class="row"><label>Index</label>
+        <div class="seg" id="cover-format">
+          <button data-v="compact" class="on">Compact</button>
+          <button data-v="addr64">addr64</button>
+        </div></div>
+      <div class="coveractions">
+        <button class="primary" id="cover-run">Run</button>
+        <button id="cover-finish">Finish</button>
+        <button id="cover-clear">Clear</button>
+      </div>
+      <div class="coverhint" id="cover-hint">Drag to draw a bbox, or switch to polygon and click vertices.</div>
+      <div class="coverstats" id="cover-status">Loading coverage demo...</div>
+      <pre class="coverout" id="cover-output-box">[]</pre>
+      <div class="note">Coverage is conservative in intersects mode. The index list is T3; S2 is shown on the map
+      and in the stats. S2 cells are real Google S2 quads (quadratic projection, Hilbert order); the cover is
+      fixed-level to mirror T3's, not S2's variable-level region coverer.</div>
+    </div>
+  </div>
+  <script>
+  (function(){
+    var panel=document.querySelector('.coverpanel'),btn=document.getElementById('coverpanelmin');
+    function setMin(min){panel.classList.toggle('min',min);btn.textContent=min?'+':'–';
+      btn.title=btn.ariaLabel=(min?'expand':'minimize')+' control panel';}
+    btn.addEventListener('click',function(e){e.stopPropagation();
+      setMin(!panel.classList.contains('min'));});
+    panel.querySelector('.phead').addEventListener('click',function(){
+      if(panel.classList.contains('min'))setMin(false);});
+    if(matchMedia('(max-width:640px)').matches)setMin(true);
+  })();
+  </script>
+</section>
+
 <section id="compare">
   <h2>Grid system comparison</h2>
   <table>
@@ -527,7 +631,12 @@ $ curl https://YOUR-WORKER.workers.dev/locate/-0.1276,51.5072?level=6
 </footer>
 
 <script type="module">
-import {fromPath} from './sdk/trifold.js';
+import {
+  bboxCover, cellFeature, coverRanges, fromPath, parent64, polyfill, toCompact,
+} from './sdk/trifold.js';
+import {
+  s2Cover, s2Compact, s2CellFeature, s2LevelForT3,
+} from './sdk/s2mini.js';
 __DATA__
 
 const LEVEL_COLORS={0:'#3f0008',1:'#67000d',2:'#a50f15',3:'#cb181d',4:'#ef3b2c',
@@ -689,6 +798,391 @@ wireSeg('seg-mode','mode',refresh);
 wireSeg('seg-proj','proj',()=>{
   try{map.setProjection({type:state.proj});}catch(e){console.warn(e);}
 });
+
+const COVER_LEVEL_LABELS={3:'~880 km',4:'~440 km',5:'~220 km',6:'~110 km',
+  7:'~55 km',8:'~28 km',9:'~14 km',10:'~7 km',11:'~3.4 km'};
+const COVER_RENDER_LIMIT=1600;
+const COVER_OUTPUT_LIMIT=260;
+const COVER_RANGE_LIMIT=120;
+const COVER_CELL_CAP=50000;
+const coverState={
+  draw:'bbox',
+  level:6,
+  mode:'intersects',
+  output:'full',
+  format:'compact',
+  compare:'t3',
+  bbox:[-0.55,51.25,0.25,51.75],
+  previewBbox:null,
+  polygon:[],
+  dragging:false,
+  dragStart:null,
+  cells:[],
+  compacted:[],
+  ranges:[],
+  s2Level:0,
+  s2Cells:[],
+  s2Compacted:[],
+  s2Capped:false,
+  elapsedMs:0,
+};
+
+const coverMap=new maplibregl.Map({
+  container:'covermap',
+  style:{version:8,
+    sources:{carto:{type:'raster',
+      tiles:['https://a.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png',
+             'https://b.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png'],
+      tileSize:256,attribution:'© OpenStreetMap © CARTO · Trifold T3 coverage demo'}},
+    layers:[{id:'cover-bg',type:'background',paint:{'background-color':'#cfe3ef'}},
+            {id:'cover-base',type:'raster',source:'carto'}]},
+  center:[-0.12,51.5],
+  zoom:7,
+});
+coverMap.addControl(new maplibregl.NavigationControl());
+coverMap.doubleClickZoom.disable();
+
+function coverCollection(features=[]){return {type:'FeatureCollection',features};}
+function compareCoverBigInt(a,b){return a<b?-1:a>b?1:0;}
+function normalizeLng(lng){
+  const wrapped=((((lng+180)%360)+360)%360)-180;
+  return wrapped===-180&&lng>0?180:wrapped;
+}
+function clampLat(lat){return Math.max(-90,Math.min(90,lat));}
+function cleanCoord(coord){return [Number(normalizeLng(coord[0]).toFixed(6)),
+  Number(clampLat(coord[1]).toFixed(6))];}
+function bboxFromCoords(a,b){
+  const lonA=normalizeLng(a[0]),lonB=normalizeLng(b[0]);
+  const minLat=Math.min(clampLat(a[1]),clampLat(b[1]));
+  const maxLat=Math.max(clampLat(a[1]),clampLat(b[1]));
+  const west=Math.min(lonA,lonB),east=Math.max(lonA,lonB);
+  return east-west>180?[east,minLat,west,maxLat]:[west,minLat,east,maxLat];
+}
+function bboxGeometry([minLon,minLat,maxLon,maxLat]){
+  if(minLon<=maxLon)return {type:'Polygon',coordinates:[[
+    [minLon,minLat],[maxLon,minLat],[maxLon,maxLat],[minLon,maxLat],[minLon,minLat],
+  ]]};
+  return {type:'MultiPolygon',coordinates:[
+    [[[minLon,minLat],[180,minLat],[180,maxLat],[minLon,maxLat],[minLon,minLat]]],
+    [[[-180,minLat],[maxLon,minLat],[maxLon,maxLat],[-180,maxLat],[-180,minLat]]],
+  ]};
+}
+function polygonGeometry(){
+  if(coverState.polygon.length<3)return null;
+  const ring=coverState.polygon.map(cleanCoord);
+  ring.push([...ring[0]]);
+  return {type:'Polygon',coordinates:[ring]};
+}
+// rough query area (km^2), only used to guard against runaway covers
+function coverQueryAreaKm2(active){
+  let ring;
+  if(active.kind==='bbox'){
+    const [w,s,e,n]=active.bbox;
+    const dLon=Math.abs(e-w>180?360-Math.abs(e-w):e-w);
+    const midLat=(s+n)/2;
+    return Math.abs(dLon*110.57*Math.cos(midLat*Math.PI/180))*Math.abs((n-s)*110.57);
+  }
+  ring=active.geometry.coordinates[0];
+  let area=0,latSum=0;
+  for(let i=0;i<ring.length-1;i++){
+    area+=ring[i][0]*ring[i+1][1]-ring[i+1][0]*ring[i][1];
+    latSum+=ring[i][1];
+  }
+  const meanLat=latSum/Math.max(1,ring.length-1);
+  const km=110.57;
+  return Math.abs(area/2)*km*km*Math.cos(meanLat*Math.PI/180);
+}
+function renderCoverQuery(){
+  const features=[];
+  const bbox=coverState.previewBbox||coverState.bbox;
+  if(coverState.draw==='bbox'&&bbox){
+    features.push({type:'Feature',properties:{kind:'bbox'},geometry:bboxGeometry(bbox)});
+  }else if(coverState.draw==='polygon'&&coverState.polygon.length){
+    const geom=polygonGeometry();
+    if(geom)features.push({type:'Feature',properties:{kind:'polygon'},geometry:geom});
+    else if(coverState.polygon.length>1)features.push({
+      type:'Feature',
+      properties:{kind:'line'},
+      geometry:{type:'LineString',coordinates:coverState.polygon.map(cleanCoord)},
+    });
+    coverState.polygon.forEach((coord,index)=>features.push({
+      type:'Feature',
+      properties:{kind:'vertex',index},
+      geometry:{type:'Point',coordinates:cleanCoord(coord)},
+    }));
+  }
+  const source=coverMap.getSource('cover-query');
+  if(source)source.setData(coverCollection(features));
+}
+function compactCoverCells(cells){
+  let current=[...new Set(cells.map(cell=>BigInt(cell)).map(String))]
+    .map(BigInt).sort(compareCoverBigInt);
+  let changed=true;
+  while(changed){
+    changed=false;
+    const groups=new Map();
+    const next=[];
+    for(const cell of current){
+      let parent;
+      try{parent=parent64(cell);}catch(e){next.push(cell);continue;}
+      const key=parent.toString();
+      if(!groups.has(key))groups.set(key,{parent,children:[]});
+      groups.get(key).children.push(cell);
+    }
+    for(const group of groups.values()){
+      if(group.children.length===4){next.push(group.parent);changed=true;}
+      else next.push(...group.children);
+    }
+    current=[...new Set(next.map(String))].map(BigInt).sort(compareCoverBigInt);
+  }
+  return current;
+}
+function visibleCoverCells(){
+  if(coverState.output==='full')return coverState.cells;
+  return coverState.compacted;
+}
+function renderCoverCells(){
+  const source=coverMap.getSource('cover-cells');
+  if(source){
+    const cells=visibleCoverCells();
+    const features=cells.slice(0,COVER_RENDER_LIMIT)
+      .map(cell=>cellFeature(cell,{precision:5}));
+    source.setData(coverCollection(features));
+  }
+  const s2source=coverMap.getSource('cover-s2-cells');
+  if(s2source){
+    const showS2=coverState.compare==='s2';
+    const s2cells=coverState.output==='full'?coverState.s2Cells:coverState.s2Compacted;
+    const features=showS2
+      ? s2cells.slice(0,COVER_RENDER_LIMIT).map(cell=>s2CellFeature(cell,{precision:5}))
+      : [];
+    s2source.setData(coverCollection(features));
+  }
+}
+function formatCoverCells(cells){
+  return coverState.format==='compact'
+    ? cells.map(cell=>toCompact(cell))
+    : cells.map(cell=>cell.toString());
+}
+function compactSavings(full,compacted){
+  return full>0?(1-compacted/full)*100:0;
+}
+function renderCoverOutput(){
+  const box=document.getElementById('cover-output-box');
+  let text='';
+  if(coverState.output==='ranges'){
+    const rows=coverState.ranges.slice(0,COVER_RANGE_LIMIT)
+      .map(([low,high])=>[low.toString(),high.toString()]);
+    text=JSON.stringify(rows,null,2);
+    if(coverState.ranges.length>COVER_RANGE_LIMIT)
+      text+=`\n... ${coverState.ranges.length-COVER_RANGE_LIMIT} more ranges`;
+  }else{
+    const cells=coverState.output==='compacted'?coverState.compacted:coverState.cells;
+    const values=formatCoverCells(cells).slice(0,COVER_OUTPUT_LIMIT);
+    text=JSON.stringify(values,null,2);
+    if(cells.length>COVER_OUTPUT_LIMIT)
+      text+=`\n... ${cells.length-COVER_OUTPUT_LIMIT} more indexes`;
+  }
+  box.textContent=text;
+  const rendered=Math.min(visibleCoverCells().length,COVER_RENDER_LIMIT);
+  const renderNote=visibleCoverCells().length>COVER_RENDER_LIMIT
+    ? ` · rendered first ${rendered.toLocaleString()}`:'';
+  const t3Save=compactSavings(coverState.cells.length,coverState.compacted.length);
+  let html=`<b>T3 L${coverState.level}</b>: ${coverState.cells.length.toLocaleString()} cells `+
+    `&rarr; ${coverState.compacted.length.toLocaleString()} compacted `+
+    `(${t3Save.toFixed(0)}% saved) · ${coverState.ranges.length.toLocaleString()} ranges · `+
+    `${coverState.elapsedMs.toFixed(1)} ms${renderNote}`;
+  if(coverState.compare==='s2'){
+    const s2Save=compactSavings(coverState.s2Cells.length,coverState.s2Compacted.length);
+    const t3c=coverState.compacted.length,s2c=coverState.s2Compacted.length;
+    let verdict;
+    if(t3c===s2c)verdict=`tie (${t3c.toLocaleString()} each)`;
+    else{
+      const smaller=t3c<s2c?'T3':'S2';
+      const pct=(Math.abs(s2c-t3c)/Math.max(t3c,s2c))*100;
+      verdict=`<b>${smaller} ${pct.toFixed(0)}% smaller</b>`;
+    }
+    html+=`<br><b style="color:#1c7c4a">S2 L${coverState.s2Level}</b>: `+
+      `${coverState.s2Cells.length.toLocaleString()} cells &rarr; `+
+      `${s2c.toLocaleString()} compacted (${s2Save.toFixed(0)}% saved)`+
+      (coverState.s2Capped?' · capped':'')+
+      `<br>final compacted size: T3 ${t3c.toLocaleString()} vs S2 ${s2c.toLocaleString()} cells `+
+      `&mdash; ${verdict}`;
+  }
+  document.getElementById('cover-status').innerHTML=html;
+}
+function activeCoverGeometry(){
+  if(coverState.draw==='bbox'&&coverState.bbox)return {kind:'bbox',bbox:coverState.bbox};
+  if(coverState.draw==='polygon'&&coverState.polygon.length>=3)
+    return {kind:'polygon',geometry:polygonGeometry()};
+  return null;
+}
+function runCoverage(){
+  const active=activeCoverGeometry();
+  if(!active){
+    document.getElementById('cover-status').textContent='Draw a bbox or a polygon with at least 3 vertices.';
+    document.getElementById('cover-output-box').textContent='[]';
+    coverState.cells=[];coverState.compacted=[];coverState.ranges=[];
+    coverState.s2Cells=[];coverState.s2Compacted=[];
+    renderCoverCells();
+    return;
+  }
+  const estimate=coverQueryAreaKm2(active)/(25.5e6/Math.pow(4,coverState.level));
+  if(estimate>COVER_CELL_CAP){
+    document.getElementById('cover-status').innerHTML=
+      `Area too large for L${coverState.level} (~${Math.round(estimate).toLocaleString()} cells, `+
+      `cap ${COVER_CELL_CAP.toLocaleString()}). Draw a smaller shape or lower the level.`;
+    document.getElementById('cover-output-box').textContent='[]';
+    coverState.cells=[];coverState.compacted=[];coverState.ranges=[];
+    coverState.s2Cells=[];coverState.s2Compacted=[];
+    renderCoverCells();
+    return;
+  }
+  const started=performance.now();
+  try{
+    coverState.cells=active.kind==='bbox'
+      ? bboxCover(...active.bbox,coverState.level,{mode:coverState.mode})
+      : polyfill(active.geometry,coverState.level,{mode:coverState.mode});
+    coverState.compacted=compactCoverCells(coverState.cells);
+    coverState.ranges=coverRanges(coverState.compacted);
+    if(coverState.compare==='s2'){
+      coverState.s2Level=s2LevelForT3(coverState.level);
+      const query=active.kind==='bbox'
+        ? {kind:'bbox',bbox:active.bbox}
+        : {kind:'polygon',geometry:active.geometry};
+      const result=s2Cover(query,coverState.s2Level,{mode:coverState.mode,cap:COVER_CELL_CAP});
+      coverState.s2Cells=result.cells;
+      coverState.s2Capped=result.capped;
+      coverState.s2Compacted=s2Compact(result.cells);
+    }else{
+      coverState.s2Cells=[];coverState.s2Compacted=[];coverState.s2Capped=false;
+    }
+    coverState.elapsedMs=performance.now()-started;
+    renderCoverCells();
+    renderCoverOutput();
+  }catch(err){
+    console.error(err);
+    document.getElementById('cover-status').textContent=err.message||String(err);
+    document.getElementById('cover-output-box').textContent='[]';
+  }
+}
+function updateCoverHint(){
+  const hint=coverState.draw==='bbox'
+    ? 'Drag on the map to draw a bbox.'
+    : 'Click polygon vertices on the map; Finish closes the current shape.';
+  document.getElementById('cover-hint').textContent=hint;
+  coverMap.getCanvas().style.cursor=coverState.draw==='bbox'?'crosshair':'copy';
+}
+function wireCoverSeg(id,prop,cb){
+  const seg=document.getElementById(id);
+  seg.querySelectorAll('button').forEach(button=>{button.onclick=()=>{
+    seg.querySelectorAll('button').forEach(other=>other.classList.remove('on'));
+    button.classList.add('on');
+    coverState[prop]=button.dataset.v;
+    cb();
+  };});
+}
+
+coverMap.on('load',()=>{
+  coverMap.addSource('cover-cells',{type:'geojson',data:coverCollection()});
+  coverMap.addSource('cover-s2-cells',{type:'geojson',data:coverCollection()});
+  coverMap.addSource('cover-query',{type:'geojson',data:coverCollection()});
+  coverMap.addLayer({id:'cover-s2-cells-fill',type:'fill',source:'cover-s2-cells',
+    paint:{'fill-color':'#1c7c4a','fill-opacity':0.18}});
+  coverMap.addLayer({id:'cover-s2-cells-line',type:'line',source:'cover-s2-cells',
+    paint:{'line-color':'#13643a','line-width':1,'line-opacity':0.7}});
+  coverMap.addLayer({id:'cover-cells-fill',type:'fill',source:'cover-cells',
+    paint:{'fill-color':'#d94e2f','fill-opacity':0.24}});
+  coverMap.addLayer({id:'cover-cells-line',type:'line',source:'cover-cells',
+    paint:{'line-color':'#8b2f1f','line-width':1,'line-opacity':0.78}});
+  coverMap.addLayer({id:'cover-query-fill',type:'fill',source:'cover-query',
+    filter:['==',['geometry-type'],'Polygon'],
+    paint:{'fill-color':'#2b6f9a','fill-opacity':0.16}});
+  coverMap.addLayer({id:'cover-query-line',type:'line',source:'cover-query',
+    paint:{'line-color':'#12384f','line-width':2.2,'line-opacity':0.95}});
+  coverMap.addLayer({id:'cover-query-point',type:'circle',source:'cover-query',
+    filter:['==',['geometry-type'],'Point'],
+    paint:{'circle-radius':4,'circle-color':'#12384f','circle-stroke-color':'#fff',
+      'circle-stroke-width':1.5}});
+  renderCoverQuery();
+  updateCoverHint();
+  runCoverage();
+});
+coverMap.on('mousedown',e=>{
+  if(coverState.draw!=='bbox'||e.originalEvent.button!==0)return;
+  e.preventDefault();
+  coverState.dragging=true;
+  coverState.dragStart=[e.lngLat.lng,e.lngLat.lat];
+  coverState.previewBbox=bboxFromCoords(coverState.dragStart,coverState.dragStart);
+  coverMap.dragPan.disable();
+  renderCoverQuery();
+});
+coverMap.on('mousemove',e=>{
+  if(!coverState.dragging)return;
+  coverState.previewBbox=bboxFromCoords(coverState.dragStart,[e.lngLat.lng,e.lngLat.lat]);
+  renderCoverQuery();
+});
+coverMap.on('mouseup',e=>{
+  if(!coverState.dragging)return;
+  coverState.dragging=false;
+  coverMap.dragPan.enable();
+  const bbox=bboxFromCoords(coverState.dragStart,[e.lngLat.lng,e.lngLat.lat]);
+  coverState.previewBbox=null;
+  coverState.bbox=bbox;
+  coverState.polygon=[];
+  renderCoverQuery();
+  runCoverage();
+});
+coverMap.on('click',e=>{
+  if(coverState.draw!=='polygon'||coverState.dragging)return;
+  coverState.polygon.push(cleanCoord([e.lngLat.lng,e.lngLat.lat]));
+  coverState.bbox=null;
+  renderCoverQuery();
+  if(coverState.polygon.length>=3)runCoverage();
+});
+coverMap.on('dblclick',e=>{
+  if(coverState.draw!=='polygon')return;
+  e.preventDefault();
+  if(coverState.polygon.length>=3)runCoverage();
+});
+
+wireCoverSeg('cover-draw','draw',()=>{
+  updateCoverHint();
+  renderCoverQuery();
+  if(activeCoverGeometry())runCoverage();
+});
+wireCoverSeg('cover-compare','compare',runCoverage);
+wireCoverSeg('cover-mode','mode',runCoverage);
+wireCoverSeg('cover-output','output',()=>{
+  renderCoverCells();
+  renderCoverOutput();
+});
+wireCoverSeg('cover-format','format',renderCoverOutput);
+document.getElementById('cover-level').addEventListener('input',e=>{
+  coverState.level=Number(e.target.value);
+  document.getElementById('cover-level-label').textContent=
+    `L${coverState.level} ${COVER_LEVEL_LABELS[coverState.level]}`;
+});
+document.getElementById('cover-level').addEventListener('change',runCoverage);
+document.getElementById('cover-run').addEventListener('click',runCoverage);
+document.getElementById('cover-finish').addEventListener('click',()=>{
+  if(coverState.draw==='polygon'&&coverState.polygon.length>=3)runCoverage();
+});
+document.getElementById('cover-clear').addEventListener('click',()=>{
+  coverState.bbox=null;
+  coverState.previewBbox=null;
+  coverState.polygon=[];
+  coverState.cells=[];
+  coverState.compacted=[];
+  coverState.ranges=[];
+  coverState.s2Cells=[];
+  coverState.s2Compacted=[];
+  renderCoverQuery();
+  renderCoverCells();
+  document.getElementById('cover-status').textContent='Draw a bbox or polygon to run coverage.';
+  document.getElementById('cover-output-box').textContent='[]';
+});
+window.trifoldCoverageDemo={state:coverState,runCoverage};
 </script>
 </body>
 </html>
