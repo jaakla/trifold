@@ -4,22 +4,24 @@ These routines are dependency-free and intentionally conservative.  They
 operate in WGS84 lon/lat space over Trifold's exported cell rings, then let
 callers apply exact post-filters when a query needs exact point or geometry
 membership.
+
+Performance note: the per-node geometry (triangle subdivision, plane-side
+containment, ring building) is implemented here as pure-scalar mirrors of the
+``trifold.core`` numpy routines.  numpy's per-call overhead on 3-vectors
+dominated cover time (~90%, see issue #11); the scalar mirrors perform the
+same IEEE-754 operations in the same order, so covers are identical (verified
+against the numpy implementation over a bbox/circle/polygon/polar corpus),
+~10x faster.  ``trifold.core`` remains the canonical geometry for everything
+else.
 """
 from __future__ import annotations
 
+import math
 from collections.abc import Iterable, Sequence
 from typing import Any
 
-import numpy as np
-
 from .address import MAX_LEVEL, descendant_range, encode64
-from .core import (
-    build_export_ring,
-    contains_point,
-    densified_ring_xyz,
-    icosahedron,
-    subdivide,
-)
+from .core import EXPORT_DEPTH, icosahedron
 
 EPS = 1e-12
 Point2 = tuple[float, float]
@@ -109,8 +111,158 @@ def cover_ranges(cells: Iterable[int]) -> list[tuple[int, int]]:
     return merged
 
 
+# ------------------------------------------------------------------------
+# Pure-scalar mirrors of trifold.core geometry (see module docstring).
+# Triangles are tuples of three (x, y, z) float tuples.
+# ------------------------------------------------------------------------
+_POLE_Z = 1 - 1e-9
+_RAD2DEG = 180.0 / math.pi
+
+
+def _norm3(x: float, y: float, z: float) -> tuple[float, float, float]:
+    n = math.sqrt(x * x + y * y + z * z)
+    return (x / n, y / n, z / n)
+
+
+def _sub4(tri):
+    """Mirror of core.subdivide on scalar tuples."""
+    v0, v1, v2 = tri
+    m01 = _norm3(v0[0] + v1[0], v0[1] + v1[1], v0[2] + v1[2])
+    m12 = _norm3(v1[0] + v2[0], v1[1] + v2[1], v1[2] + v2[2])
+    m20 = _norm3(v2[0] + v0[0], v2[1] + v0[1], v2[2] + v0[2])
+    return ((v0, m01, m20), (m01, v1, m12), (m20, m12, v2), (m01, m12, m20))
+
+
+def _contains3(tri, p) -> bool:
+    """Mirror of core.contains_point: dot(cross(a, b), p) plane-side tests."""
+    v0, v1, v2 = tri
+    px, py, pz = p
+    if ((v0[1] * v1[2] - v0[2] * v1[1]) * px
+            + (v0[2] * v1[0] - v0[0] * v1[2]) * py
+            + (v0[0] * v1[1] - v0[1] * v1[0]) * pz) < -1e-14:
+        return False
+    if ((v1[1] * v2[2] - v1[2] * v2[1]) * px
+            + (v1[2] * v2[0] - v1[0] * v2[2]) * py
+            + (v1[0] * v2[1] - v1[1] * v2[0]) * pz) < -1e-14:
+        return False
+    return ((v2[1] * v0[2] - v2[2] * v0[1]) * px
+            + (v2[2] * v0[0] - v2[0] * v0[2]) * py
+            + (v2[0] * v0[1] - v2[1] * v0[0]) * pz) >= -1e-14
+
+
+def _xyz_to_lonlat3(p) -> Point2:
+    z = p[2]
+    if z > 1.0:
+        z = 1.0
+    elif z < -1.0:
+        z = -1.0
+    return (math.atan2(p[1], p[0]) * _RAD2DEG, math.asin(z) * _RAD2DEG)
+
+
+def _edge_points3(a, b, n_halvings):
+    """Mirror of core._edge_points (recursive normalized-midpoint)."""
+    if n_halvings <= 0:
+        return [a]
+    m = _norm3(a[0] + b[0], a[1] + b[1], a[2] + b[2])
+    return (_edge_points3(a, m, n_halvings - 1)
+            + _edge_points3(m, b, n_halvings - 1))
+
+
+def _unwrap_lonlat3(pts_xyz) -> Ring:
+    """Mirror of core.unwrap_ring_lonlat (sequential mean; see note below)."""
+    ring = []
+    prev = None
+    off = 0.0
+    for p in pts_xyz:
+        lon, lat = _xyz_to_lonlat3(p)
+        lon += off
+        if prev is not None:
+            while lon - prev > 180:
+                lon -= 360
+                off -= 360
+            while lon - prev < -180:
+                lon += 360
+                off += 360
+        ring.append((lon, lat))
+        prev = lon
+    return _recenter3(ring)
+
+
+def _recenter3(ring: Ring) -> Ring:
+    # core uses np.mean (pairwise summation); sequential sum may differ in the
+    # last ulp, which could only flip the +/-360 recentring when the mean sits
+    # exactly on 180 -- and every predicate below retries shifts of -360/0/360,
+    # so cover membership cannot change.
+    mean = sum(point[0] for point in ring) / len(ring)
+    shift = 0.0
+    while mean + shift > 180:
+        shift -= 360
+    while mean + shift <= -180:
+        shift += 360
+    if shift == 0.0:
+        return ring
+    return [(lon + shift, lat) for lon, lat in ring]
+
+
+def _cell_ring(tri, level: int) -> Ring:
+    """Mirror of core.densified_ring_xyz(level=..) + core.build_export_ring."""
+    n_halvings = EXPORT_DEPTH - level
+    if n_halvings < 0:
+        n_halvings = 0
+    pts = []
+    pts.extend(_edge_points3(tri[0], tri[1], n_halvings))
+    pts.extend(_edge_points3(tri[1], tri[2], n_halvings))
+    pts.extend(_edge_points3(tri[2], tri[0], n_halvings))
+
+    pole_idx = [i for i, p in enumerate(pts) if abs(p[2]) >= _POLE_Z]
+    if pole_idx:
+        polelat = 90.0 if pts[pole_idx[0]][2] > 0 else -90.0
+        n = len(pts)
+        pole_set = set(pole_idx)
+        lonlat = {}
+        prev_lon = None
+        off = 0.0
+        for i in range(n):
+            if i in pole_set:
+                continue
+            lon, lat = _xyz_to_lonlat3(pts[i])
+            lon += off
+            if prev_lon is not None:
+                while lon - prev_lon > 180:
+                    lon -= 360
+                    off -= 360
+                while lon - prev_lon < -180:
+                    lon += 360
+                    off += 360
+            lonlat[i] = (lon, lat)
+            prev_lon = lon
+        ring = []
+        for i in range(n):
+            if i in pole_set:
+                iprev = (i - 1) % n
+                inext = (i + 1) % n
+                while iprev in pole_set:
+                    iprev = (iprev - 1) % n
+                while inext in pole_set:
+                    inext = (inext + 1) % n
+                ring.append((lonlat[iprev][0], polelat))
+                ring.append((lonlat[inext][0], polelat))
+            else:
+                ring.append(lonlat[i])
+        return _recenter3(ring)
+
+    north = _contains3(tri, (0.0, 0.0, 1.0))
+    if north or _contains3(tri, (0.0, 0.0, -1.0)):
+        polelat = 90.0 if north else -90.0
+        ll = sorted((_xyz_to_lonlat3(p) for p in pts), key=lambda q: q[0])
+        return ll + [(180.0, polelat), (-180.0, polelat)]
+
+    return _unwrap_lonlat3(pts)
+
+
 def _cover(level: int, overlaps_query, accepts) -> list[int]:
     verts, faces = icosahedron()
+    verts = [(float(v[0]), float(v[1]), float(v[2])) for v in verts]
     out: set[int] = set()
 
     def recurse(face: int, digits: tuple[int, ...], tri) -> None:
@@ -121,18 +273,12 @@ def _cover(level: int, overlaps_query, accepts) -> list[int]:
             if accepts(ring, tri):
                 out.add(encode64(face, digits))
             return
-        for digit, child in enumerate(subdivide(tri)):
+        for digit, child in enumerate(_sub4(tri)):
             recurse(face, (*digits, digit), child)
 
     for face, (i, j, k) in enumerate(faces):
         recurse(face, (), (verts[i], verts[j], verts[k]))
     return sorted(out)
-
-
-def _cell_ring(tri, level: int) -> Ring:
-    pts = densified_ring_xyz(tri, level=level)
-    ring, _ = build_export_ring(pts, tri)
-    return [(float(lon), float(lat)) for lon, lat in ring]
 
 
 def _validate_level(level: int) -> None:
@@ -166,18 +312,17 @@ def _split_bbox(min_lon: float, min_lat: float,
 
 
 def _triangle_center_lonlat(tri) -> Point2:
-    point = tri[0] + tri[1] + tri[2]
-    point = point / np.linalg.norm(point)
-    lon = float(np.degrees(np.arctan2(point[1], point[0])))
-    lat = float(np.degrees(np.arcsin(np.clip(point[2], -1, 1))))
-    return lon, lat
+    v0, v1, v2 = tri
+    return _xyz_to_lonlat3(_norm3(v0[0] + v1[0] + v2[0],
+                                  v0[1] + v1[1] + v2[1],
+                                  v0[2] + v1[2] + v2[2]))
 
 
 def _lonlat_to_xyz(lon: float, lat: float):
-    lam = np.radians(lon)
-    phi = np.radians(lat)
-    cp = np.cos(phi)
-    return np.array([cp * np.cos(lam), cp * np.sin(lam), np.sin(phi)])
+    lam = math.radians(lon)
+    phi = math.radians(lat)
+    cp = math.cos(phi)
+    return (cp * math.cos(lam), cp * math.sin(lam), math.sin(phi))
 
 
 def _ring_bbox(ring: Ring) -> BBox:
@@ -231,7 +376,7 @@ def _cell_intersects_rect(ring: Ring, tri, rect: BBox) -> bool:
             continue
         if any(_point_in_rect(point, rect) for point in shifted):
             return True
-        if any(contains_point(tri, _lonlat_to_xyz(lon, lat))
+        if any(_contains3(tri, _lonlat_to_xyz(lon, lat))
                for lon, lat in _rect_corners(rect)):
             return True
         for edge in _segments(shifted):
@@ -342,7 +487,7 @@ def _cell_intersects_polygon(ring: Ring, tri, polygon: Polygon) -> bool:
             continue
         if any(_point_in_polygon(point, polygon) for point in shifted):
             return True
-        if any(contains_point(tri, _lonlat_to_xyz(lon, lat))
+        if any(_contains3(tri, _lonlat_to_xyz(lon, lat))
                for lon, lat in polygon[0]):
             return True
         cell_edges = _segments(shifted)

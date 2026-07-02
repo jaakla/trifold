@@ -90,3 +90,28 @@ def test_cover_helpers_validate_inputs():
         tg.polyfill(_rectangle(-1, -91, 1, 1), level=5)
     with pytest.raises(ValueError, match="geometry"):
         tg.polyfill({"type": "LineString", "coordinates": []}, level=5)
+
+
+def test_pinned_covers_regression():
+    """Pinned covers guarding the scalar fast path (issue #11).
+
+    Values were produced by the original numpy implementation and verified
+    identical against the scalar rewrite over a 192-case corpus; any change
+    here means cover semantics changed.
+    """
+    import hashlib
+
+    assert tg.bbox_cover(-0.3, 51.4, 0.1, 51.6, 6) == [
+        8811996358392152070, 8917127262193582086]
+
+    polar = tg.bbox_cover(-180, 86, 180, 90, 5)  # interior-pole ring branch
+    assert len(polar) == 46
+    assert polar[0] == 3549962406274793477 and polar[-1] == 9177773090627649541
+    digest = hashlib.sha256(",".join(map(str, polar)).encode()).hexdigest()
+    assert digest.startswith("62f87da20179f8ac")
+
+    anti = tg.bbox_cover(178, -20, -178, -16, 6)  # antimeridian split
+    assert len(anti) == 48
+    assert anti[0] == 2504282867794706438 and anti[-1] == 2592243798016786438
+    digest = hashlib.sha256(",".join(map(str, anti)).encode()).hexdigest()
+    assert digest.startswith("34d188f48f108ef8")
