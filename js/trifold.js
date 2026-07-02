@@ -693,7 +693,12 @@ export function coverRanges(cells) {
  * covers; typical covers need ~5-6x fewer intervals here (issue #13).
  */
 export function hilbertRanges(cells) {
-  const list = [...cells].map(BigInt);
+  const list = [...cells].map(cell => {
+    if (typeof cell === "number" && !Number.isSafeInteger(cell)) {
+      throw new RangeError("numeric addr64 values must be safe integers; use BigInt or string");
+    }
+    return BigInt(cell);
+  });
   if (!list.length) return [];
   const level = list[0] & 31n;
   for (const cell of list) {

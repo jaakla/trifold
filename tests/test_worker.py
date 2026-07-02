@@ -159,7 +159,11 @@ const polar = bboxCover(-180.0, 84.0, 180.0, 90.0, 5);
 const polygonCells = polyfill(polygon, 5);
 const ranges = coverRanges(bboxCells);
 const asPairs = pairs => pairs.map(([low, high]) => [low.toString(), high.toString()]);
+let unsafeNumberThrows = false;
+try { hilbertRanges([Number(bboxCells[0]) + 2 ** 60]); }
+catch (err) { unsafeNumberThrows = err instanceof RangeError; }
 console.log(JSON.stringify({
+  unsafeNumberThrows,
   bbox: bboxCells.map(String),
   anti: anti.map(String),
   polygon: polygonCells.map(String),
@@ -189,4 +193,5 @@ console.log(JSON.stringify({
         'hilbertPolar': as_pairs(hilbert_ranges(
             bbox_cover(-180.0, 84.0, 180.0, 90.0, 5))),
         'hilbertPolygon': as_pairs(hilbert_ranges(polyfill(polygon, 5))),
+        'unsafeNumberThrows': True,
     }
