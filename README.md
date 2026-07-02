@@ -216,8 +216,10 @@ neighbours' vertices bit-exactly.
 * **Approximate spatial search indexes.** Assign points to fixed-level
   `addr64` cells, cover a query bbox or GeoJSON polygon with
   `bbox_cover()` / `polyfill()`, turn cells into numeric intervals with
-  `cover_ranges()`, then apply an exact lon/lat or geometry post-filter
-  when the query must be exact.
+  `cover_ranges()` (addr64 subtree scans) or `hilbert_ranges()`
+  (`rhombus64`-keyed rows; the Hilbert ordering coalesces intervals ~5-6x,
+  see `polyfill_benchmark.md`), then apply an exact lon/lat or geometry
+  post-filter when the query must be exact.
 * **Simplicial data structures.** Triangles are *the* primitive of
   numerical geometry: FEM/FVM meshes, terrain TINs, barycentric
   interpolation, subdivision surfaces. A triangular DGGS plugs into that
@@ -342,6 +344,9 @@ import trifold.api as tg
 cells = tg.bbox_cover(-0.3, 51.4, 0.1, 51.6, level=10)
 ranges = tg.cover_ranges(cells)
 # Query addr64 BETWEEN each low/high range, then exact-filter by lon/lat.
+
+hranges = tg.hilbert_ranges(cells)
+# Rows keyed by rhombus64(addr64) instead: ~5-6x fewer BETWEEN intervals.
 ```
 
 The cover is dependency-free and uses exported lon/lat cell rings. For

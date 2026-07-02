@@ -20,7 +20,17 @@ import math
 from collections.abc import Iterable, Sequence
 from typing import Any
 
-from .address import MAX_LEVEL, descendant_range, encode64
+from .address import (
+    FACE_DIAMOND,
+    ICO_FACES,
+    LEVEL_BITS,
+    MAX_LEVEL,
+    _hilbert_xy_to_index,
+    decode64,
+    descendant_range,
+    encode64,
+    level_of,
+)
 from .core import EXPORT_DEPTH, icosahedron
 
 EPS = 1e-12
@@ -258,6 +268,114 @@ def _cell_ring(tri, level: int) -> Ring:
         return ll + [(180.0, polelat), (-180.0, polelat)]
 
     return _unwrap_lonlat3(pts)
+
+
+def hilbert_ranges(cells: Iterable[int]) -> list[tuple[int, int]]:
+    """Return merged scan intervals over the ``rhombus64`` Hilbert keyspace.
+
+    Input must be a fixed-level cover (the ``bbox_cover``/``polyfill``
+    output); mixed levels raise ``ValueError`` because Hilbert adjacency is
+    only meaningful within one level.  Each cell maps to its ``rhombus64``
+    key (both triangles of a pair share one key, which is what makes the
+    intervals dense); consecutive keys merge into inclusive ``(lo, hi)``
+    intervals.  A ``BETWEEN lo AND hi`` scan is exact when the table stores
+    only level-L keys.  Edge rhombi whose paired triangle lies outside the
+    query are still scanned — the same conservative-prefilter contract as
+    the rest of the cover API.
+
+    Use :func:`cover_ranges` for addr64 subtree scans over compacted covers;
+    use this for fixed-level ``rhombus64``-keyed data.  Typical covers need
+    ~5-6x fewer intervals here than ``cover_ranges`` (see issue #13).
+    """
+    cells = [int(cell) for cell in cells]
+    if not cells:
+        return []
+    levels = {level_of(cell) for cell in cells}
+    if len(levels) != 1:
+        raise ValueError("hilbert_ranges requires cells of a single level")
+    level = levels.pop()
+    # one level-L Hilbert index step in rhombus64 key space; a purely numeric
+    # merge subsumes the same-diamond condition (a carry into the diamond
+    # bits lands exactly on the next diamond's first key, which is still a
+    # contiguous key interval for scanning)
+    step = 1 << (LEVEL_BITS + 2 * (MAX_LEVEL - level))
+    keys = sorted(_rhombus_keys(cells))
+    merged = [(keys[0], keys[0])]
+    for key in keys[1:]:
+        low, high = merged[-1]
+        if key == high + step:
+            merged[-1] = (low, key)
+        else:
+            merged.append((key, key))
+    return merged
+
+
+def _rhombus_keys(cells: list[int]) -> set[int]:
+    """``{rhombus64(cell) for cell in cells}``, amortized over a sorted cover.
+
+    Mirrors ``address.lattice_triangle`` + ``address.rhombus_coords`` +
+    ``address.rhombus64`` exactly (asserted by tests), but keeps a stack of
+    lattice triangles along the digit path: sorted addr64 is depth-first
+    order, so consecutive cells share long prefixes and the descent costs
+    ~1.3 child steps per cell instead of ``level``.
+    """
+    keys: set[int] = set()
+    face_info: dict[int, tuple[int, int, int, int]] = {}
+    stack_face = -1
+    prev_digits: tuple[int, ...] = ()
+    stack: list[tuple] = []
+    for address in sorted(cells):
+        face, digits = decode64(address)
+        if face != stack_face:
+            stack = [((1, 0, 0), (0, 1, 0), (0, 0, 1))]
+            prev_digits = ()
+            stack_face = face
+        common = 0
+        limit = min(len(prev_digits), len(digits))
+        while common < limit and prev_digits[common] == digits[common]:
+            common += 1
+        del stack[common + 1:]
+        vertices = stack[common]
+        for digit in digits[common:]:
+            v0, v1, v2 = vertices
+            m01 = (v0[0] + v1[0], v0[1] + v1[1], v0[2] + v1[2])
+            m12 = (v1[0] + v2[0], v1[1] + v2[1], v1[2] + v2[2])
+            m20 = (v2[0] + v0[0], v2[1] + v0[1], v2[2] + v0[2])
+            if digit == 0:
+                vertices = ((2 * v0[0], 2 * v0[1], 2 * v0[2]), m01, m20)
+            elif digit == 1:
+                vertices = (m01, (2 * v1[0], 2 * v1[1], 2 * v1[2]), m12)
+            elif digit == 2:
+                vertices = (m20, m12, (2 * v2[0], 2 * v2[1], 2 * v2[2]))
+            else:
+                vertices = (m01, m12, m20)
+            stack.append(vertices)
+        prev_digits = digits
+        level = len(digits)
+        info = face_info.get(face)
+        if info is None:
+            diamond, half, edge = FACE_DIAMOND[face]
+            face_vertices = ICO_FACES[face]
+            info = (diamond, half,
+                    face_vertices.index(edge[0]), face_vertices.index(edge[1]))
+            face_info[face] = info
+        diamond, half, edge_i, edge_j = info
+        size = 1 << level
+        x = y = size + 1
+        for barycentric in vertices:
+            px = barycentric[edge_i]
+            py = barycentric[edge_j]
+            if half:
+                px, py = size - py, size - px
+            if px < x:
+                x = px
+            if py < y:
+                y = py
+        hilbert = _hilbert_xy_to_index(level, x, y)
+        keys.add((diamond << 59)
+                 | ((hilbert << (2 * (MAX_LEVEL - level))) << LEVEL_BITS)
+                 | level)
+    return keys
 
 
 def _cover(level: int, overlaps_query, accepts) -> list[int]:

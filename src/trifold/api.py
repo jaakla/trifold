@@ -59,7 +59,7 @@ from .core import (
     xyz_to_lonlat,
 )
 from .grid import build_compacted, cell_geometry_ring, expand_to_base
-from .cover import bbox_cover, cover_ranges, polyfill
+from .cover import bbox_cover, cover_ranges, hilbert_ranges, polyfill
 
 AddressLike: TypeAlias = int | str | tuple[int, Sequence[int]]
 
@@ -80,6 +80,7 @@ __all__ = [
     "children64",
     "contains_point",
     "cover_ranges",
+    "hilbert_ranges",
     "decode64",
     "decode_rhombus64",
     "densified_ring_xyz",

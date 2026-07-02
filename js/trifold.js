@@ -682,6 +682,38 @@ export function coverRanges(cells) {
   return merged;
 }
 
+/**
+ * Return merged scan intervals over the rhombus64 Hilbert keyspace.
+ *
+ * Input must be a fixed-level cover (the bboxCover/polyfill output); mixed
+ * levels throw a RangeError. Each cell maps to its rhombus64 key (triangle
+ * pairs share one key), and consecutive keys merge into inclusive [lo, hi]
+ * BigInt intervals. A BETWEEN scan is exact when the table stores only
+ * level-L keys. Use coverRanges for addr64 subtree scans over compacted
+ * covers; typical covers need ~5-6x fewer intervals here (issue #13).
+ */
+export function hilbertRanges(cells) {
+  const list = [...cells].map(BigInt);
+  if (!list.length) return [];
+  const level = list[0] & 31n;
+  for (const cell of list) {
+    if ((cell & 31n) !== level) throw new RangeError("hilbertRanges requires cells of a single level");
+  }
+  // one level-L Hilbert index step in key space; the numeric merge subsumes
+  // the same-diamond condition (a carry into the diamond bits lands exactly
+  // on the next diamond's first key - still one contiguous scan interval)
+  const step = 1n << (LEVEL_BITS + BigInt(2 * (MAX_LEVEL - Number(level))));
+  const keys = [...new Set(list.map(cell => rhombus64(cell).toString()))]
+    .map(BigInt).sort(compareBigInt);
+  const merged = [[keys[0], keys[0]]];
+  for (const key of keys.slice(1)) {
+    const previous = merged[merged.length - 1];
+    if (key === previous[1] + step) previous[1] = key;
+    else merged.push([key, key]);
+  }
+  return merged;
+}
+
 function coverCells(level, overlapsQuery, accepts) {
   const out = new Set();
   const recurse = (face, digits, triangle) => {

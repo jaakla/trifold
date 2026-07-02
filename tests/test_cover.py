@@ -115,3 +115,39 @@ def test_pinned_covers_regression():
     assert anti[0] == 2504282867794706438 and anti[-1] == 2592243798016786438
     digest = hashlib.sha256(",".join(map(str, anti)).encode()).hexdigest()
     assert digest.startswith("34d188f48f108ef8")
+
+
+def test_hilbert_ranges_properties_and_pinned_counts():
+    """hilbert_ranges (issue #13): merged rhombus64 scan intervals."""
+    cells = tg.bbox_cover(-0.20, 51.40, 0.10, 51.60, 14)
+    ranges = tg.hilbert_ranges(cells)
+
+    # pinned from the issue #13 measurement table (5.8x fewer than addr64)
+    assert len(ranges) == 68
+    assert len(tg.cover_ranges(cells)) >= 5 * len(ranges)
+
+    # sorted, non-overlapping, non-empty inclusive intervals
+    assert ranges == sorted(ranges)
+    assert all(low <= high for low, high in ranges)
+    assert all(ranges[i][1] < ranges[i + 1][0] for i in range(len(ranges) - 1))
+
+    # every input cell's key is covered; pair collapse bounds the key count
+    keys = {tg.rhombus64(cell) for cell in cells}
+    assert all(any(low <= key <= high for low, high in ranges) for key in keys)
+    assert len(cells) / 2 <= len(keys) <= len(cells)
+
+    # the amortized prefix-sharing descent must agree with rhombus64 exactly
+    from trifold.cover import _rhombus_keys
+    assert _rhombus_keys(cells) == keys
+
+
+def test_hilbert_ranges_edge_inputs():
+    assert tg.hilbert_ranges([]) == []
+
+    single = tg.bbox_cover(-0.3, 51.4, 0.1, 51.6, 6)
+    ranges = tg.hilbert_ranges(single)
+    assert ranges and all(low <= high for low, high in ranges)
+
+    cells = tg.bbox_cover(-0.3, 51.4, 0.1, 51.6, 8)
+    with pytest.raises(ValueError, match="single level"):
+        tg.hilbert_ranges([cells[0], tg.parent64(cells[0])])
