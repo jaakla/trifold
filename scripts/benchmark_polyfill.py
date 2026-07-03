@@ -501,18 +501,20 @@ def _s2_ranges(cells):
     return merged
 
 
-def scan_levels(acc_fn, compact_fn, ranges_fn, polys, shape_area,
+def scan_levels(acc_fn, compact_fn, ranges_fn, hranges_fn, polys, shape_area,
                 target, lo, hi):
-    """Walk levels coarse->fine, recording all three size metrics per level.
+    """Walk levels coarse->fine, recording all size metrics per level.
 
-    Returns (chosen_level, [(lev, acc, n_cells, n_compacted, n_ranges)]).
+    Returns (chosen_level,
+             [(lev, acc, n_cells, n_compacted, n_ranges, n_hilbert_ranges)]).
     """
     records = []
     for lev in range(lo, hi + 1):
         acc, cover = acc_fn(polys, lev, shape_area)
         comp = compact_fn(cover)
         nrng = len(ranges_fn(comp)) if cover else 0
-        records.append((lev, acc, len(cover), len(comp), nrng))
+        nhrng = len(hranges_fn(cover)) if cover else 0
+        records.append((lev, acc, len(cover), len(comp), nrng, nhrng))
         if acc >= target:
             return lev, records
     return hi, records
@@ -640,43 +642,47 @@ def run():
     rows = []
     hdr = (f"\n{'family':7} {'shape':16} {'sys':3} {'lvl':>3} {'acc':>5} "
            f"{'cells':>7} {'compact':>7} {'ms':>8} {'cells/s':>9} "
-           f"{'c@tgt':>9} {'cc@tgt':>8} {'rng@tgt':>8}")
+           f"{'c@tgt':>9} {'cc@tgt':>8} {'rng@tgt':>8} {'hrng@tgt':>8}")
     print(hdr)
     print("-" * len(hdr))
     for family, items in cases.items():
         for shape_name, polys in items:
             shape_area = _shape_area_km2(polys)
-            for sys, acc_fn, cover_fn, compact_fn, ranges_fn in (
+            for sys, acc_fn, cover_fn, compact_fn, ranges_fn, hranges_fn in (
                 ("T3", _acc_t3,
                  lambda L, p=polys: trifold.polyfill(_geojson(p), L, mode="intersects"),
                  lambda cs: _compact(cs, trifold.parent64),
-                 trifold.cover_ranges),
+                 trifold.cover_ranges,
+                 trifold.hilbert_ranges),
                 ("S2", _acc_s2,
                  lambda L, p=polys: s2_cover(p, L, mode="intersects"),
                  lambda cs: _compact(cs, _s2_parent),
+                 _s2_ranges,
                  _s2_ranges),
             ):
                 # admin borders never reach the area target until impractically
                 # fine levels (jagged coastline -> huge perimeter), so cap L13
                 hi = 13 if family == "admin" else 16
                 lev, records = scan_levels(acc_fn, compact_fn, ranges_fn,
-                                           polys, shape_area,
+                                           hranges_fn, polys, shape_area,
                                            args.target, 4, hi)
                 acc = records[-1][1]
                 n_cells, n_comp = records[-1][2], records[-1][3]
                 c_raw, ex1 = metric_at_target(records, args.target, 2)
                 c_cmp, ex2 = metric_at_target(records, args.target, 3)
                 c_rng, ex3 = metric_at_target(records, args.target, 4)
+                c_hrng, ex4 = metric_at_target(records, args.target, 5)
                 ms, _ = _time(lambda: cover_fn(lev), args.repeats)
                 cps = n_cells / (ms / 1000.0) if ms else 0
                 fmt = lambda v, ex: f"{'~' if ex else ''}{v:.0f}"
                 rows.append((family, shape_name, sys, lev, acc, n_cells,
-                             n_comp, ms, cps, c_raw, c_cmp, c_rng,
-                             fmt(c_raw, ex1), fmt(c_cmp, ex2), fmt(c_rng, ex3)))
+                             n_comp, ms, cps, c_raw, c_cmp, c_rng, c_hrng,
+                             fmt(c_raw, ex1), fmt(c_cmp, ex2),
+                             fmt(c_rng, ex3), fmt(c_hrng, ex4)))
                 print(f"{family:7} {shape_name:16} {sys:3} {lev:3d} {acc:5.2f} "
                       f"{n_cells:7d} {n_comp:7d} {ms:8.2f} {cps:9.0f} "
                       f"{fmt(c_raw, ex1):>9} {fmt(c_cmp, ex2):>8} "
-                      f"{fmt(c_rng, ex3):>8}")
+                      f"{fmt(c_rng, ex3):>8} {fmt(c_hrng, ex4):>8}")
 
     # per-family summary: interpolated size metrics at the target accuracy
     print(f"\nPer-family medians at accuracy {args.target} (quantization-free "
@@ -684,7 +690,8 @@ def run():
     print(f"{'family':8} {'T3 ms':>9} {'S2 ms':>8} {'ms':>6} "
           f"{'T3 cells':>9} {'S2 cells':>9} {'cells':>6} "
           f"{'T3 cmp':>7} {'S2 cmp':>7} {'cmp':>6} "
-          f"{'T3 rng':>7} {'S2 rng':>7} {'rng':>6}")
+          f"{'T3 rng':>7} {'S2 rng':>7} {'rng':>6} "
+          f"{'T3 hrng':>7} {'S2 hrng':>7} {'hrng':>6}")
     for family in cases:
         fr = [r for r in rows if r[0] == family]
         if not fr:
@@ -695,7 +702,7 @@ def run():
         ratio = lambda a, b: b / a if a else float("nan")
         t3ms, s2ms = med(t3, 7), med(s2, 7)
         vals = []
-        for i in (9, 10, 11):
+        for i in (9, 10, 11, 12):
             vals.append((med(t3, i), med(s2, i)))
         print(f"{family:8} {t3ms:9.2f} {s2ms:8.2f} {ratio(t3ms, s2ms):6.2f} "
               f"{vals[0][0]:9.0f} {vals[0][1]:9.0f} "
@@ -703,7 +710,9 @@ def run():
               f"{vals[1][0]:7.0f} {vals[1][1]:7.0f} "
               f"{ratio(vals[1][0], vals[1][1]):6.2f} "
               f"{vals[2][0]:7.0f} {vals[2][1]:7.0f} "
-              f"{ratio(vals[2][0], vals[2][1]):6.2f}")
+              f"{ratio(vals[2][0], vals[2][1]):6.2f} "
+              f"{vals[3][0]:7.0f} {vals[3][1]:7.0f} "
+              f"{ratio(vals[3][0], vals[3][1]):6.2f}")
 
     if args.md:
         _write_md(args.md, args, rows, cases)
@@ -721,15 +730,19 @@ def _write_md(path, args, rows, cases):
              f"levels), removing the level-quantization artifact; `~` marks "
              f"extrapolation past the level cap. `cells` = full fixed-level "
              f"cover, `compacted` = after folding complete sibling sets, "
-             f"`ranges` = merged index intervals (SQL scan cost).\n",
+             f"`ranges` = merged index intervals (SQL scan cost) over each "
+             f"grid's canonical key (T3 addr64 via `cover_ranges`, S2 cellid), "
+             f"`hranges` = intervals over the Hilbert key (T3 `rhombus64` via "
+             f"`hilbert_ranges`; identical to `ranges` for S2, whose canonical "
+             f"key is already Hilbert-ordered).\n",
              "| family | shape | sys | level | acc | cells | compacted | ms "
              f"| cells/s | cells@{args.target} | compacted@{args.target} "
-             f"| ranges@{args.target} |",
-             "|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|"]
+             f"| ranges@{args.target} | hranges@{args.target} |",
+             "|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|"]
     for r in rows:
         lines.append(f"| {r[0]} | {r[1]} | {r[2]} | {r[3]} | {r[4]:.2f} | "
                      f"{r[5]} | {r[6]} | {r[7]:.2f} | {r[8]:.0f} | "
-                     f"{r[12]} | {r[13]} | {r[14]} |")
+                     f"{r[13]} | {r[14]} | {r[15]} | {r[16]} |")
     open(path, "w").write("\n".join(lines) + "\n")
 
 

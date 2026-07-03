@@ -2,36 +2,36 @@
 
 Target area accuracy (shape/cover) >= 0.95 (intersects mode); per-shape level auto-picked; median of 3 runs. S2 cells are bit-identical to s2sphere; bbox/circle covers cross-checked against s2sphere's native coverer.
 
-The `@0.95` columns interpolate each size metric at exactly the target accuracy (log-linear between bracketing levels), removing the level-quantization artifact; `~` marks extrapolation past the level cap. `cells` = full fixed-level cover, `compacted` = after folding complete sibling sets, `ranges` = merged index intervals (SQL scan cost).
+The `@0.95` columns interpolate each size metric at exactly the target accuracy (log-linear between bracketing levels), removing the level-quantization artifact; `~` marks extrapolation past the level cap. `cells` = full fixed-level cover, `compacted` = after folding complete sibling sets, `ranges` = merged index intervals (SQL scan cost) over each grid's canonical key (T3 addr64 via `cover_ranges`, S2 cellid), `hranges` = intervals over the Hilbert key (T3 `rhombus64` via `hilbert_ranges`; identical to `ranges` for S2, whose canonical key is already Hilbert-ordered).
 
-| family | shape | sys | level | acc | cells | compacted | ms | cells/s | cells@0.95 | compacted@0.95 | ranges@0.95 |
-|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| bbox | city ~25km | T3 | 14 | 0.96 | 5337 | 396 | 49.32 | 108211 | 3789 | 331 | 331 |
-| bbox | city ~25km | S2 | 15 | 0.98 | 7973 | 320 | 58.52 | 136253 | 2173 | 167 | 55 |
-| bbox | metro ~120km | T3 | 12 | 0.97 | 8715 | 495 | 78.99 | 110336 | 3597 | 312 | 312 |
-| bbox | metro ~120km | S2 | 12 | 0.96 | 3343 | 238 | 23.86 | 140089 | 2081 | 176 | 47 |
-| bbox | region ~600km | T3 | 9 | 0.96 | 4682 | 368 | 47.77 | 98016 | 3697 | 325 | 325 |
-| bbox | region ~600km | S2 | 10 | 0.97 | 6932 | 275 | 45.75 | 151528 | 1859 | 151 | 45 |
-| circle | r=2km | T3 | 16 | 0.94 | 2292 | 234 | 183.30 | 12504 | ~2657 | ~250 | ~250 |
-| circle | r=2km | S2 | 16 | 0.92 | 950 | 131 | 15.65 | 60687 | ~1759 | ~201 | ~38 |
-| circle | r=20km | T3 | 13 | 0.96 | 3531 | 324 | 271.72 | 12995 | 2810 | 280 | 280 |
-| circle | r=20km | S2 | 14 | 0.97 | 5658 | 315 | 95.87 | 59017 | 2089 | 193 | 49 |
-| circle | r=150km | T3 | 10 | 0.96 | 3098 | 248 | 240.89 | 12860 | 2570 | 228 | 228 |
-| circle | r=150km | S2 | 11 | 0.97 | 4997 | 317 | 79.96 | 62496 | 2489 | 221 | 60 |
-| random | rand 0.3deg | T3 | 14 | 0.97 | 9578 | 599 | 259.82 | 36864 | 3746 | 354 | 354 |
-| random | rand 0.3deg | S2 | 14 | 0.95 | 3317 | 293 | 43.49 | 76279 | 3054 | 280 | 82 |
-| random | rand 1.2deg | T3 | 12 | 0.96 | 12991 | 925 | 329.97 | 39370 | 9549 | 763 | 763 |
-| random | rand 1.2deg | S2 | 12 | 0.95 | 4825 | 400 | 67.20 | 71803 | 4343 | 382 | 103 |
-| random | rand 4.0deg | T3 | 10 | 0.97 | 8260 | 598 | 354.77 | 23283 | 3186 | 352 | 352 |
-| random | rand 4.0deg | S2 | 11 | 0.98 | 9078 | 600 | 174.63 | 51984 | 3339 | 347 | 101 |
-| admin | Luxembourg | T3 | 13 | 0.95 | 7190 | 647 | 2214.44 | 3247 | 6785 | 624 | 624 |
-| admin | Luxembourg | S2 | 13 | 0.93 | 2741 | 302 | 111.86 | 24503 | ~4188 | ~385 | ~103 |
-| admin | Belgium | T3 | 12 | 0.97 | 21971 | 1226 | 14326.57 | 1534 | 9800 | 763 | 763 |
-| admin | Belgium | S2 | 12 | 0.95 | 8305 | 625 | 1038.63 | 7996 | 6990 | 567 | 160 |
-| admin | Switzerland | T3 | 12 | 0.97 | 28310 | 1550 | 9396.92 | 3013 | 11335 | 883 | 883 |
-| admin | Switzerland | S2 | 12 | 0.96 | 11246 | 872 | 535.72 | 20992 | 8950 | 762 | 212 |
-| admin | Estonia | T3 | 11 | 0.97 | 10529 | 605 | 2101.14 | 5011 | 5039 | 413 | 413 |
-| admin | Estonia | S2 | 12 | 0.97 | 12426 | 651 | 418.48 | 29693 | 4237 | 359 | 96 |
+| family | shape | sys | level | acc | cells | compacted | ms | cells/s | cells@0.95 | compacted@0.95 | ranges@0.95 | hranges@0.95 |
+|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| bbox | city ~25km | T3 | 14 | 0.96 | 5337 | 396 | 75.81 | 70398 | 3789 | 331 | 331 | 55 |
+| bbox | city ~25km | S2 | 15 | 0.98 | 7973 | 320 | 83.01 | 96047 | 2173 | 167 | 55 | 55 |
+| bbox | metro ~120km | T3 | 12 | 0.97 | 8715 | 495 | 106.12 | 82122 | 3597 | 312 | 312 | 59 |
+| bbox | metro ~120km | S2 | 12 | 0.96 | 3343 | 238 | 34.69 | 96366 | 2081 | 176 | 47 | 47 |
+| bbox | region ~600km | T3 | 9 | 0.96 | 4682 | 368 | 66.34 | 70581 | 3697 | 325 | 325 | 59 |
+| bbox | region ~600km | S2 | 10 | 0.97 | 6932 | 275 | 69.82 | 99280 | 1859 | 151 | 45 | 45 |
+| circle | r=2km | T3 | 16 | 0.94 | 2292 | 234 | 257.76 | 8892 | ~2657 | ~250 | ~250 | ~43 |
+| circle | r=2km | S2 | 16 | 0.92 | 950 | 131 | 23.26 | 40836 | ~1759 | ~201 | ~38 | ~38 |
+| circle | r=20km | T3 | 13 | 0.96 | 3531 | 324 | 389.08 | 9075 | 2810 | 280 | 280 | 46 |
+| circle | r=20km | S2 | 14 | 0.97 | 5658 | 315 | 133.95 | 42239 | 2089 | 193 | 49 | 49 |
+| circle | r=150km | T3 | 10 | 0.96 | 3098 | 248 | 347.59 | 8913 | 2570 | 228 | 228 | 46 |
+| circle | r=150km | S2 | 11 | 0.97 | 4997 | 317 | 117.73 | 42446 | 2489 | 221 | 60 | 60 |
+| random | rand 0.3deg | T3 | 14 | 0.97 | 9578 | 599 | 370.31 | 25865 | 3746 | 354 | 354 | 59 |
+| random | rand 0.3deg | S2 | 14 | 0.95 | 3317 | 293 | 65.32 | 50779 | 3054 | 280 | 82 | 82 |
+| random | rand 1.2deg | T3 | 12 | 0.96 | 12991 | 925 | 473.24 | 27451 | 9549 | 763 | 763 | 148 |
+| random | rand 1.2deg | S2 | 12 | 0.95 | 4825 | 400 | 93.58 | 51558 | 4343 | 382 | 103 | 103 |
+| random | rand 4.0deg | T3 | 10 | 0.97 | 8260 | 598 | 518.39 | 15934 | 3186 | 352 | 352 | 55 |
+| random | rand 4.0deg | S2 | 11 | 0.98 | 9078 | 600 | 268.05 | 33867 | 3339 | 347 | 101 | 101 |
+| admin | Luxembourg | T3 | 13 | 0.95 | 7190 | 647 | 2989.98 | 2405 | 6785 | 624 | 624 | 116 |
+| admin | Luxembourg | S2 | 13 | 0.93 | 2741 | 302 | 159.59 | 17176 | ~4188 | ~385 | ~103 | ~103 |
+| admin | Belgium | T3 | 12 | 0.97 | 21971 | 1226 | 22880.18 | 960 | 9800 | 763 | 763 | 134 |
+| admin | Belgium | S2 | 12 | 0.95 | 8305 | 625 | 1517.80 | 5472 | 6990 | 567 | 160 | 160 |
+| admin | Switzerland | T3 | 12 | 0.97 | 28310 | 1550 | 15543.11 | 1821 | 11335 | 883 | 883 | 177 |
+| admin | Switzerland | S2 | 12 | 0.96 | 11246 | 872 | 789.49 | 14245 | 8950 | 762 | 212 | 212 |
+| admin | Estonia | T3 | 11 | 0.97 | 10529 | 605 | 3332.67 | 3159 | 5039 | 413 | 413 | 85 |
+| admin | Estonia | S2 | 12 | 0.97 | 12426 | 651 | 596.09 | 20846 | 4237 | 359 | 96 | 96 |
 
 ## Issue #11: polyfill hot-path rewrite — before/after
 

@@ -44,6 +44,7 @@ export function polyfill(
   options?: { mode?: "intersects" | "centroid" },
 ): bigint[];
 export function coverRanges(cells: Iterable<bigint | number | string>): [bigint, bigint][];
+export function hilbertRanges(cells: Iterable<bigint | number | string>): [bigint, bigint][];
 export function latticeTriangle(address: AddressLike): number[][];
 export function latticeTriangle(face: number, digits: number[]): number[][];
 export function rhombusCoords(address: AddressLike): {

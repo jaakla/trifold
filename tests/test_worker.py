@@ -7,8 +7,9 @@ import pytest
 
 from trifold import (build_export_ring, cell_triangle, densified_ring_xyz,
                      bbox_cover, children64, cover_ranges, decode_rhombus64,
-                     encode64, from_compact, hex_id, locate, parent64,
-                     polyfill, rhombus64, rhombus_id, to_compact, to_path)
+                     encode64, from_compact, hex_id, hilbert_ranges, locate,
+                     parent64, polyfill, rhombus64, rhombus_id, to_compact,
+                     to_path)
 
 
 NODE = shutil.which('node')
@@ -150,17 +151,27 @@ def test_javascript_cover_helpers_match_python():
         ]],
     }
     script = """
-import { bboxCover, coverRanges, polyfill } from %s;
+import { bboxCover, coverRanges, hilbertRanges, polyfill } from %s;
 const polygon = %s;
 const bboxCells = bboxCover(-1.0, 51.0, 0.5, 52.0, 5);
 const anti = bboxCover(179.0, -1.0, -179.0, 1.0, 5);
+const polar = bboxCover(-180.0, 84.0, 180.0, 90.0, 5);
 const polygonCells = polyfill(polygon, 5);
 const ranges = coverRanges(bboxCells);
+const asPairs = pairs => pairs.map(([low, high]) => [low.toString(), high.toString()]);
+let unsafeNumberThrows = false;
+try { hilbertRanges([Number(bboxCells[0]) + 2 ** 60]); }
+catch (err) { unsafeNumberThrows = err instanceof RangeError; }
 console.log(JSON.stringify({
+  unsafeNumberThrows,
   bbox: bboxCells.map(String),
   anti: anti.map(String),
   polygon: polygonCells.map(String),
-  ranges: ranges.map(([low, high]) => [low.toString(), high.toString()]),
+  ranges: asPairs(ranges),
+  hilbert: asPairs(hilbertRanges(bboxCells)),
+  hilbertAnti: asPairs(hilbertRanges(anti)),
+  hilbertPolar: asPairs(hilbertRanges(polar)),
+  hilbertPolygon: asPairs(hilbertRanges(polygonCells)),
 }));
 """ % (json.dumps(SDK.as_uri()), json.dumps(polygon))
     result = subprocess.run(
@@ -169,9 +180,18 @@ console.log(JSON.stringify({
     actual = json.loads(result.stdout)
 
     bbox_cells = bbox_cover(-1.0, 51.0, 0.5, 52.0, 5)
+    def as_pairs(pairs):
+        return [[str(low), str(high)] for low, high in pairs]
     assert actual == {
         'bbox': [str(cell) for cell in bbox_cells],
         'anti': [str(cell) for cell in bbox_cover(179.0, -1.0, -179.0, 1.0, 5)],
         'polygon': [str(cell) for cell in polyfill(polygon, 5)],
-        'ranges': [[str(low), str(high)] for low, high in cover_ranges(bbox_cells)],
+        'ranges': as_pairs(cover_ranges(bbox_cells)),
+        'hilbert': as_pairs(hilbert_ranges(bbox_cells)),
+        'hilbertAnti': as_pairs(hilbert_ranges(
+            bbox_cover(179.0, -1.0, -179.0, 1.0, 5))),
+        'hilbertPolar': as_pairs(hilbert_ranges(
+            bbox_cover(-180.0, 84.0, 180.0, 90.0, 5))),
+        'hilbertPolygon': as_pairs(hilbert_ranges(polyfill(polygon, 5))),
+        'unsafeNumberThrows': True,
     }
