@@ -10,7 +10,9 @@ data/*.pkl
 .venv/
 poetry.lock
 .DS_Store
-docs/data/
+docs/data/*
+!docs/data/degurba_R2025A_E2025_L12.tfdg
+settlementcheck/source/
 .wrangler/
 osm-vector/
 dist/

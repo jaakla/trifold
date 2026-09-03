@@ -1,0 +1,21 @@
+{
+  "name": "settlementcheck",
+  "version": "0.1.0",
+  "description": "Offline GHS-WUP Degree of Urbanisation lookup on the Trifold T3 grid",
+  "type": "module",
+  "exports": { ".": "./js/settlementcheck.mjs" },
+  "files": [
+    "js/settlementcheck.mjs",
+    "data/degurba_R2025A_E2025_L12.tfdg",
+    "data/manifest.json",
+    "data/NOTICE.md"
+  ],
+  "keywords": ["degurba", "settlement", "urban", "rural", "geospatial", "offline", "dggs"],
+  "homepage": "https://jaakla.github.io/trifold/settlementcheck.html",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jaakla/trifold.git",
+    "directory": "settlementcheck"
+  },
+  "license": "MIT"
+}

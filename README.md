@@ -49,9 +49,12 @@ Core grid behavior is exposed through two standalone SDKs:
 
 The distributable packages are named **`t3grid`** (the unscoped name `trifold`
 was already taken on both registries); the Python import stays `import trifold`.
-The landcheck and countrycheck applications ship separately as
+The landcheck, countrycheck and settlementcheck applications ship separately as
 `pip install landcheck` / `npm install landcheck` and
-`pip install countrycheck` / `npm install countrycheck`.
+`pip install countrycheck` / `npm install countrycheck`, with
+`settlementcheck` providing the 2025 GHS-WUP Degree of Urbanisation classes
+as an offline Python/JavaScript lookup. Try its
+[interactive classified-layer preview](https://jaakla.github.io/trifold/settlementcheck.html).
 
 The SDKs cover address codecs, hierarchy operations, point location, bbox
 and polygon cell covers, cell geometry, metrics, and GeoJSON. Python land

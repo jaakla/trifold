@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>settlementcheck — offline DEGURBA context on Trifold T3</title>
+<meta name="description" content="Explore the 2025 GHS-WUP Degree of Urbanisation classification as an offline Trifold T3 point-lookup library.">
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.6.2/dist/maplibre-gl.css">
+<script src="https://unpkg.com/maplibre-gl@5.6.2/dist/maplibre-gl.js"></script>
+<style>
+:root{--ink:#18211e;--muted:#64706b;--line:#dbe1dd;--paper:#f7f8f5;--accent:#207b6b;--panel:#fff}
+*{box-sizing:border-box}body{margin:0;color:var(--ink);font:15px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,sans-serif;background:var(--paper)}
+a{color:#176b5d}nav{height:58px;padding:0 max(22px,calc((100vw - 1240px)/2));display:flex;align-items:center;gap:24px;background:#fff;border-bottom:1px solid var(--line)}
+.brand{font-weight:760;letter-spacing:-.02em;margin-right:auto}.brand i{color:var(--accent);font-style:normal}nav a{text-decoration:none;color:#45504c;font-size:13px}.hero{max-width:1240px;margin:0 auto;padding:54px 22px 26px}
+.eyebrow{text-transform:uppercase;letter-spacing:.13em;color:var(--accent);font-weight:720;font-size:11px}.hero h1{font:500 clamp(36px,5vw,66px)/1.02 Georgia,serif;max-width:950px;letter-spacing:-.035em;margin:12px 0 17px}.hero p{font-size:18px;color:#56615d;max-width:760px;margin:0}
+.workbench{max-width:1240px;margin:0 auto 54px;padding:0 22px}.mapgrid{display:grid;grid-template-columns:minmax(0,1fr) 306px;border:1px solid #cfd6d1;background:#fff;min-height:650px;box-shadow:0 16px 42px rgba(37,50,45,.08)}
+#map{min-height:650px}.panel{border-left:1px solid var(--line);padding:22px;background:rgba(255,255,255,.98);overflow:auto}.panel h2{font:500 24px/1.15 Georgia,serif;margin:0 0 7px}.small{font-size:12px;color:var(--muted)}
+.status{margin:16px 0;padding:12px 0;border-block:1px solid var(--line);font-size:12px}.status b{color:var(--accent)}.legend{display:grid;gap:7px;margin:17px 0}.legend-row{display:grid;grid-template-columns:14px 32px 1fr;gap:8px;align-items:center;font-size:12px}.swatch{width:14px;height:14px}.code{font-variant-numeric:tabular-nums;color:#6b7571}
+label{display:flex;gap:9px;align-items:center;font-size:12px;margin:15px 0}.presets{display:grid;grid-template-columns:1fr 1fr;gap:6px}.presets button,.action{border:1px solid #ccd4cf;background:#fff;color:#33413c;padding:7px 8px;text-align:left;font:inherit;font-size:11px;cursor:pointer}.presets button:hover,.action:hover{border-color:var(--accent);color:var(--accent)}
+.result{margin-top:16px;min-height:136px;background:#f3f6f3;border-left:3px solid var(--accent);padding:12px}.result strong{display:block;font:500 20px Georgia,serif;margin-bottom:4px}.result dl{display:grid;grid-template-columns:86px 1fr;gap:3px 8px;margin:8px 0 0;font-size:11px}.result dt{color:var(--muted)}.result dd{margin:0;overflow-wrap:anywhere}
+.docs{max-width:1000px;margin:0 auto;padding:0 22px 70px}.docs h2{font:500 34px Georgia,serif;margin:56px 0 14px}.docs h3{margin-top:30px}.docs p,.docs li{color:#4c5853}.docs-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px}.classes{width:100%;border-collapse:collapse;font-size:13px}.classes th,.classes td{padding:8px;border-bottom:1px solid var(--line);text-align:left}.classes th{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}pre{background:#17201d;color:#e7efeb;padding:18px;overflow:auto;font-size:12px;line-height:1.6}footer{border-top:1px solid var(--line);padding:28px;text-align:center;color:var(--muted);font-size:12px;background:#fff}
+.maplibregl-popup-content{border-radius:2px;padding:11px 13px;font:12px/1.4 Inter,system-ui,sans-serif}.maplibregl-ctrl-group{border-radius:2px!important}
+@media(max-width:780px){nav a:not(.keep){display:none}.hero{padding-top:36px}.mapgrid{grid-template-columns:1fr;min-height:0}#map{min-height:58vh}.panel{border-left:0;border-top:1px solid var(--line)}.docs-grid{grid-template-columns:1fr;gap:8px}.presets{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+<nav><span class="brand">Trifold <i>T3</i> / settlementcheck</span><a href="index.html">T3 grid</a><a href="landcheck.html">landcheck</a><a href="countrycheck.html">countrycheck</a><a class="keep" href="https://github.com/jaakla/trifold/tree/main/settlementcheck">GitHub</a></nav>
+<header class="hero"><div class="eyebrow">GHS-WUP-DEGURBA · R2025A · epoch 2025</div><h1>Settlement context, not just population density.</h1><p>Ask whether a point belongs to an urban centre, cluster, suburb, rural settlement, low-density countryside, or water—offline, with the published context-aware classification preserved.</p></header>
+<main>
+<section class="workbench" aria-label="Interactive settlement classification map">
+  <div class="mapgrid"><div id="map"></div><aside class="panel">
+    <h2>Degree of Urbanisation</h2><div class="small">Stage I · Level 2 · 1 km source · T3 L12 transfer</div>
+    <div id="status" class="status">Loading <b>the real offline dataset</b>…</div>
+    <div class="legend" id="legend"></div>
+    <label><input id="mixed" type="checkbox"> Emphasise mixed boundary cells</label>
+    <div class="small" style="margin-bottom:7px">Contrasting places</div>
+    <div class="presets">
+      <button data-place="24.7536,59.4370,11">Tallinn</button><button data-place="-0.1276,51.5072,11">London</button>
+      <button data-place="7.4474,46.9480,11">Bern</button><button data-place="24.5,58.6,11">Rural Estonia</button>
+      <button data-place="21.0,78.0,11">High Arctic</button><button data-place="-30,30,11">Atlantic</button>
+    </div>
+    <div id="result" class="result"><strong>Select a point</strong><span class="small">Click the map or choose a preset. Zoom in to preview L12 cells.</span></div>
+  </aside></div>
+</section>
+<section class="docs">
+  <div class="docs-grid"><div><h2>Why DEGURBA?</h2><p>Population density describes one pixel. DEGURBA also considers connected cells, cluster population, distance, permanent land, and smoothing. That makes it useful for settlement context, urban/rural stratification, sampling, service-area analysis, and contextual map styling.</p><p>It is deliberately separate from a future numeric <code>populationcheck</code>: never infer an exact count or density from these classes.</p></div><div><h2>Read results carefully</h2><p><code>class_share</code> is the dominant source-class area share inside the T3 cell—not confidence. <code>mixed</code> marks a source boundary. A finer triangle represents that boundary; it does not improve on the source's 1 km scientific resolution.</p><p>The Level-1 source hierarchy puts water in its residual “rural grid cell” domain. Use <code>surface</code> to distinguish water, land, mixed coast, and unknown/nodata.</p></div></div>
+  <h2>The eight published classes</h2>
+  <table class="classes"><thead><tr><th>Code</th><th>Public value</th><th>Meaning</th></tr></thead><tbody>
+    <tr><td>30</td><td><code>urban_centre</code></td><td>Urban centre</td></tr><tr><td>23</td><td><code>dense_urban_cluster</code></td><td>Dense urban cluster</td></tr>
+    <tr><td>22</td><td><code>semi_dense_urban_cluster</code></td><td>Semi-dense urban cluster</td></tr><tr><td>21</td><td><code>suburban_or_peri_urban</code></td><td>Suburban or peri-urban</td></tr>
+    <tr><td>13</td><td><code>rural_cluster</code></td><td>Rural cluster</td></tr><tr><td>12</td><td><code>low_density_rural</code></td><td>Low-density rural</td></tr>
+    <tr><td>11</td><td><code>very_low_density_rural</code></td><td>Very-low-density rural</td></tr><tr><td>10</td><td><code>water</code></td><td>Water grid cell</td></tr>
+  </tbody></table>
+  <div class="docs-grid"><div><h2>Python</h2><pre><code>pip install settlementcheck
+
+from settlementcheck import SettlementCheck
+sc = SettlementCheck()
+r = sc.check(24.7536, 59.4370)
+print(r.settlement_class, r.class_share)</code></pre></div><div><h2>JavaScript</h2><pre><code>npm install settlementcheck
+
+import { SettlementCheck } from "settlementcheck";
+const sc = await SettlementCheck.fromFile();
+const r = sc.check(24.7536, 59.4370);</code></pre></div></div>
+  <h2>Source and provenance</h2><p>The bundled data derives from the European Commission Joint Research Centre's GHS-WUP-DEGURBA R2025A, epoch 2025, using projected 2025 population input. Read the <a href="https://human-settlement.emergency.copernicus.eu/documents/GHSL_WUPProjections_R2025.pdf">methodology report</a> and <a href="https://doi.org/10.2905/1c049178-ab00-4bbc-b638-3e3c19daaacb">product record</a>. Data reuse is CC BY 4.0; the Trifold transfer is a change to representation, not to the DEGURBA method.</p>
+</section></main>
+<footer>settlementcheck · a <a href="index.html">Trifold T3</a> library · code MIT · derived data CC BY 4.0</footer>
+<script type="module">
+import {SettlementCheck,CLASSES} from './sdk/settlementcheck.mjs';
+import {bboxCover,cellFeature,cellRing} from './sdk/trifold.js';
+const COLORS={10:'#bdf2ff',11:'#b0e0a4',12:'#51b07c',13:'#207b6b',21:'#ffea4e',22:'#ef8a3f',23:'#7a3e20',30:'#f32b25'};
+const legend=document.getElementById('legend');
+for(const code of [30,23,22,21,13,12,11,10]) legend.insertAdjacentHTML('beforeend',`<div class="legend-row"><span class="swatch" style="background:${COLORS[code]}"></span><span class="code">${code}</span><span>${CLASSES[code].label}</span></div>`);
+const status=document.getElementById('status'),result=document.getElementById('result');
+const sc=await SettlementCheck.fromUrl('./data/degurba_R2025A_E2025_L12.tfdg');
+status.innerHTML=`Ready · <b>${(sc.nCells/1e6).toFixed(0)}M cells</b> · ${(sc.nMixed/1e6).toFixed(1)}M mixed`;
+const EMPTY={type:'FeatureCollection',features:[]};
+const map=new maplibregl.Map({container:'map',center:[24.75,59.44],zoom:10.5,style:{version:8,sources:{base:{type:'raster',tiles:['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],tileSize:256,attribution:'© OpenStreetMap contributors · GHSL/JRC'}},layers:[{id:'base',type:'raster',source:'base',paint:{'raster-opacity':.52}}]}});
+map.addControl(new maplibregl.NavigationControl({showCompass:false}),'top-left');
+function centre(address){const ring=cellRing(address);let x=0,y=0,z=0;for(const [lon,lat] of ring.slice(0,-1)){const a=lon*Math.PI/180,b=lat*Math.PI/180,c=Math.cos(b);x+=c*Math.cos(a);y+=c*Math.sin(a);z+=Math.sin(b)}return [Math.atan2(y,x)*180/Math.PI,Math.atan2(z,Math.hypot(x,y))*180/Math.PI]}
+function describe(r){result.innerHTML=r.status==='no_data'?`<strong>No source data</strong><dl><dt>T3 cell</dt><dd>${r.cell}</dd><dt>Source</dt><dd>${r.source} ${r.sourceRelease}</dd></dl>`:`<strong>${r.label}</strong><span class="small">${r.settlementClass} · code ${r.code}</span><dl><dt>Surface</dt><dd>${r.surface}</dd><dt>Level 1</dt><dd>${r.level1Class} (${r.level1Code})</dd><dt>Class share</dt><dd>${r.classShare===null?'—':(r.classShare*100).toFixed(1)+'%'}</dd><dt>Boundary</dt><dd>${r.mixed?'mixed source classes':'homogeneous'}${r.nodataMixed?' + nodata':''}</dd><dt>T3 cell</dt><dd>${r.cell}</dd><dt>Source</dt><dd>${r.source}/${r.sourceRelease}, ${r.year} projected</dd></dl>`}
+let renderToken=0;
+async function renderLayer(){const token=++renderToken;if(!map.getSource('cells'))return;const b=map.getBounds(),lat=(b.getNorth()+b.getSouth())/2;let width=(b.getEast()-b.getWest())*111*Math.max(.15,Math.cos(lat*Math.PI/180)),height=(b.getNorth()-b.getSouth())*111;const estimate=width*height/1.52;if(map.getZoom()<9.4||estimate>6500){map.getSource('cells').setData(EMPTY);status.innerHTML='Zoom in to preview the <b>L12 classified cells</b> (6,500-cell cap).';return}status.textContent='Classifying visible cells…';await new Promise(requestAnimationFrame);const started=performance.now();const addresses=bboxCover(b.getWest(),b.getSouth(),b.getEast(),b.getNorth(),12,{mode:'intersects'});if(token!==renderToken)return;if(addresses.length>6500){map.getSource('cells').setData(EMPTY);status.innerHTML=`${addresses.length.toLocaleString()} cells exceed the cap · <b>zoom in</b>`;return}const features=addresses.map(address=>{const f=cellFeature(address,{precision:6}),r=sc.check(...centre(address));Object.assign(f.properties,{code:r.code??-1,label:r.label??'No data',settlementClass:r.settlementClass??'no_data',surface:r.surface,share:r.classShare??0,mixed:r.mixed?1:0,cell:r.cell});return f});map.getSource('cells').setData({type:'FeatureCollection',features});status.innerHTML=`Rendered <b>${features.length.toLocaleString()} real L12 cells</b> in ${(performance.now()-started).toFixed(0)} ms`;}
+map.on('load',()=>{map.addSource('cells',{type:'geojson',data:EMPTY});map.addLayer({id:'cells-fill',type:'fill',source:'cells',paint:{'fill-color':['match',['get','code'],10,COLORS[10],11,COLORS[11],12,COLORS[12],13,COLORS[13],21,COLORS[21],22,COLORS[22],23,COLORS[23],30,COLORS[30],'#bbb'],'fill-opacity':.73}});map.addLayer({id:'cells-line',type:'line',source:'cells',paint:{'line-color':['case',['==',['get','mixed'],1],'#111','#fff'],'line-opacity':['case',['==',['get','mixed'],1],.72,.22],'line-width':['case',['==',['get','mixed'],1],1.2,.35]}});renderLayer()});
+let timer;map.on('moveend',()=>{clearTimeout(timer);timer=setTimeout(renderLayer,80)});map.on('click',event=>{const r=sc.check(event.lngLat.lng,event.lngLat.lat);describe(r);new maplibregl.Popup({closeButton:false}).setLngLat(event.lngLat).setHTML(`<b>${r.label??'No source data'}</b><br>${r.cell}`).addTo(map)});document.querySelectorAll('[data-place]').forEach(button=>button.onclick=()=>{const [lon,lat,zoom]=button.dataset.place.split(',').map(Number);map.flyTo({center:[lon,lat],zoom,duration:700});describe(sc.check(lon,lat))});document.getElementById('mixed').onchange=event=>{map.setPaintProperty('cells-fill','fill-opacity',event.target.checked?['case',['==',['get','mixed'],1],.9,.24]:.73);map.setPaintProperty('cells-line','line-width',event.target.checked?['case',['==',['get','mixed'],1],2,.25]:['case',['==',['get','mixed'],1],1.2,.35])};
+window.__settlementcheck={map,sc,renderLayer};
+</script>
+</body></html>

@@ -30,7 +30,7 @@ Documentation = "https://github.com/jaakla/trifold/blob/main/docs/t3-technical-r
 
 [project.optional-dependencies]
 land = ["shapely>=2.0", "pyproj"]
-build = ["shapely>=2.0", "pyproj", "geopandas", "topojson", "h3>=4", "pya5", "s2sphere", "rhealpixdggs", "matplotlib"]
+build = ["shapely>=2.0", "pyproj", "rasterio", "geopandas", "topojson", "h3>=4", "pya5", "s2sphere", "rhealpixdggs", "matplotlib"]
 dev = ["pytest"]
 
 [project.scripts]
