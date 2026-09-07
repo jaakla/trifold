@@ -755,9 +755,8 @@ const map=new maplibregl.Map({
   container:'map',
   style:{version:8,projection:{type:'globe'},
     sources:{carto:{type:'raster',
-      tiles:['https://a.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png',
-             'https://b.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png'],
-      tileSize:256,attribution:'© OpenStreetMap © CARTO · Trifold T3 demo'}},
+      tiles:[__CARTO_LIGHT_TILE__],
+      tileSize:256,maxzoom:20,attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://carto.com/attributions">CARTO</a> · Trifold T3 demo'}},
     layers:[{id:'bg',type:'background',paint:{'background-color':'#cfe3ef'}},
             {id:'base',type:'raster',source:'carto'}]},
   center:[10,30],zoom:1.6});
@@ -869,9 +868,8 @@ const coverMap=new maplibregl.Map({
   container:'covermap',
   style:{version:8,
     sources:{carto:{type:'raster',
-      tiles:['https://a.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png',
-             'https://b.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png'],
-      tileSize:256,attribution:'© OpenStreetMap © CARTO · Trifold T3 coverage demo'}},
+      tiles:[__CARTO_LIGHT_TILE__],
+      tileSize:256,maxzoom:20,attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://carto.com/attributions">CARTO</a> · Trifold T3 coverage demo'}},
     layers:[{id:'cover-bg',type:'background',paint:{'background-color':'#cfe3ef'}},
             {id:'cover-base',type:'raster',source:'carto'}]},
   center:[-0.12,51.5],
@@ -3155,6 +3153,7 @@ os.makedirs(os.path.dirname(DOCS_SDK), exist_ok=True)
 shutil.copy2(JS_SDK, DOCS_SDK)
 with open(OUT, 'w') as f:
     f.write(html.replace('__DATA__', data_js).replace('__GH__', GH)
+            .replace('__CARTO_LIGHT_TILE__', CARTO_LIGHT_TILE)
             .replace('__GHICON__', GH_ICON)
             .replace('__INDEX_BENCH__',
                      render_bench('benchmark.md', 'Batch: 100,000', 'points/s', 'pts/s')))
