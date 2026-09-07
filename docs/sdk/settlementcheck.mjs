@@ -107,136 +107,230 @@ function compact(index, level) {
   return output;
 }
 
-async function inflate(compressed) {
-  if (typeof DecompressionStream === "function") {
-    const stream = new Blob([compressed]).stream().pipeThrough(new DecompressionStream("deflate"));
-    return new Uint8Array(await new Response(stream).arrayBuffer());
+const SLOTS = [10, 11, 12, 13, 21, 22, 23, 30, NODATA];
+const MAX_RAW = 256 * 1024 * 1024;
+export class DetailsNotLoadedError extends Error {}
+
+async function inflate(compressed, expected) {
+  if (typeof process !== "undefined" && process.versions?.node) {
+    const { inflateSync } = await import("node:zlib");
+    const result = inflateSync(compressed, { maxOutputLength: Math.max(1, expected + 1), info: true });
+    if (result.engine.bytesWritten !== compressed.length) throw new Error("trailing TFDG compressed payload");
+    return new Uint8Array(result.buffer);
   }
-  const zlib = await import("node:zlib");
-  return new Uint8Array(zlib.inflateSync(compressed));
+  const reader = new Blob([compressed]).stream()
+    .pipeThrough(new DecompressionStream("deflate")).getReader();
+  const output = new Uint8Array(expected);
+  let offset = 0;
+  try {
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      if (offset + value.length > expected) throw new Error("TFDG payload exceeds declared size");
+      output.set(value, offset); offset += value.length;
+    }
+    if (offset !== expected) throw new Error("truncated TFDG payload");
+  } catch (error) { await reader.cancel().catch(() => {}); throw error; }
+  finally { reader.releaseLock(); }
+  return output;
 }
 
-function hex(bytes) {
-  return Array.from(bytes, (value) => value.toString(16).padStart(2, "0")).join("");
+function hex(bytes) { return Array.from(bytes, v => v.toString(16).padStart(2, "0")).join(""); }
+async function readContainer(input, magic, flags, sections) {
+  const raw = input instanceof Uint8Array ? input : new Uint8Array(input);
+  let offset = 92 + 8 * sections;
+  if (raw.length < offset) throw new Error("truncated TFDG header/directory");
+  if (String.fromCharCode(...raw.subarray(0, 4)) !== magic) throw new Error("not a TFDG/TFDD file");
+  if (raw[4] !== 1 || raw[6] !== flags) throw new Error("unsupported TFDG layout (rebuild obsolete WIP v1 files)");
+  const v = new DataView(raw.buffer, raw.byteOffset, raw.byteLength);
+  const h = { level: raw[5], face: raw[7], year: v.getUint16(8, true),
+    runs: v.getUint32(12, true), mixed: v.getUint32(16, true),
+    cells: v.getUint32(20, true), size: v.getUint32(24, true),
+    rasterSha256: hex(raw.subarray(28, 60)), datasetId: hex(raw.subarray(60, 92)) };
+  if (h.level < 1 || h.level > 13 || h.cells !== 20 * 4 ** h.level || h.year !== 2025
+      || raw[10] !== 1 || raw[11] !== 10 || h.face >= 20 || (magic === "TFDG" && h.face !== 0)
+      || h.size > MAX_RAW || h.runs > h.cells || h.mixed > h.cells) throw new Error("invalid TFDG metadata");
+  const blocks = [];
+  let total = 0;
+  for (let i = 0; i < sections; i++) {
+    const length = v.getUint32(92 + 8 * i, true), expected = v.getUint32(96 + 8 * i, true);
+    total += expected;
+    if (total > h.size || offset + length > raw.length) throw new Error("truncated/invalid TFDG payload section");
+    const block = await inflate(raw.subarray(offset, offset + length), expected);
+    if (block.length !== expected) throw new Error("invalid TFDG payload length");
+    blocks.push(block); offset += length;
+  }
+  if (offset !== raw.length || total !== h.size) throw new Error("invalid TFDG section directory");
+  return { h, blocks };
+}
+
+function* varints(block) {
+  let value = 0, multiplier = 1;
+  for (const byte of block) {
+    if (multiplier >= 2 ** 35) throw new Error("invalid TFDG varint");
+    value += (byte & 127) * multiplier;
+    if (byte & 128) multiplier *= 128;
+    else {
+      if (value > 0xffffffff) throw new Error("TFDG varint overflow");
+      yield value; value = 0; multiplier = 1;
+    }
+  }
+  if (multiplier !== 1) throw new Error("truncated TFDG varint");
+}
+function upperBound(ends, index) {
+  let low = 0, high = ends.length;
+  while (low < high) {
+    const middle = (low + high) >>> 1;
+    if (ends[middle] <= index) low = middle + 1; else high = middle;
+  }
+  return low;
+}
+async function fetchBytes(url) {
+  const response = await fetch(url);
+  if (!response.ok) throw new DetailsNotLoadedError("Failed to load data: HTTP " + response.status);
+  return response.arrayBuffer();
+}
+function detailUrl(core, face) {
+  const url = new URL(core, typeof location !== "undefined" ? location.href : undefined);
+  url.pathname = url.pathname.replace(/\.tfdg$/, ".details") + "/face-" + String(face).padStart(2, "0") + ".tfdd";
+  return url;
 }
 
 export class SettlementCheck {
-  static async fromBytes(input) {
-    const raw = input instanceof Uint8Array ? input : new Uint8Array(input);
-    if (raw.length < 60) throw new Error("truncated TFDG header");
-    if (String.fromCharCode(...raw.subarray(0, 4)) !== "TFDG") throw new Error("not a TFDG file");
-    if (raw[4] !== 1) throw new Error(`unsupported TFDG version ${raw[4]}`);
-    const view = new DataView(raw.buffer, raw.byteOffset, raw.byteLength);
-    const level = raw[5], flags = raw[6], reserved = raw[7];
-    const year = view.getUint16(8, true), releaseId = raw[10], resolutionTenths = raw[11];
-    const nRuns = view.getUint32(12, true), nMixed = view.getUint32(16, true);
-    const nCells = view.getUint32(20, true), rawLength = view.getUint32(24, true);
-    if (reserved || releaseId !== 1 || year !== 2025 || resolutionTenths !== 10
-      || level < 1 || level > 13 || nCells !== 20 * 4 ** level) {
-      throw new Error("unsupported or inconsistent TFDG metadata");
+  static async fromBytes(input, { detailsLoader = null, cacheFaces = 2 } = {}) {
+    if (!Number.isInteger(cacheFaces) || cacheFaces < 1 || cacheFaces > 20) throw new Error("cacheFaces must be in 1..20");
+    const { h, blocks: [lengths, slots] } = await readContainer(input, "TFDG", 3, 2);
+    if (!h.runs || slots.length !== h.runs || lengths.length < h.runs) throw new Error("invalid TFDG class table");
+    const ends = new Uint32Array(h.runs), codes = new Uint8Array(h.runs);
+    let cursor = 0, run = 0;
+    for (const length of varints(lengths)) {
+      cursor += length;
+      if (!length || cursor > h.cells || run >= h.runs || slots[run] > 8) throw new Error("invalid TFDG coverage/class code");
+      ends[run] = cursor; codes[run] = SLOTS[slots[run]]; run++;
     }
-    let body;
-    try { body = await inflate(raw.subarray(60)); }
-    catch { throw new Error("invalid TFDG payload"); }
-    if (body.length !== rawLength) throw new Error("truncated TFDG payload");
-    let position = 0;
-    const readVarint = () => {
-      let value = 0, multiplier = 1;
-      while (true) {
-        if (position >= body.length || multiplier > 2 ** 35) throw new Error("truncated TFDG run table");
-        const byte = body[position++];
-        value += (byte & 127) * multiplier;
-        if (!(byte & 128)) return value;
-        multiplier *= 128;
-      }
-    };
-    const ends = new Uint32Array(nRuns);
-    const codes = new Uint8Array(nRuns), mixedRuns = new Uint8Array(nRuns);
-    const mixedBefore = new Uint32Array(nRuns);
-    let cursor = 0, mixedSeen = 0;
-    for (let run = 0; run < nRuns; run++) {
-      const start = cursor + readVarint(), length = readVarint();
-      if (!length || position + 2 > body.length) throw new Error("invalid TFDG run");
-      const code = body[position++], mixed = body[position++];
-      if (!(code in CLASSES) && code !== NODATA) throw new Error(`unexpected class code ${code}`);
-      if (mixed > 1 || start + length > nCells) throw new Error("invalid TFDG run metadata");
-      if ((flags & 1) && start !== cursor) throw new Error("incomplete all-runs TFDG dataset");
-      ends[run] = start + length; codes[run] = code; mixedRuns[run] = mixed;
-      mixedBefore[run] = mixedSeen;
-      if (mixed) mixedSeen += length;
-      cursor = start + length;
-    }
-    if (mixedSeen !== nMixed || position + 2 * nMixed !== body.length) {
-      throw new Error("inconsistent TFDG mixed-cell block");
-    }
-    if ((flags & 1) && (!nRuns || ends[nRuns - 1] !== nCells)) {
-      throw new Error("incomplete all-runs TFDG dataset");
-    }
-    const instance = new SettlementCheck();
-    Object.assign(instance, {
-      level, year, source: "GHS-WUP-DEGURBA", sourceRelease: "R2025A",
-      estimateKind: "projected", sourceResolutionKm: resolutionTenths / 10,
-      rasterSha256: hex(raw.subarray(28, 60)), ends, codes, mixedRuns,
-      mixedBefore, mixedData: body.slice(position), nCells, nMixed,
-    });
-    return instance;
+    if (run !== h.runs || cursor !== h.cells) throw new Error("incomplete TFDG coverage");
+    return Object.assign(new SettlementCheck(), { level: h.level, year: h.year,
+      source: "GHS-WUP-DEGURBA", sourceRelease: "R2025A", estimateKind: "projected",
+      sourceResolutionKm: 1, rasterSha256: h.rasterSha256, datasetId: h.datasetId,
+      ends, codes, nCells: h.cells, nMixed: h.mixed, _detailsLoader: detailsLoader,
+      _cacheFaces: cacheFaces, _details: new Map(), _pending: new Map(), _generation: 0 });
   }
-
-  static async fromFile(path = new URL("../data/degurba_R2025A_E2025_L12.tfdg", import.meta.url)) {
+  static async fromFile(path = new URL("../data/degurba_R2025A_E2025_L12.tfdg", import.meta.url), options = {}) {
     const fs = await import("node:fs/promises");
-    return SettlementCheck.fromBytes(await fs.readFile(path));
+    const { pathToFileURL } = await import("node:url"), { resolve } = await import("node:path");
+    const url = path instanceof URL ? path : pathToFileURL(resolve(path));
+    return this.fromBytes(await fs.readFile(url), {
+      ...options, detailsLoader: options.detailsLoader ?? (face => fs.readFile(detailUrl(url, face))) });
   }
-
-  static async fromUrl(url) {
-    const response = await fetch(url);
-    if (!response.ok) throw new Error(`failed to load TFDG: HTTP ${response.status}`);
-    return SettlementCheck.fromBytes(await response.arrayBuffer());
+  static async fromUrl(url, options = {}) {
+    return this.fromBytes(await fetchBytes(url), {
+      ...options, detailsLoader: options.detailsLoader ?? (face => fetchBytes(detailUrl(url, face))) });
   }
-
-  _lookup(lon, lat) {
+  _index(lon, lat) {
     if (!(lon >= -180 && lon <= 180)) throw new Error("longitude must be in [-180, 180]");
     if (!(lat >= -90 && lat <= 90)) throw new Error("latitude must be in [-90, 90]");
-    const index = locateIndex(lon, lat, this.level);
-    let low = 0, high = this.ends.length;
-    while (low < high) {
-      const middle = (low + high) >>> 1;
-      if (this.ends[middle] <= index) low = middle + 1; else high = middle;
+    return locateIndex(lon, lat, this.level);
+  }
+  async loadDetails(lon, lat) {
+    return this._loadFace(Math.floor(this._index(lon, lat) / 4 ** this.level));
+  }
+  async _loadFace(face) {
+    if (this._details.has(face)) {
+      const shard = this._details.get(face);
+      this._details.delete(face); this._details.set(face, shard); return shard;
     }
-    const run = low;
-    if (run >= this.ends.length) return { index, code: NODATA, mixed: false, share: null, flags: 0 };
-    const code = this.codes[run];
-    if (!this.mixedRuns[run]) return { index, code, mixed: false, share: 1, flags: 0 };
-    const start = run === 0 ? 0 : this.ends[run - 1];
-    const offset = this.mixedBefore[run] + index - start;
-    return { index, code, mixed: true, share: this.mixedData[2 * offset] / 255, flags: this.mixedData[2 * offset + 1] };
+    if (this._pending.has(face)) return this._pending.get(face);
+    if (!this._detailsLoader) throw new DetailsNotLoadedError("Configure detailsLoader, or use classify()/classCode() without details");
+    const generation = this._generation;
+    const task = (async () => {
+      const { h, blocks: [encoded, shares, water, nodata] } = await readContainer(
+        await this._detailsLoader(face), "TFDD", 1, 4);
+      if (h.datasetId !== this.datasetId || h.level !== this.level || h.face !== face
+          || h.rasterSha256 !== this.rasterSha256) throw new Error("TFDD details do not match this core/face");
+      const bitBytes = Math.ceil(h.mixed / 8);
+      if (shares.length !== h.mixed || water.length !== bitBytes || nodata.length !== bitBytes
+          || h.mixed > 4 ** this.level || h.runs > h.mixed || encoded.length < 2 * h.runs) throw new Error("invalid TFDD mixed-cell blocks");
+      const unused = (8 - h.mixed % 8) % 8;
+      if (unused && ((water.at(-1) | nodata.at(-1)) & ((1 << unused) - 1))) throw new Error("invalid TFDD bit padding");
+      const starts = new Uint32Array(h.runs), ends = new Uint32Array(h.runs), before = new Uint32Array(h.runs);
+      const values = varints(encoded);
+      let cursor = 0, seen = 0, run = 0;
+      for (const gap of values) {
+        const length = values.next().value;
+        if (!length || run >= h.runs) throw new Error("invalid TFDD interval");
+        const start = cursor + gap; cursor = start + length;
+        if (cursor > 4 ** this.level || seen + length > h.mixed) throw new Error("invalid TFDD interval bounds");
+        starts[run] = start; ends[run] = cursor; before[run] = seen; seen += length; run++;
+      }
+      if (run !== h.runs || seen !== h.mixed) throw new Error("inconsistent TFDD coverage");
+      const shard = { starts, ends, before, shares, water, nodata };
+      if (generation === this._generation) {
+        this._details.set(face, shard);
+        while (this._details.size > this._cacheFaces) this._details.delete(this._details.keys().next().value);
+      }
+      return shard;
+    })();
+    this._pending.set(face, task);
+    try { return await task; }
+    catch (error) {
+      if (error.code === "ENOENT") throw new DetailsNotLoadedError("Download the matching .details directory or configure detailsLoader; core packages contain classes only");
+      throw error;
+    } finally { if (this._pending.get(face) === task) this._pending.delete(face); }
   }
-
+  unloadDetails() { this._generation++; this._details.clear(); this._pending.clear(); }
+  _result(index, shard = null) {
+    const code = this.codes[upperBound(this.ends, index)];
+    let mixed = null, classShare = null, nodataMixed = null, surface = null;
+    if (shard) {
+      const local = index % 4 ** this.level, run = upperBound(shard.ends, local);
+      mixed = run < shard.ends.length && local >= shard.starts[run];
+      let water = false; nodataMixed = false; classShare = 1;
+      if (mixed) {
+        const offset = shard.before[run] + local - shard.starts[run], bit = 7 - offset % 8;
+        classShare = shard.shares[offset] / 255;
+        water = Boolean((shard.water[Math.floor(offset / 8)] >> bit) & 1);
+        nodataMixed = Boolean((shard.nodata[Math.floor(offset / 8)] >> bit) & 1);
+      }
+      surface = water ? "mixed" : code === 10 ? "water" : "land";
+    }
+    const cls = code === NODATA ? { settlementClass: null, label: null, level1Code: null, level1Class: null } : CLASSES[code];
+    return { code: code === NODATA ? null : code, ...cls,
+      surface: code === NODATA ? "unknown" : surface, classShare: code === NODATA ? null : classShare,
+      mixed, nodataMixed, status: code === NODATA ? "no_data" : "classified", detailsLoaded: shard !== null,
+      cell: compact(index, this.level), level: this.level, source: this.source, sourceRelease: this.sourceRelease,
+      year: this.year, estimateKind: this.estimateKind, sourceResolutionKm: this.sourceResolutionKm };
+  }
+  classify(lon, lat) { return this._result(this._index(lon, lat)); }
   check(lon, lat) {
-    const value = this._lookup(lon, lat), cell = compact(value.index, this.level);
-    const metadata = {
-      cell, level: this.level, source: this.source, sourceRelease: this.sourceRelease,
-      year: this.year, estimateKind: this.estimateKind, sourceResolutionKm: this.sourceResolutionKm,
-    };
-    if (value.code === NODATA) return {
-      code: null, settlementClass: null, label: null, level1Code: null, level1Class: null,
-      surface: "unknown", classShare: null, mixed: value.mixed,
-      nodataMixed: Boolean(value.flags & 2), status: "no_data", ...metadata,
-    };
-    const cls = CLASSES[value.code];
-    const surface = value.flags & 1 ? "mixed" : value.code === 10 ? "water" : "land";
-    return { code: value.code, ...cls, surface, classShare: value.share,
-      mixed: value.mixed, nodataMixed: Boolean(value.flags & 2),
-      status: "classified", ...metadata };
+    const index = this._index(lon, lat), shard = this._details.get(Math.floor(index / 4 ** this.level));
+    if (!shard) throw new DetailsNotLoadedError("Use await checkAsync(lon, lat) or await loadDetails(lon, lat) first");
+    return this._result(index, shard);
   }
-
-  settlement(lon, lat) { return this.check(lon, lat).settlementClass; }
-  classCode(lon, lat) { return this.check(lon, lat).code; }
+  async checkAsync(lon, lat) {
+    const index = this._index(lon, lat), shard = await this._loadFace(Math.floor(index / 4 ** this.level));
+    return this._result(index, shard);
+  }
+  classCode(lon, lat) {
+    const code = this.codes[upperBound(this.ends, this._index(lon, lat))];
+    return code === NODATA ? null : code;
+  }
+  settlement(lon, lat) { const code = this.classCode(lon, lat); return code === null ? null : CLASSES[code].settlementClass; }
   isUrban(lon, lat) { const code = this.classCode(lon, lat); return code === null ? null : URBAN.has(code); }
   checkBatch(lons, lats) {
     if (lons.length !== lats.length) throw new Error("lons and lats must have the same length");
-    return Array.from({ length: lons.length }, (_, index) => this.check(lons[index], lats[index]));
+    return Array.from(lons, (lon, i) => this.check(lon, lats[i]));
   }
-  settlementBatch(lons, lats) { return this.checkBatch(lons, lats).map((value) => value.settlementClass); }
+  async checkBatchAsync(lons, lats) {
+    if (lons.length !== lats.length) throw new Error("lons and lats must have the same length");
+    const faces = Array.from(lons, (lon, i) => Math.floor(this._index(lon, lats[i]) / 4 ** this.level));
+    const order = Array.from(lons, (_, i) => i).sort((a, b) => faces[a] - faces[b]), results = new Array(lons.length);
+    for (const i of order) results[i] = await this.checkAsync(lons[i], lats[i]);
+    return results;
+  }
+  settlementBatch(lons, lats) {
+    if (lons.length !== lats.length) throw new Error("lons and lats must have the same length");
+    return Array.from(lons, (lon, i) => this.settlement(lon, lats[i]));
+  }
   get stats() { return { level: this.level, runs: this.ends.length, mixedCells: this.nMixed,
-    cells: this.nCells, sourceRelease: this.sourceRelease, year: this.year }; }
+    cells: this.nCells, sourceRelease: this.sourceRelease, year: this.year, detailsFaces: [...this._details.keys()] }; }
 }

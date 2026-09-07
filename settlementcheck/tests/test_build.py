@@ -56,3 +56,34 @@ def test_mollweide_projection_and_antimeridian_split():
     assert len(parts) == 2
     assert all(max(x for x, _ in part) - min(x for x, _ in part) < 2_000
                for part in parts)
+
+
+@pytest.mark.parametrize('lat', [89, -89, 89.9, -89.9, 89.99, 89.999])
+def test_projection_converges_near_poles(lat):
+    from pyproj import Transformer
+    expected = Transformer.from_crs('EPSG:4326', 'ESRI:54009', always_xy=True).transform(180, lat)
+    assert build.RasterClassifier._project_lonlat(180, lat) == pytest.approx(expected, abs=0.2)
+
+
+def test_valid_pixels_do_not_create_phantom_nodata():
+    import numpy as np
+    from affine import Affine
+    from types import SimpleNamespace
+    classifier = object.__new__(build.RasterClassifier)
+    classifier.dataset = SimpleNamespace(
+        transform=Affine(1000, 0, 10000000, 0, -1000, 5000000), width=4, height=4)
+    classifier.values = np.full((4, 4), 11, dtype=np.uint8)
+    classifier.values[:, 2:] = 12
+    triangle = [(10000126.321002154, 4996780.51872087),
+                (10000726.7044114, 4997855.440056229),
+                (10002254.613741664, 4997817.255050581)]
+    code, share, mixed, water, nodata = classifier.exact([triangle])
+    assert (code, mixed, water, nodata) == (11, True, False, False)
+    assert share == pytest.approx(0.98006415117)
+    classifier.values[:] = 11
+    assert classifier.exact([triangle])[2:] == (False, False, False)
+    # Real outside coverage and real source nodata must still be retained.
+    outside = [(9999500, 4999000), (10000500, 4999000), (10000500, 4998000)]
+    assert classifier.exact([outside])[-1] is True
+    classifier.values[:, 2:] = 255
+    assert classifier.exact([triangle])[-1] is True

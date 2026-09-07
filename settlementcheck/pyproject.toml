@@ -41,4 +41,4 @@ Repository = "https://github.com/jaakla/trifold"
 "data/NOTICE.md" = "settlementcheck/data/NOTICE.md"
 
 [tool.hatch.build.targets.sdist]
-include = ["python/*.py", "data/*", "README.md", "build.py"]
+include = ["python/*.py", "data/*.tfdg", "data/*.json", "data/*.md", "README.md", "FORMAT.md", "ENRICHMENTS.md", "build.py"]

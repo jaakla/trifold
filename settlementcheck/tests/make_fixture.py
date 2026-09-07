@@ -32,9 +32,9 @@ codes = (*VALID_CODES, NODATA_CODE)
 points = []
 for index in range(20 * 4 ** LEVEL):
     code = codes[index % len(codes)]
-    mixed = index == 23
+    mixed = index in (23, 24, 26)
     writer.add(index, 1, code, mixed=mixed, share=0.6,
-               water_mix=mixed, nodata_mix=False)
+               water_mix=index == 23, nodata_mix=index in (24, 26))
     if index < len(codes) or mixed:
         lon, lat = centre(index)
         points.append({"index": index, "lon": lon, "lat": lat,

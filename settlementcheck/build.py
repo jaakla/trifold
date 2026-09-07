@@ -149,10 +149,16 @@ class RasterClassifier:
             theta = math.copysign(math.pi / 2, lat)
         else:
             theta = lat
-            for _ in range(7):
+            for _ in range(50):
                 value = 2 * theta
-                theta -= ((value + math.sin(value) - math.pi * math.sin(lat))
-                          / (2 + 2 * math.cos(value)))
+                denominator = 2 + 2 * math.cos(value)
+                if denominator < 1e-15:
+                    break
+                step = ((value + math.sin(value) - math.pi * math.sin(lat))
+                        / denominator)
+                theta -= step
+                if abs(step) < 1e-13:
+                    break
         return (2 * math.sqrt(2) * MOLLWEIDE_RADIUS_M / math.pi
                 * lon * math.cos(theta),
                 math.sqrt(2) * MOLLWEIDE_RADIUS_M * math.sin(theta))
@@ -272,8 +278,12 @@ class RasterClassifier:
 
     @staticmethod
     def _area(points):
-        return abs(sum(a[0] * b[1] - b[0] * a[1]
-                       for a, b in zip(points, points[1:] + points[:1]))) / 2
+        if len(points) < 3:
+            return 0.0
+        x, y = points[0]
+        local = [(a - x, b - y) for a, b in points]
+        return abs(math.fsum(a[0] * b[1] - b[0] * a[1]
+                             for a, b in zip(local, local[1:] + local[:1]))) / 2
 
     @classmethod
     def _rectangle_intersection_area(cls, points, left, bottom, right, top):
@@ -291,7 +301,6 @@ class RasterClassifier:
             points = list(points)
             part_area = self._area(points)
             polygon_area += part_area
-            before = sum(areas.values())
             left = min(point[0] for point in points)
             right = max(point[0] for point in points)
             bottom = min(point[1] for point in points)
@@ -312,14 +321,23 @@ class RasterClassifier:
                             pixel_left + transform.a, pixel_top)
                         if area:
                             areas[int(values[row - row0, col - col0])] += area
-            outside = max(0.0, part_area - (sum(areas.values()) - before))
+            # Only geometric clipping against the raster footprint can add
+            # outside nodata. Summation residuals between pixels are not data.
+            raster_right = transform.c + self.dataset.width * transform.a
+            raster_bottom = transform.f + self.dataset.height * transform.e
+            if (left >= transform.c and right <= raster_right
+                    and bottom >= raster_bottom and top <= transform.f):
+                outside = 0.0
+            else:
+                outside = max(0.0, part_area - self._rectangle_intersection_area(
+                    points, transform.c, raster_bottom, raster_right, transform.f))
             if outside > part_area * 1e-10:
                 areas[NODATA_CODE] += outside
         if not areas:
             areas[NODATA_CODE] = polygon_area
         # Stable tie break: higher source code wins, nodata last.
         dominant = max(areas, key=lambda code: (areas[code], code != NODATA_CODE, code))
-        share = areas[dominant] / polygon_area if polygon_area else 1.0
+        share = min(1.0, areas[dominant] / polygon_area) if polygon_area else 1.0
         kinds = {code for code, area in areas.items() if area > polygon_area * 1e-10}
         mixed = len(kinds) > 1
         water_mix = 10 in kinds and any(code not in (10, NODATA_CODE) for code in kinds)
@@ -479,25 +497,82 @@ def build(classifier, level, progress=1_000_000, diagnostic_centroid=False,
 
 
 def write_dataset(path, writer, raster_sha):
-    body = bytearray()
-    cursor = 0
-    for start, length, code, mixed in writer.records():
-        body += varint(start - cursor)
-        body += varint(length)
-        body.append(code)
-        body.append(int(mixed))
-        cursor = start + length
-    body += bytes(writer.mixed)
-    compressed = zlib.compress(bytes(body), 9)
-    header = HEADER.pack(
-        MAGIC, VERSION, writer.level, 1, 0, 2025, 1, 10,
-        writer.n_runs, writer.n_mixed, 20 * 4 ** writer.level,
-        len(body), bytes.fromhex(raster_sha),
-    )
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_bytes(header + compressed)
-    print(f"wrote {path}: {len(header) + len(compressed):,} bytes "
-          f"({len(body):,} raw)")
+    """Write WIP v1 class-only core and independently loadable face details."""
+    starts = np.asarray(writer.starts, dtype=np.uint32)
+    lengths = np.asarray(writer.lengths, dtype=np.uint32)
+    codes = np.frombuffer(writer.codes, dtype=np.uint8)
+    mixed = np.frombuffer(writer.mixed_runs, dtype=np.uint8).astype(bool)
+    ends = starts + lengths
+    n_cells = 20 * 4 ** writer.level
+    if (not len(starts) or starts[0] != 0 or ends[-1] != n_cells
+            or np.any(starts[1:] != ends[:-1]) or np.any(lengths == 0)):
+        raise ValueError('writer must cover the complete grid without gaps')
+    keep = np.r_[codes[1:] != codes[:-1], True]
+    core_ends = ends[keep]
+    core_lengths = np.diff(core_ends, prepend=np.uint32(0))
+    length_bytes = bytearray()
+    for length in core_lengths:
+        length_bytes += varint(int(length))
+    slots = bytes(CODE_TO_SLOT[int(code)] for code in codes[keep])
+    # Bind detail shards to this exact build, including boundary information.
+    digest = hashlib.sha256(bytes.fromhex(raster_sha) + bytes([writer.level]))
+    for block in (length_bytes, slots, starts[mixed].astype('<u4').tobytes(),
+                  ends[mixed].astype('<u4').tobytes(), writer.mixed):
+        digest.update(block)
+    dataset_id = digest.digest()
+
+    def write_sections(target, magic, flags, face, n_runs, n_mixed, blocks):
+        compressed = [zlib.compress(block, 9) for block in blocks]
+        header = HEADER.pack(magic, VERSION, writer.level, flags, face,
+                             2025, 1, 10, n_runs, n_mixed, n_cells,
+                             sum(map(len, blocks)), bytes.fromhex(raster_sha))
+        directory = b''.join(struct.pack('<II', len(c), len(b))
+                             for c, b in zip(compressed, blocks))
+        target.parent.mkdir(parents=True, exist_ok=True)
+        with target.open('wb') as output:
+            output.write(header + dataset_id + directory)
+            for block in compressed:
+                output.write(block)
+        return {'file': target.name, 'bytes': target.stat().st_size,
+                'sha256': sha256(target)}
+
+    core = write_sections(path, MAGIC, 3, 0, len(slots), writer.n_mixed,
+                          [length_bytes, slots])
+    detail_dir = path.with_suffix('.details')
+    mixed_starts, mixed_ends = starts[mixed], ends[mixed]
+    mixed_values = np.frombuffer(writer.mixed, dtype=np.uint8).reshape(-1, 2)
+    offset = 0
+    details = []
+    span = 4 ** writer.level
+    for face in range(20):
+        select = (mixed_starts >= face * span) & (mixed_starts < (face + 1) * span)
+        first, last = mixed_starts[select], mixed_ends[select]
+        count = int(np.sum(last - first, dtype=np.uint64))
+        values = mixed_values[offset:offset + count]
+        offset += count
+        if len(first):
+            boundaries = first[1:] != last[:-1]
+            first = first[np.r_[True, boundaries]] - face * span
+            last = last[np.r_[boundaries, True]] - face * span
+        runs = bytearray()
+        cursor = 0
+        for start, end in zip(first, last):
+            runs += varint(int(start) - cursor)
+            runs += varint(int(end) - int(start))
+            cursor = int(end)
+        record = write_sections(
+            detail_dir / f'face-{face:02d}.tfdd', b'TFDD', 1, face, len(first), count,
+            [runs, values[:, 0].tobytes(), np.packbits(values[:, 1] & 1).tobytes(),
+             np.packbits((values[:, 1] >> 1) & 1).tobytes()])
+        details.append(record)
+    assert offset == writer.n_mixed
+    result = {'core': core, 'details': details, 'dataset_id': dataset_id.hex(),
+              'class_runs': len(slots), 'mixed_cells': writer.n_mixed,
+              'total_bytes': core['bytes'] + sum(d['bytes'] for d in details)}
+    detail_dir.joinpath('manifest.json').write_text(json.dumps(result, indent=2) + '\n')
+    print(f"wrote {path}: core {core['bytes']:,} bytes; "
+          f"core + details {result['total_bytes']:,} bytes", flush=True)
+    return result
 
 
 def main():
@@ -524,12 +599,15 @@ def main():
             jobs=args.jobs)
     finally:
         classifier.dataset.close()
-    write_dataset(output, writer, raster_sha)
+    delivery = write_dataset(output, writer, raster_sha)
     if args.stats:
         stats = {
             "level": args.level, "nodes_visited": visited,
             "runs": writer.n_runs, "mixed_cells": writer.n_mixed,
             "build_seconds": elapsed, "artifact_bytes": output.stat().st_size,
+            "class_runs": delivery['class_runs'],
+            "core_and_details_bytes": delivery['total_bytes'],
+            "dataset_id": delivery['dataset_id'],
             "raster_sha256": raster_sha,
         }
         args.stats.write_text(json.dumps(stats, indent=2) + "\n")

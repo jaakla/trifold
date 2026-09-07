@@ -12,6 +12,7 @@ poetry.lock
 .DS_Store
 docs/data/*
 !docs/data/degurba_R2025A_E2025_L12.tfdg
+!docs/data/degurba_R2025A_E2025_L12.details/
 settlementcheck/source/
 .wrangler/
 osm-vector/

@@ -3218,6 +3218,8 @@ shutil.copy2(SETTLEMENTCHECK_SDK, DOCS_SETTLEMENTCHECK_SDK)
 os.makedirs('docs/data', exist_ok=True)
 shutil.copy2(SETTLEMENTCHECK_TFDG,
              'docs/data/degurba_R2025A_E2025_L12.tfdg')
+shutil.copytree(SETTLEMENTCHECK_TFDG.removesuffix('.tfdg') + '.details',
+                'docs/data/degurba_R2025A_E2025_L12.details', dirs_exist_ok=True)
 with open(SETTLEMENTCHECK_TEMPLATE, encoding='utf-8') as f:
     settlementcheck_html = f.read()
 with open(OUT_SETTLEMENTCHECK, 'w', encoding='utf-8') as f:
