@@ -72,6 +72,7 @@ def render_bench(md_path, section_substr, value_header, unit, title=None):
     return '\n      '.join(out)
 OUT_LANDCHECK = 'docs/landcheck.html'
 OUT_COUNTRYCHECK = 'docs/countrycheck.html'
+OUT_SETTLEMENTCHECK = 'docs/settlementcheck.html'
 JS_SDK = 'js/trifold.js'
 DOCS_SDK = 'docs/sdk/trifold.js'
 LANDCHECK_SDK = 'landcheck/js/landcheck.mjs'
@@ -80,8 +81,17 @@ LANDCHECK_TFLS = 'landcheck/data/landsea_L10.tfls'
 COUNTRYCHECK_SDK = 'countrycheck/js/countrycheck.mjs'
 DOCS_COUNTRYCHECK_SDK = 'docs/sdk/countrycheck.mjs'
 COUNTRYCHECK_TFCS = 'countrycheck/data/countries_L10.tfcs'
+SETTLEMENTCHECK_SDK = 'settlementcheck/js/settlementcheck.mjs'
+DOCS_SETTLEMENTCHECK_SDK = 'docs/sdk/settlementcheck.mjs'
+SETTLEMENTCHECK_TFDG = 'settlementcheck/data/degurba_R2025A_E2025_L12.tfdg'
+SETTLEMENTCHECK_TEMPLATE = 'scripts/settlementcheck.template.html'
 GH = 'https://github.com/jaakla/trifold'
 PMTILES_BASE_URL = os.environ.get('TRIFOLD_PMTILES_BASE_URL', 'https://maps.goplex.ee/data').rstrip('/')
+# Public browser basemap key for these demos; override when hosting elsewhere.
+CARTO_BASEMAP_KEY = os.environ.get('TRIFOLD_CARTO_BASEMAP_KEY',
+                                'cb1_2zu5_1_1f6393489af4f16ddf97b334')
+CARTO_LIGHT_TILE = json.dumps(
+    'https://basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png?key=' + CARTO_BASEMAP_KEY)
 
 EMBED = {
     'a5_compacted':       'cmp_a5_compacted.topojson',
@@ -108,6 +118,15 @@ datasets = {}
 pmtiles = {}
 dataset_stats = {}
 total = 0
+existing_payload = existing_pmtiles = existing_stats = {}
+if os.path.isfile(OUT):
+    existing_html = open(OUT, encoding='utf-8').read()
+    def _existing_json(name):
+        match = re.search(rf'const {name} = (.*?);\n', existing_html, re.S)
+        return json.loads(match.group(1)) if match else {}
+    existing_payload = _existing_json('DATASETS')
+    existing_pmtiles = _existing_json('PMTILES_DATASETS')
+    existing_stats = _existing_json('DATASET_STATS')
 for key, fn in EMBED.items():
     stem = fn.removesuffix('.topojson')
     pm_name = f'{stem}.pmtiles'
@@ -137,7 +156,20 @@ for key, fn in EMBED.items():
         print(f"pmtiles: {key} -> {pmtiles[key]['url']}")
         continue
 
-    raw = open(os.path.join(DATA, fn), 'rb').read()
+    source_path = os.path.join(DATA, fn)
+    if not os.path.isfile(source_path):
+        # A clean checkout intentionally omits generated grid products. Reuse
+        # the generated page's embedded/hosted payload while rebuilding docs.
+        if key in existing_payload:
+            datasets[key] = existing_payload[key]
+            total += len(datasets[key])
+            continue
+        if key in existing_pmtiles:
+            pmtiles[key] = existing_pmtiles[key]
+            dataset_stats[key] = existing_stats[key]
+            continue
+        raise FileNotFoundError(f'{source_path} is missing and has no generated-doc fallback')
+    raw = open(source_path, 'rb').read()
     gz = gzip.compress(raw, 9, mtime=0)
     datasets[key] = base64.b64encode(gz).decode()
     total += len(datasets[key])
@@ -307,6 +339,8 @@ html = """<!doctype html>
     <a class="applink" href="landcheck.html">landcheck</a>
     <a class="applink" href="countrycheck.html"
       title="offline country lookup, same approach">countrycheck<span class="tag">new</span></a>
+    <a class="applink" href="settlementcheck.html"
+      title="offline Degree of Urbanisation lookup">settlementcheck<span class="tag">new</span></a>
   </span>
   <a class="gh" href="__GH__" target="_blank" aria-label="GitHub" title="GitHub">__GHICON__</a>
 </nav>
@@ -339,6 +373,10 @@ html = """<!doctype html>
       country detection: 256 countries with coastal waters in a 323&nbsp;KB dataset,
       exact border-cell polygons optional.
       <a href="countrycheck.html">Info and interactive demo&nbsp;&rarr;</a></p>
+      <p class="muted"><a href="settlementcheck.html"><b>settlementcheck</b></a>
+      transfers the 2025 GHS-WUP Degree of Urbanisation classes to T3 for offline
+      urban-centre, cluster, suburban, rural and water context.
+      <a href="settlementcheck.html">Explore the classified layer&nbsp;&rarr;</a></p>
     </div>
     <a href="landcheck.html" style="display:block">
       <img src="img/landcheck_demo.jpg" alt="landcheck demo: points classified as land, coast and sea on a world map"
@@ -717,9 +755,8 @@ const map=new maplibregl.Map({
   container:'map',
   style:{version:8,projection:{type:'globe'},
     sources:{carto:{type:'raster',
-      tiles:['https://a.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png',
-             'https://b.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png'],
-      tileSize:256,attribution:'© OpenStreetMap © CARTO · Trifold T3 demo'}},
+      tiles:[__CARTO_LIGHT_TILE__],
+      tileSize:256,maxzoom:20,attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://carto.com/attributions">CARTO</a> · Trifold T3 demo'}},
     layers:[{id:'bg',type:'background',paint:{'background-color':'#cfe3ef'}},
             {id:'base',type:'raster',source:'carto'}]},
   center:[10,30],zoom:1.6});
@@ -831,9 +868,8 @@ const coverMap=new maplibregl.Map({
   container:'covermap',
   style:{version:8,
     sources:{carto:{type:'raster',
-      tiles:['https://a.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png',
-             'https://b.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png'],
-      tileSize:256,attribution:'© OpenStreetMap © CARTO · Trifold T3 coverage demo'}},
+      tiles:[__CARTO_LIGHT_TILE__],
+      tileSize:256,maxzoom:20,attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://carto.com/attributions">CARTO</a> · Trifold T3 coverage demo'}},
     layers:[{id:'cover-bg',type:'background',paint:{'background-color':'#cfe3ef'}},
             {id:'cover-base',type:'raster',source:'carto'}]},
   center:[-0.12,51.5],
@@ -1690,9 +1726,8 @@ const map=new maplibregl.Map({
   container:'map',
   style:{version:8,projection:{type:'globe'},
     sources:{carto:{type:'raster',
-      tiles:['https://a.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png',
-             'https://b.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png'],
-      tileSize:256,attribution:'© OpenStreetMap © CARTO · Trifold landcheck demo'}},
+      tiles:[__CARTO_LIGHT_TILE__],
+      tileSize:256,maxzoom:20,attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://carto.com/attributions">CARTO</a> · Trifold landcheck demo'}},
     layers:[{id:'bg',type:'background',paint:{'background-color':'#cfe3ef'}},
             {id:'base',type:'raster',source:'carto'}]},
   center:[15,30],zoom:1.4,
@@ -2694,9 +2729,8 @@ const map=new maplibregl.Map({
   container:'map',
   style:{version:8,projection:{type:'globe'},
     sources:{carto:{type:'raster',
-      tiles:['https://a.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png',
-             'https://b.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png'],
-      tileSize:256,attribution:'© OpenStreetMap © CARTO · Trifold countrycheck demo'}},
+      tiles:[__CARTO_LIGHT_TILE__],
+      tileSize:256,maxzoom:20,attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://carto.com/attributions">CARTO</a> · Trifold countrycheck demo'}},
     layers:[{id:'bg',type:'background',paint:{'background-color':'#cfe3ef'}},
             {id:'base',type:'raster',source:'carto'}]},
   center:[15,30],zoom:1.4,
@@ -3119,6 +3153,7 @@ os.makedirs(os.path.dirname(DOCS_SDK), exist_ok=True)
 shutil.copy2(JS_SDK, DOCS_SDK)
 with open(OUT, 'w') as f:
     f.write(html.replace('__DATA__', data_js).replace('__GH__', GH)
+            .replace('__CARTO_LIGHT_TILE__', CARTO_LIGHT_TILE)
             .replace('__GHICON__', GH_ICON)
             .replace('__INDEX_BENCH__',
                      render_bench('benchmark.md', 'Batch: 100,000', 'points/s', 'pts/s')))
@@ -3154,6 +3189,7 @@ for k, v in bench.items():
 
 with open(OUT_LANDCHECK, 'w') as f:
     f.write(landcheck_html.replace('__TFLS_B64__', tfls_b64)
+            .replace('__CARTO_LIGHT_TILE__', CARTO_LIGHT_TILE)
             .replace('__TFLR_URL__', f'{PMTILES_BASE_URL}/coastal_osm_L10.tflr')
             .replace('__NE_URL__', f'{PMTILES_BASE_URL}/ne_50m_land.geojson')
             .replace('__GH__', GH)
@@ -3171,8 +3207,23 @@ if os.path.isfile(tfcr_src):
     shutil.copy2(tfcr_src, 'docs/data/borders_L10.tfcr')
 with open(OUT_COUNTRYCHECK, 'w') as f:
     f.write(countrycheck_html.replace('__TFCS_B64__', tfcs_b64)
+            .replace('__CARTO_LIGHT_TILE__', CARTO_LIGHT_TILE)
             .replace('__TFCR_URL__', f'{PMTILES_BASE_URL}/borders_L10.tfcr')
             .replace('__GH__', GH)
             .replace('__GHICON__', GH_ICON))
 print(f"{OUT_COUNTRYCHECK}: {os.path.getsize(OUT_COUNTRYCHECK)/1e6:.1f} MB "
       f"(incl. {len(tfcs_b64)/1e3:.0f} KB b64 dataset)")
+
+shutil.copy2(SETTLEMENTCHECK_SDK, DOCS_SETTLEMENTCHECK_SDK)
+os.makedirs('docs/data', exist_ok=True)
+shutil.copy2(SETTLEMENTCHECK_TFDG,
+             'docs/data/degurba_R2025A_E2025_L12.tfdg')
+shutil.copytree(SETTLEMENTCHECK_TFDG.removesuffix('.tfdg') + '.details',
+                'docs/data/degurba_R2025A_E2025_L12.details', dirs_exist_ok=True)
+with open(SETTLEMENTCHECK_TEMPLATE, encoding='utf-8') as f:
+    settlementcheck_html = f.read()
+with open(OUT_SETTLEMENTCHECK, 'w', encoding='utf-8') as f:
+    f.write(settlementcheck_html.replace('__GH__', GH)
+            .replace('__CARTO_LIGHT_TILE__', CARTO_LIGHT_TILE))
+print(f"{OUT_SETTLEMENTCHECK}: {os.path.getsize(OUT_SETTLEMENTCHECK)/1e6:.1f} MB "
+      f"(+ {os.path.getsize(SETTLEMENTCHECK_TFDG)/1e6:.1f} MB data)")

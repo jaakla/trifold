@@ -25,3 +25,9 @@ python scripts/make_site.py                       # prefers matching PMTiles, em
 `make_site.py` checks for a PMTiles file matching each TopoJSON dataset.
 Matches are copied to `docs/data/` and used by the viewer; unmatched
 datasets remain embedded as compressed TopoJSON.
+
+The separately packaged `settlementcheck/data/*.tfdg` artifact is generated
+from the checksum-pinned GHS-WUP-DEGURBA source raster, not from these Natural
+Earth grid products. Its provenance, source URL, verified nodata value and
+license are recorded in `settlementcheck/data/manifest.json`; rebuild it with
+`settlementcheck/build.py`.

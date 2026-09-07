@@ -1,0 +1,113 @@
+{
+  "core": {
+    "file": "degurba_R2025A_E2025_L12.tfdg",
+    "bytes": 4575154,
+    "sha256": "7e7ce23b14f94a50399862feec0605aaaaa29ec5feae34478d1c152f3d971454"
+  },
+  "details": [
+    {
+      "file": "face-00.tfdd",
+      "bytes": 1046708,
+      "sha256": "64a2b2aa048d03d803b8ba5c28958114df111227732c7e822352f9eb30d0ccbc"
+    },
+    {
+      "file": "face-01.tfdd",
+      "bytes": 3851584,
+      "sha256": "b6c48709cad59845b5742d5acbd280be484d8f7e6b986628612a46368a2259b2"
+    },
+    {
+      "file": "face-02.tfdd",
+      "bytes": 365020,
+      "sha256": "c7d99983da7596af9597f0ca471e9f7065bae3b09efa6347314fe9109565ded6"
+    },
+    {
+      "file": "face-03.tfdd",
+      "bytes": 179638,
+      "sha256": "a427e1612282613d814f73f70b38e0ad2e1856d05f1051e3bf62dee4437d2e23"
+    },
+    {
+      "file": "face-04.tfdd",
+      "bytes": 183951,
+      "sha256": "0dc793dff9501d319c747e4843621ecee53ef9b92762fc43e4a605ee66a9f94e"
+    },
+    {
+      "file": "face-05.tfdd",
+      "bytes": 2258390,
+      "sha256": "ef7bd817b8bf6a2ffe92b7f3b37aeae67087161ee5599100368bf6260030f53c"
+    },
+    {
+      "file": "face-06.tfdd",
+      "bytes": 827941,
+      "sha256": "d3a41ede1d0cc607150cb11480b8ee6719c907fbdaa13db66143d92c805e6301"
+    },
+    {
+      "file": "face-07.tfdd",
+      "bytes": 13352,
+      "sha256": "6707dde0b3e1895a60de043ef75823f4e49504eb15d9c436a3a8a3c127aae9aa"
+    },
+    {
+      "file": "face-08.tfdd",
+      "bytes": 43669,
+      "sha256": "f34532acacd1b69d8d12641f66e5faebb37e08174a775bcd83661fef6f3f4672"
+    },
+    {
+      "file": "face-09.tfdd",
+      "bytes": 373940,
+      "sha256": "bc01258cab4b83802c8aa6879ceb9bdd3a2b5591f864496faff63e3673a88c4a"
+    },
+    {
+      "file": "face-10.tfdd",
+      "bytes": 551228,
+      "sha256": "87ae3b4630c888b703247e6d9b33e8bee6f14f2ad0b2d017569a1a89e971c740"
+    },
+    {
+      "file": "face-11.tfdd",
+      "bytes": 1738572,
+      "sha256": "3b8d29fcc8edc982edc968bf1d4d5f5877dfcb6185a0fe329979b56ef237ad6d"
+    },
+    {
+      "file": "face-12.tfdd",
+      "bytes": 492137,
+      "sha256": "eb1c8c23ab40a9e258243740cce81243b25c6e45fe4ddb9d93e49173b48adb1b"
+    },
+    {
+      "file": "face-13.tfdd",
+      "bytes": 554921,
+      "sha256": "3bd63c2966aa1c61f4aa6fdd9a896da49c33522fd22ea1bf3294853e445bbe50"
+    },
+    {
+      "file": "face-14.tfdd",
+      "bytes": 1040528,
+      "sha256": "9a0c85f933ab221228013b685338de75baab41623cbca0749f78d58902f1dcc0"
+    },
+    {
+      "file": "face-15.tfdd",
+      "bytes": 2274011,
+      "sha256": "8ae9d817c9d3263c74508532d2037f33cfcffab5b2e205989e8341c6008aec9d"
+    },
+    {
+      "file": "face-16.tfdd",
+      "bytes": 573153,
+      "sha256": "9e89b9fa0ce0390c96fb93fe88845977a2802638280f73121944c0c0f938a9e7"
+    },
+    {
+      "file": "face-17.tfdd",
+      "bytes": 1232,
+      "sha256": "9cbde928a64f3d602ac8ff1281b18e6cebfb73624163e3e9e9b2bbd63ceb2885"
+    },
+    {
+      "file": "face-18.tfdd",
+      "bytes": 48843,
+      "sha256": "3b806adadd3296332519b95d8a0131a9d183030964907e136ea68e5220a6ceae"
+    },
+    {
+      "file": "face-19.tfdd",
+      "bytes": 2313809,
+      "sha256": "b85c023610cc2b67a1f62f36d6c3938b2bc804864bc0a0a2972b276148b99401"
+    }
+  ],
+  "dataset_id": "d64fe90f05ae05ae3c67b885d094f3d3acd63305fd5acce848f6448dc0ee084d",
+  "class_runs": 7687305,
+  "mixed_cells": 16024557,
+  "total_bytes": 23307781
+}
