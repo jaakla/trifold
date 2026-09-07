@@ -87,6 +87,11 @@ SETTLEMENTCHECK_TFDG = 'settlementcheck/data/degurba_R2025A_E2025_L12.tfdg'
 SETTLEMENTCHECK_TEMPLATE = 'scripts/settlementcheck.template.html'
 GH = 'https://github.com/jaakla/trifold'
 PMTILES_BASE_URL = os.environ.get('TRIFOLD_PMTILES_BASE_URL', 'https://maps.goplex.ee/data').rstrip('/')
+# Public browser basemap key for these demos; override when hosting elsewhere.
+CARTO_BASEMAP_KEY = os.environ.get('TRIFOLD_CARTO_BASEMAP_KEY',
+                                'cb1_2zu5_1_1f6393489af4f16ddf97b334')
+CARTO_LIGHT_TILE = json.dumps(
+    'https://basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png?key=' + CARTO_BASEMAP_KEY)
 
 EMBED = {
     'a5_compacted':       'cmp_a5_compacted.topojson',
@@ -1723,9 +1728,8 @@ const map=new maplibregl.Map({
   container:'map',
   style:{version:8,projection:{type:'globe'},
     sources:{carto:{type:'raster',
-      tiles:['https://a.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png',
-             'https://b.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png'],
-      tileSize:256,attribution:'© OpenStreetMap © CARTO · Trifold landcheck demo'}},
+      tiles:[__CARTO_LIGHT_TILE__],
+      tileSize:256,maxzoom:20,attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://carto.com/attributions">CARTO</a> · Trifold landcheck demo'}},
     layers:[{id:'bg',type:'background',paint:{'background-color':'#cfe3ef'}},
             {id:'base',type:'raster',source:'carto'}]},
   center:[15,30],zoom:1.4,
@@ -2727,9 +2731,8 @@ const map=new maplibregl.Map({
   container:'map',
   style:{version:8,projection:{type:'globe'},
     sources:{carto:{type:'raster',
-      tiles:['https://a.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png',
-             'https://b.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png'],
-      tileSize:256,attribution:'© OpenStreetMap © CARTO · Trifold countrycheck demo'}},
+      tiles:[__CARTO_LIGHT_TILE__],
+      tileSize:256,maxzoom:20,attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://carto.com/attributions">CARTO</a> · Trifold countrycheck demo'}},
     layers:[{id:'bg',type:'background',paint:{'background-color':'#cfe3ef'}},
             {id:'base',type:'raster',source:'carto'}]},
   center:[15,30],zoom:1.4,
@@ -3187,6 +3190,7 @@ for k, v in bench.items():
 
 with open(OUT_LANDCHECK, 'w') as f:
     f.write(landcheck_html.replace('__TFLS_B64__', tfls_b64)
+            .replace('__CARTO_LIGHT_TILE__', CARTO_LIGHT_TILE)
             .replace('__TFLR_URL__', f'{PMTILES_BASE_URL}/coastal_osm_L10.tflr')
             .replace('__NE_URL__', f'{PMTILES_BASE_URL}/ne_50m_land.geojson')
             .replace('__GH__', GH)
@@ -3204,6 +3208,7 @@ if os.path.isfile(tfcr_src):
     shutil.copy2(tfcr_src, 'docs/data/borders_L10.tfcr')
 with open(OUT_COUNTRYCHECK, 'w') as f:
     f.write(countrycheck_html.replace('__TFCS_B64__', tfcs_b64)
+            .replace('__CARTO_LIGHT_TILE__', CARTO_LIGHT_TILE)
             .replace('__TFCR_URL__', f'{PMTILES_BASE_URL}/borders_L10.tfcr')
             .replace('__GH__', GH)
             .replace('__GHICON__', GH_ICON))
@@ -3217,6 +3222,7 @@ shutil.copy2(SETTLEMENTCHECK_TFDG,
 with open(SETTLEMENTCHECK_TEMPLATE, encoding='utf-8') as f:
     settlementcheck_html = f.read()
 with open(OUT_SETTLEMENTCHECK, 'w', encoding='utf-8') as f:
-    f.write(settlementcheck_html.replace('__GH__', GH))
+    f.write(settlementcheck_html.replace('__GH__', GH)
+            .replace('__CARTO_LIGHT_TILE__', CARTO_LIGHT_TILE))
 print(f"{OUT_SETTLEMENTCHECK}: {os.path.getsize(OUT_SETTLEMENTCHECK)/1e6:.1f} MB "
       f"(+ {os.path.getsize(SETTLEMENTCHECK_TFDG)/1e6:.1f} MB data)")
