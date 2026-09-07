@@ -25,15 +25,15 @@ label{display:flex;gap:9px;align-items:center;font-size:12px;margin:15px 0}.pres
 </head>
 <body>
 <nav><span class="brand">Trifold <i>T3</i> / settlementcheck</span><a href="index.html">T3 grid</a><a href="landcheck.html">landcheck</a><a href="countrycheck.html">countrycheck</a><a class="keep" href="https://github.com/jaakla/trifold/tree/main/settlementcheck">GitHub</a></nav>
-<header class="hero"><div class="eyebrow">GHS-WUP-DEGURBA · R2025A · epoch 2025</div><h1>Settlement context, not just population density.</h1><p>Ask whether a point belongs to an urban centre, cluster, suburb, rural settlement, low-density countryside, or water—offline, with the published context-aware classification preserved.</p></header>
+<header class="hero"><div class="eyebrow">GHS-WUP-DEGURBA · R2025A · epoch 2025</div><h1>Settlement context, globally.</h1><p>Check if a point belongs to an urban centre, cluster, suburb, rural settlement, low-density countryside, or water—offline.</p></header>
 <main>
 <section class="workbench" aria-label="Interactive settlement classification map">
   <div class="mapgrid"><div id="map"></div><aside class="panel">
     <h2>Degree of Urbanisation</h2><div class="small">Stage I · Level 2 · 1 km source · T3 L12 transfer</div>
-    <div id="status" class="status">Loading <b>the real offline dataset</b>…</div>
+    <div id="status" class="status">Loading <b> offline dataset</b>…</div>
     <div class="legend" id="legend"></div>
     <label><input id="mixed" type="checkbox"> Load &amp; highlight boundary details</label>
-    <div class="small">Classes load first. Boundary details download only when requested.</div>
+    <div class="small">Classes load first. Boundary details download lazily.</div>
     <div id="layer-detail-status" class="small" role="status"></div>
     <div class="small" style="margin-bottom:7px">Contrasting places</div>
     <div class="presets">
@@ -45,8 +45,8 @@ label{display:flex;gap:9px;align-items:center;font-size:12px;margin:15px 0}.pres
   </aside></div>
 </section>
 <section class="docs">
-  <div class="docs-grid"><div><h2>Why DEGURBA?</h2><p>Population density describes one pixel. DEGURBA also considers connected cells, cluster population, distance, permanent land, and smoothing. That makes it useful for settlement context, urban/rural stratification, sampling, service-area analysis, and contextual map styling.</p><p>It is deliberately separate from a future numeric <code>populationcheck</code>: never infer an exact count or density from these classes.</p></div><div><h2>Read results carefully</h2><p><code>class_share</code> is the dominant source-class area share inside the T3 cell—not confidence. <code>mixed</code> marks a source boundary. A finer triangle represents that boundary; it does not improve on the source's 1 km scientific resolution.</p><p>The Level-1 source hierarchy puts water in its residual “rural grid cell” domain. Use <code>surface</code> to distinguish water, land, mixed coast, and unknown/nodata.</p></div></div>
-  <h2>The eight published classes</h2>
+  <div class="docs-grid"><div><h2>Why DEGURBA?</h2><p>DEGURBA considers not only population density but also connected cells, cluster population, distance, permanent land, and smoothing. That makes it useful for settlement context, urban/rural stratification, sampling, service-area analysis, and contextual map styling. This library uses 1-km grid as the master source.</p></div><div><h2>Results</h2><p><code>class_share</code> is the dominant source-class area share inside the T3 cell—not confidence. <code>mixed</code> marks a source boundary. A finer triangle represents that boundary; it does not improve on the source's 1 km analytical resolution.</p><p>The Level-1 source hierarchy puts water in its residual “rural grid cell” domain. Use <code>surface</code> to distinguish water, land, mixed coast, and unknown/nodata.</p></div></div>
+  <h2>DEGURBA classes</h2>
   <table class="classes"><thead><tr><th>Code</th><th>Public value</th><th>Meaning</th></tr></thead><tbody>
     <tr><td>30</td><td><code>urban_centre</code></td><td>Urban centre</td></tr><tr><td>23</td><td><code>dense_urban_cluster</code></td><td>Dense urban cluster</td></tr>
     <tr><td>22</td><td><code>semi_dense_urban_cluster</code></td><td>Semi-dense urban cluster</td></tr><tr><td>21</td><td><code>suburban_or_peri_urban</code></td><td>Suburban or peri-urban</td></tr>
