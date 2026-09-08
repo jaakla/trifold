@@ -10,11 +10,12 @@ uv pip install --python .venv/bin/python -e '.[site]'
 
 The scientific artifacts are copied, not rebuilt. A clean checkout reuses the
 comparison page's embedded payload and hosted PMTiles inventory. Keep the
-generated `docs/index.html` when rebuilding without the optional grid products.
+generated `docs/demo.html` when rebuilding without the optional grid products
+(the old `docs/index.html` is also accepted during migration).
 
 ## Ownership
 
-- `templates/`: authored overview, landcheck and countrycheck content and tools.
+- `templates/`: authored overview, live demo, landcheck and countrycheck content and tools.
 - `../settlementcheck.template.html`: settlement content and tools; its existing
   editing entry point is preserved.
 - `../site_builder.py`: `PageSpec`, shared shell, navigation, heading/anchor
@@ -43,6 +44,12 @@ and benchmark tools remain under **Layers and tools**. Benchmarks still classify
 their requested point count, but upload at most 5,000 displayed point features.
 Settlement retains its 6,500-cell limit, two-face detail cache and opt-in details.
 The separate coverage demo retains its own drawing controls and bounded output.
+
+The seven-page navigation separates **Overview** from **Live demo** (`demo.html`).
+Only Live demo loads the comparison payload, MapLibre, PMTiles, and TopoJSON;
+Overview has no map runtime or grid data. `index.html#demo` and `#coverage`
+forward to the matching demo section, preserving query parameters. Visible links
+remain usable without JavaScript. Both maps still use `assets/index-demo.mjs`.
 
 All maps use MapLibre 5.6.2 and CARTO Positron vectors. The shared request hook
 adds the public browser key only to CARTO hosts, preserving other protocols such
@@ -96,9 +103,13 @@ performance guarantee or a like-for-like scientific dataset benchmark.
 Regeneration is deterministic. During implementation the shared CSS/JS weighed
 about 37 KB raw / 11 KB gzip (sum of four assets, excluding MapLibre,
 SDKs and scientific payloads), below the issue's 30 KB gzip target. HTML byte
-counts: index 11,284,997; landcheck 259,473; countrycheck 450,349;
+counts before the page split: index 11,284,997; landcheck 259,473; countrycheck 450,349;
 settlementcheck 8,462; SDK API 11,857; technical reference 15,280. HTML savings
 mostly reflect extracting cacheable runtime code, not shrinking scientific data.
+
+After separating Live demo, Overview is 15,689 bytes (about 99.86% less HTML)
+and Live demo is 11,271,762 bytes. The grid payload is unchanged; developers
+reading the introduction or quickstart no longer download it or start WebGL maps.
 
 Review concepts and the visual comparison ledger live in `design/issue-20/`.
 No automatic publish or merge step is part of this work.

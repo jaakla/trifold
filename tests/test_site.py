@@ -5,7 +5,7 @@ from urllib.parse import urlsplit, unquote
 from bs4 import BeautifulSoup
 
 ROOT = Path(__file__).resolve().parents[1]
-PAGES = ('index', 'landcheck', 'countrycheck', 'settlementcheck', 'sdk-api', 't3-technical-reference')
+PAGES = ('index', 'landcheck', 'countrycheck', 'settlementcheck', 'demo', 'sdk-api', 't3-technical-reference')
 
 
 def test_site_navigation_and_anchors():
@@ -15,7 +15,7 @@ def test_site_navigation_and_anchors():
         assert len(ids) == len(set(ids)), name
         assert len(soup.select('main')) == 1
         assert soup.select_one(f'#product-nav a[aria-current="page"][href="{name}.html"]')
-        assert len(soup.select('#product-nav a')) == 6
+        assert len(soup.select('#product-nav a')) == len(PAGES)
         for link in soup.select('a[href]'):
             href = urlsplit(link['href'])
             if href.scheme or href.netloc:
@@ -58,7 +58,20 @@ def test_safety_and_asset_contract():
         soup = BeautifulSoup(text, 'html.parser')
         assert not soup.find('style')
         assert 'LOCAL_NAV' not in soup.get_text()
-        if name in PAGES[:4]:
+        if name in PAGES[:5]:
             assert soup.select_one('.local-toc nav a')
     for path in (ROOT / 'docs/assets').glob('*.mjs'):
         assert not re.search(r'__[A-Z][A-Z_]+__', path.read_text())
+
+
+def test_overview_is_separate_from_live_demo():
+    overview = (ROOT / 'docs/index.html').read_text()
+    demo = (ROOT / 'docs/demo.html').read_text()
+    assert len(overview.encode()) < 30_000
+    for asset in ('const DATASETS', 'maplibre-gl@', 'topojson-client.min.js', 'pmtiles.js', 'index-demo.mjs'):
+        assert asset not in overview
+        assert asset in demo
+    soup = BeautifulSoup(demo, 'html.parser')
+    assert soup.select_one('#demo #map')
+    assert soup.select_one('#coverage #covermap')
+    assert 'demo.html' in overview

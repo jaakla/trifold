@@ -27,7 +27,7 @@ const server=http.createServer(async(req,res)=>{try{const path=new URL(req.url,'
 }catch{res.writeHead(404);res.end();}});
 await new Promise(r=>server.listen(0,'127.0.0.1',r));
 const browser=await chromium.launch({headless:true});
-try{for(const name of (process.env.QA_PAGES||'settlementcheck,landcheck,countrycheck,index,sdk-api,t3-technical-reference').split(',')){
+try{for(const name of (process.env.QA_PAGES||'settlementcheck,landcheck,countrycheck,index,demo,sdk-api,t3-technical-reference').split(',')){
  const page=await browser.newPage({viewport:{width:1505,height:1045}}),errors=[];page.on('pageerror',e=>{errors.push(e.message);console.log(name,e.message);});page.on('console',m=>{if(m.type()==='error')console.log(name,m.text().slice(0,200));});
  page.setDefaultTimeout(15000);page.on('crash',()=>console.log('PAGE CRASH',name));
  let refinementFails=true;
@@ -35,9 +35,26 @@ try{for(const name of (process.env.QA_PAGES||'settlementcheck,landcheck,countryc
  page.on('response',r=>{if(r.status()>=400)console.log('HTTP',r.status(),r.url());});
  const start=Date.now();await page.goto(`http://127.0.0.1:${server.address().port}/${name}.html`);
  let readyMs=Date.now()-start;
+ assert.match(await page.title(),/Trifold documentation/);
+ assert.ok(await page.locator('main').innerText());
+ assert.equal(new URL(page.url()).pathname,`/${name}.html`);
+ if(name==='index'){
+   assert.equal(await page.locator('.map-demo, canvas').count(),0);
+   assert.equal(await page.evaluate(()=>performance.getEntriesByType('resource').some(r=>/maplibre|pmtiles|topojson|index-demo|sdk\//.test(r.name))),false);
+   await page.locator('.page-actions a[href="demo.html"]').click();
+   assert.equal(new URL(page.url()).pathname,'/demo.html');
+   await page.goto(`http://127.0.0.1:${server.address().port}/index.html`);
+   for(const hash of ['demo','coverage']){
+     await page.goto(`http://127.0.0.1:${server.address().port}/index.html?projection=mercator&covermap-projection=globe#${hash}`);
+     await page.waitForURL(`**/demo.html?projection=mercator&covermap-projection=globe#${hash}`);
+   }
+   await page.goto(`http://127.0.0.1:${server.address().port}/index.html#concept`);
+   assert.equal(new URL(page.url()).pathname,'/index.html');
+   await page.evaluate(()=>scrollTo(0,0));
+ }
  await page.context().grantPermissions(['clipboard-read','clipboard-write']);
- if(['settlementcheck','landcheck','countrycheck','index'].includes(name)){
-   await page.waitForFunction(name=>window['__'+(name==='index'?'trifold':name)]?.map.getSource(name==='index'?'grid':name==='settlementcheck'?'cells':'points'),name,{timeout:30000});
+ if(['settlementcheck','landcheck','countrycheck','demo'].includes(name)){
+   await page.waitForFunction(name=>window['__'+(name==='demo'?'trifold':name)]?.map.getSource(name==='demo'?'grid':name==='settlementcheck'?'cells':'points'),name,{timeout:30000});
    readyMs=Date.now()-start;
    await page.waitForTimeout(150);
    await page.screenshot({path:join(fixture,`${name}-entry.png`)});
@@ -74,7 +91,7 @@ try{for(const name of (process.env.QA_PAGES||'settlementcheck,landcheck,countryc
      await frame.locator('.demo-tools summary').click();
    }
    await frame.locator('.demo-visible').uncheck();await frame.locator('.demo-visible').check();
-   if(name!=='index'){
+   if(['settlementcheck','landcheck','countrycheck'].includes(name)){
      await frame.locator('.demo-batch summary').click();await frame.locator('.demo-batch input').setInputFiles({name:'tiny.csv',mimeType:'text/csv',buffer:Buffer.from('lon,lat\n24.7536,59.437\n-0.1276,51.5072\ninvalid,10')});
      await page.waitForFunction(()=>document.querySelector('.demo-status').textContent.includes('2 points classified; 1 invalid'));
      await frame.locator('.batch-clear').click();
@@ -92,7 +109,7 @@ try{for(const name of (process.env.QA_PAGES||'settlementcheck,landcheck,countryc
      refinementFails=false;await page.locator('#refinecb').check();await page.waitForFunction(()=>document.querySelector('#refinenote').textContent.includes('Loaded:'));
      await page.locator('#refinecb').uncheck();
    }
-   if(name==='index'){
+   if(name==='demo'){
      await frame.locator('.demo-tools summary').click();await page.locator('#seg-level [data-v="4"]').click();
      await page.locator('#seg-sys [data-v="h3"]').click();await page.waitForTimeout(100);assert.match(await page.locator('#sysnote').innerText(),/Uber H3/);
      await page.locator('#seg-sys [data-v="tri"]').click();
@@ -109,6 +126,6 @@ try{for(const name of (process.env.QA_PAGES||'settlementcheck,landcheck,countryc
  const code=page.locator('pre:has(code)').first();if(await code.count()){const expected=await code.locator('code').innerText();await code.getByRole('button',{name:'Copy code'}).click();assert.equal(await page.evaluate(()=>navigator.clipboard.readText()),expected);}
  await page.evaluate(()=>document.querySelectorAll('.demo-side').forEach(n=>n.scrollTop=0));
  await page.screenshot({path:join(fixture,`${name}-desktop.png`)});
- for(const width of [1440,1024,390,320]){await page.setViewportSize({width,height:width===1440?900:width===1024?768:844});await page.evaluate(()=>scrollTo(0,0));await page.waitForTimeout(120);if(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth))console.log('overflow',name,width,await page.evaluate(()=>[...document.querySelectorAll('main *')].filter(n=>n.getBoundingClientRect().right>innerWidth).slice(0,15).map(n=>[n.tagName,n.id,n.className,n.getBoundingClientRect().width])));assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,`${name} overflow ${width}`);if(width===390){await page.screenshot({path:join(fixture,`${name}-mobile.png`)});await page.getByRole('button',{name:'Menu',exact:true}).click();assert.equal(await page.locator('#product-nav a:visible').count(),6);await page.keyboard.press('Escape');assert.equal(await page.locator('.menu-toggle').getAttribute('aria-expanded'),'false');}}
+ for(const width of [1440,1024,390,320]){await page.setViewportSize({width,height:width===1440?900:width===1024?768:844});await page.evaluate(()=>scrollTo(0,0));await page.waitForTimeout(120);if(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth))console.log('overflow',name,width,await page.evaluate(()=>[...document.querySelectorAll('main *')].filter(n=>n.getBoundingClientRect().right>innerWidth).slice(0,15).map(n=>[n.tagName,n.id,n.className,n.getBoundingClientRect().width])));assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,`${name} overflow ${width}`);if(width===390){await page.screenshot({path:join(fixture,`${name}-mobile.png`)});await page.getByRole('button',{name:'Menu',exact:true}).click();assert.equal(await page.locator('#product-nav a:visible').count(),7);await page.keyboard.press('Escape');assert.equal(await page.locator('.menu-toggle').getAttribute('aria-expanded'),'false');}}
  console.log(JSON.stringify({name,readyMs,flowMs:Date.now()-start,errors}));assert.deepEqual(errors,[]);await page.close();
 }}finally{await browser.close();server.close();}

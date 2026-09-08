@@ -10,11 +10,12 @@ from bs4 import BeautifulSoup
 import markdown
 
 ROOT = Path('scripts/site')
-PAGES = [('index', 'Overview'), ('sdk-api', 'SDK API'),
+PAGES = [('index', 'Overview'), ('demo', 'Live demo'), ('sdk-api', 'SDK API'),
          ('t3-technical-reference', 'Technical reference'),
          ('landcheck', 'landcheck'), ('countrycheck', 'countrycheck'),
          ('settlementcheck', 'settlementcheck')]
 TITLES = {'index': ('Trifold T3', 'A hierarchical triangular grid for the world.'),
+          'demo': ('Live demo', 'Explore grids and coverage, interactively.'),
           'landcheck': ('landcheck', 'Offline land and sea lookup.'),
           'countrycheck': ('countrycheck', 'Offline country lookup.'),
           'settlementcheck': ('settlementcheck', 'Settlement context, globally.')}
@@ -33,7 +34,7 @@ class PageSpec:
 def render_page(spec):
     nav = []
     for i, (key, label) in enumerate(PAGES):
-        if i in (0, 3):
+        if key in ('index', 'landcheck'):
             nav.append(f'<p>{"Trifold" if i == 0 else "Libraries"}</p>')
         active = ' aria-current="page"' if key == spec.id else ''
         nav.append(f'<a href="{key}.html"{active}>{label}</a>')
@@ -82,7 +83,7 @@ def normalize_document(page, source):
         heading.insert_after(desc)
         for cta in hero.select('.cta'):
             cta.decompose()
-        actions = BeautifulSoup('<div class="page-actions"><a href="#quickstart">Quickstart</a><a href="#demo">Try demo</a></div>', 'html.parser')
+        actions = BeautifulSoup('<div class="page-actions"><a href="#quickstart">Quickstart</a><a href="demo.html">Live demo</a></div>', 'html.parser')
         if page == 'index':
             hero.append(actions)
         from bs4 import Comment
@@ -201,7 +202,9 @@ def build_site(github, carto_key, tiles_base):
     for page in TITLES:
         path = Path(f'docs/{page}.html')
         path.write_text(render_page(normalize_document(page, path.read_text())))
-    for page, label in PAGES[1:3]:
+    for page, label in PAGES:
+        if page not in ('sdk-api', 't3-technical-reference'):
+            continue
         source = Path(f'docs/{page}.md').read_text()
         md = markdown.Markdown(extensions=['tables', 'fenced_code', 'toc'])
         soup = BeautifulSoup(md.convert(source), 'html.parser')

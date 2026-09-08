@@ -1,7 +1,5 @@
 #!/usr/bin/env python
-"""Build docs/index.html — Trifold T3 landing page with embedded
-interactive 7-system DGGS comparison viewer (GitHub Pages ready).
-"""
+"""Build the Trifold documentation and separate live demo (GitHub Pages ready)."""
 import base64
 import gzip
 import json
@@ -13,6 +11,7 @@ from site_builder import build_site
 
 DATA = 'data'
 OUT = 'docs/index.html'
+OUT_DEMO = 'docs/demo.html'
 
 
 # --- benchmark bars rendered from the markdown docs (single source of truth) ---
@@ -119,14 +118,18 @@ pmtiles = {}
 dataset_stats = {}
 total = 0
 existing_payload = existing_pmtiles = existing_stats = {}
-if os.path.isfile(OUT):
-    existing_html = open(OUT, encoding='utf-8').read()
+for existing_page in (OUT_DEMO, OUT):
+    if not os.path.isfile(existing_page):
+        continue
+    existing_html = Path(existing_page).read_text()
     def _existing_json(name):
         match = re.search(rf'const {name} = (.*?);\n', existing_html, re.S)
         return json.loads(match.group(1)) if match else {}
     existing_payload = _existing_json('DATASETS')
     existing_pmtiles = _existing_json('PMTILES_DATASETS')
     existing_stats = _existing_json('DATASET_STATS')
+    if existing_payload or existing_pmtiles:
+        break
 for key, fn in EMBED.items():
     stem = fn.removesuffix('.topojson')
     pm_name = f'{stem}.pmtiles'
@@ -183,6 +186,7 @@ data_js = (
     f"const DATASET_STATS = {json.dumps(dataset_stats, separators=(',', ':'))};")
 
 html = Path("scripts/site/templates/index.html").read_text()
+demo_html = Path("scripts/site/templates/demo.html").read_text()
 
 landcheck_html = Path("scripts/site/templates/landcheck.html").read_text()
 
@@ -193,10 +197,12 @@ os.makedirs('docs', exist_ok=True)
 os.makedirs(os.path.dirname(DOCS_SDK), exist_ok=True)
 shutil.copy2(JS_SDK, DOCS_SDK)
 with open(OUT, 'w') as f:
-    f.write(html.replace('__DATA__', data_js).replace('__GH__', GH)
+    f.write(html.replace('__GH__', GH)
             .replace('__INDEX_BENCH__',
                      render_bench('benchmark.md', 'Batch: 100,000', 'points/s', 'pts/s')))
 print(f"{OUT}: {os.path.getsize(OUT)/1e6:.1f} MB")
+Path(OUT_DEMO).write_text(demo_html.replace('__DATA__', data_js))
+print(f"{OUT_DEMO}: {os.path.getsize(OUT_DEMO)/1e6:.1f} MB")
 
 shutil.copy2(LANDCHECK_SDK, DOCS_LANDCHECK_SDK)
 tfls_b64 = base64.b64encode(open(LANDCHECK_TFLS, 'rb').read()).decode()

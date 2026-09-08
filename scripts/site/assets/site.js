@@ -1,3 +1,13 @@
+// Keep shared links to the former overview maps, including projection state.
+function forwardLegacyDemo() {
+  if (document.body.classList.contains("page-index") &&
+      ["#demo", "#coverage"].includes(location.hash)) {
+    location.replace("demo.html" + location.search + location.hash);
+  }
+}
+forwardLegacyDemo();
+addEventListener("hashchange", forwardLegacyDemo);
+
 const menu = document.querySelector(".menu-toggle"),
   nav = document.querySelector("#product-nav");
 function closeMenu() {
