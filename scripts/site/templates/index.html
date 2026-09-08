@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Trifold T3: a triangular DGGS with exact nesting</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Trifold T3: a hierarchical triangular discrete global grid system with exact aperture-4 nesting, compact base32 addressing, and an interactive 7-system DGGS comparison.">
+<script src="https://unpkg.com/maplibre-gl@5.6.2/dist/maplibre-gl.js"></script>
+<link href="https://unpkg.com/maplibre-gl@5.6.2/dist/maplibre-gl.css" rel="stylesheet">
+<script src="https://unpkg.com/topojson-client@3/dist/topojson-client.min.js"></script>
+<script src="https://unpkg.com/pmtiles@3/dist/pmtiles.js"></script>
+</head>
+<body>
+
+<section class="hero">
+  <h1>Trifold <span class="t3">T3</span><br>triangles that nest <em>exactly</em></h1>
+  <p class="lede">A hierarchical triangular discrete global grid system on the icosahedron.
+  Every parent cell is <b>bit-for-bit the union of its four children</b>, something neither
+  hexagons nor pentagons can offer. A ~110&nbsp;km cell has a 6-character address.</p>
+  <a class="cta primary" href="#demo">Launch the comparison demo</a>
+</section>
+
+<section id="libraries">
+  <h2>Built on Trifold: ready-to-use libraries</h2>
+  <div class="twocol" style="align-items:center">
+    <div>
+      <h3 style="margin-top:0">▲ landcheck: offline land/sea lookup</h3>
+      <p>The first practical proof of concept of exact nesting: the level-10 land
+      classification (~6.15M land-touching cells) collapses into 153,884
+      run-length intervals: a <b>182&nbsp;KB</b> dataset that answers
+      <i>"is this point on land?"</i> in microseconds, fully offline, in Python
+      and JavaScript, with a confidence value for every answer. Optional OSM
+      refinement sharpens coastal answers to a near-exact polygon test. Both
+      tools also classify whole <b>routes/polylines</b> into distance-annotated
+      segments — try Route mode in either demo.</p>
+      <p><a class="cta primary" style="padding:9px 18px;font-size:14px"
+        href="landcheck.html">Info and interactive demo</a></p>
+      <p class="muted">Its sibling
+      <a href="countrycheck.html"><b>countrycheck</b></a> applies the same run-length approach to
+      country detection: 256 countries with coastal waters in a 323&nbsp;KB dataset,
+      exact border-cell polygons optional.
+      <a href="countrycheck.html">Info and interactive demo&nbsp;&rarr;</a></p>
+      <p class="muted"><a href="settlementcheck.html"><b>settlementcheck</b></a>
+      transfers the 2025 GHS-WUP Degree of Urbanisation classes to T3 for offline
+      urban-centre, cluster, suburban, rural and water context.
+      <a href="settlementcheck.html">Explore the classified layer&nbsp;&rarr;</a></p>
+    </div>
+    <a href="landcheck.html" style="display:block">
+      <img src="img/landcheck_demo.jpg" alt="landcheck demo: points classified as land, coast and sea on a world map"
+        style="width:100%;border:1px solid #e0dbd0;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,.08)">
+    </a>
+  </div>
+  <div class="bench" style="margin-top:26px">
+    <h3>Benchmarked: 3&ndash;30&times; faster than SQL spatial engines</h3>
+    <p style="font-size:14px;margin:6px 0 10px">One workload, four engines: classify 100,000
+    random points as land or sea against the same OSM land polygons. Trifold-based landcheck
+    answered 3&ndash;30&times; faster than BigQuery, PostGIS and DuckDB Spatial in batch mode
+    and 40&ndash;100&times; faster called one point at a time &mdash; true to the name, never
+    less than a three-fold margin. The same gap should apply to similar
+    point-classification problems.</p>
+    __INDEX_BENCH__
+    <p class="muted" style="margin-top:10px">Batch mode, median of 7 warm runs, Apple M5 Pro,
+    June 2026. The SQL engines compute exact polygon containment; landcheck agrees with them
+    on 99.5% of points from a far smaller dataset.
+    <a href="landcheck.html#benchmark">Full benchmark with methodology and caveats &rarr;</a></p>
+  </div>
+</section>
+
+<section id="concept">
+  <h2>The idea in 30 seconds</h2>
+  <p>Start from the icosahedron: 20 spherical triangles covering the Earth. Split every
+  triangle into 4 by connecting the great-circle midpoints of its edges. Repeat. Each level
+  halves the edge length and quadruples the cell count (<i>aperture&nbsp;4</i>). Because
+  children are built from the parent's own vertices plus edge midpoints, a parent cell is
+  exactly the union of its children: aggregating data up the hierarchy or drilling down loses
+  nothing and double-counts nothing.</p>
+  <table>
+    <tr><th>level</th><th>mean edge</th><th>mean area</th><th>cells (global)</th></tr>
+    <tr><td>0</td><td>7,054 km</td><td>25.5M km²</td><td>20</td></tr>
+    <tr><td>3</td><td>882 km</td><td>399k km²</td><td>1,280</td></tr>
+    <tr><td>6</td><td>110 km</td><td>6,226 km²</td><td>81,920</td></tr>
+    <tr><td>9</td><td>13.8 km</td><td>97 km²</td><td>5.2M</td></tr>
+    <tr><td>12</td><td>1.7 km</td><td>1.5 km²</td><td>336M</td></tr>
+    <tr><td>15</td><td>215 m</td><td>24 ha</td><td>21.5B</td></tr>
+  </table>
+  <div class="cards">
+    <div class="card"><b>Exact nesting</b><p>Parent = union of 4 children, verified to
+      floating-point noise (10⁻¹⁹ of cell area). Lossless multi-resolution aggregation.</p></div>
+    <div class="card"><b>Poles and antimeridian</b><p>Both poles are lattice vertices:
+      six meridian wedges meet at exactly ±90°. Antimeridian cells use continuous longitudes
+      and are flagged. Classification uses polygon geometry.</p></div>
+    <div class="card"><b>Compacted coverage</b><p>Interior cells merge up the quadtree as far
+      as they stay wholly on land; coastlines stay fine. 27,614 → 10,046 cells at level 6,
+      identical 171.1M km² coverage.</p></div>
+    <div class="card"><b>Three address forms</b><p>One identity: compact base32 for humans,
+      digit path for teaching, and a sortable uint64 for compute where a subtree is one contiguous range.</p></div>
+  </div>
+</section>
+
+<section id="addressing">
+  <h2>Addressing: one identity, three encodings</h2>
+  <p>A cell is <code>(face, path)</code>: one of 20 icosahedron faces plus a base-4 digit per
+  subdivision level (<code>0,1,2</code> = corner children, <code>3</code> = central flipped
+  child). London at level 6:</p>
+  <table>
+    <tr><th>form</th><th>example</th><th>for</th><th>size</th></tr>
+    <tr><td><b>compact</b></td><td><code>TF6958</code></td><td>humans, URLs, labels</td>
+      <td>3 + ⌈2L/5⌉ chars</td></tr>
+    <tr><td><b>path</b></td><td><code>F15-102111</code></td><td>teaching, debugging</td>
+      <td>4 + L chars</td></tr>
+    <tr><td><b>addr64</b></td><td><code>8811996358392152070</code></td><td>compute: sort, join, mask</td>
+      <td>8 bytes</td></tr>
+  </table>
+  <p>Each triangle also carries two derived grouping keys. <code>rhombus_id</code> pairs
+  triangles exactly; <code>rhombus_hilbert</code> orders those pairs spatially within ten
+  base diamonds. <code>hex_id</code> provides six-triangle groups inside each icosahedron
+  face, with documented seam and vertex exceptions. These keys do not replace
+  <code>addr64</code> or change the source geometry.</p>
+  <div class="bitbox"> 63       59                                                       5     0
+ ┌─────────┬────────────────────────────────────────────────────────┬─────┐
+ │ face:5  │ path digits, 2 bits each, left-aligned                 │ L:5 │
+ └─────────┴────────────────────────────────────────────────────────┴─────┘
+ numeric sort = hierarchical order · ancestor test = shift + compare
+ descendant_range(cell) = inclusive subtree interval</div>
+  <pre><code>$ pip install -e . &amp;&amp; trifold locate -0.1276 51.5072 6
+TF6958
+$ trifold show TF6958        # → path F15-102111 · edge ~117 km · area 5,864 km²
+$ curl https://YOUR-WORKER.workers.dev/locate/-0.1276,51.5072?level=6
+{"id":"TF6958","path":"F15-102111","addr64":"8811996358392152070","level":6}</code></pre>
+  <p class="muted">Why base32 instead of digits 0–3? A digit string spends 8 bits per character
+  to carry 2 bits. Crockford base32 packs 5 bits/char with no ambiguous I/L/O/U: same path
+  bits at 40% of the length, URL-safe.</p>
+</section>
+
+<section id="demo">
+  <div class="inner">
+    <h2>Live demo: 7 grid systems, one map</h2>
+    <p>Trifold triangles vs <a href="https://a5geo.org" target="_blank">A5</a> pentagons,
+    H3 hexagons, S2 quads, rHEALPix, HTM (a related octahedral grid) and a plain lon/lat
+    grid. Each layer uses the same land mask and styling. Toggle <b>globe ↔ flat</b> to compare
+    the globe and Mercator projections; click any cell for its address and properties.</p>
+  </div>
+  <div class="viewerwrap">
+    <div id="map"></div>
+    <div id="loading">Loading grid data…</div>
+    <div class="panel">
+      <div class="phead"><b>Controls</b>
+        <button id="panelmin" aria-label="minimize control panel" title="minimize">–</button></div>
+      <div class="row"><label>System</label>
+        <div class="seg" id="seg-sys">
+          <button data-v="tri" class="on">T3 ▲</button>
+          <button data-v="a5">A5 ⬠</button>
+          <button data-v="h3">H3 ⬡</button>
+          <button data-v="s2">S2 ◻</button>
+          <button data-v="rhpx">rHPX</button>
+          <button data-v="htm">HTM</button>
+          <button data-v="rect">lon/lat</button>
+        </div></div>
+      <div class="row" id="row-level"><label>T3 base resolution</label>
+        <div class="seg" id="seg-level">
+          <button data-v="4">~440 km</button>
+          <button data-v="5">~220 km</button>
+          <button data-v="6" class="on">~110 km</button>
+          <button data-v="7">~55 km</button>
+          <button data-v="8">~28 km</button>
+          <button data-v="9">~14 km</button>
+          <button data-v="10">~7 km</button>
+        </div></div>
+      <div class="row" id="row-group"><label>Group as</label>
+        <div class="seg" id="seg-group">
+          <button data-v="triangle" class="on">Triangle ▲</button>
+          <button data-v="rhombus">Rhombus ◆</button>
+          <button data-v="hex">Hex group ⬡</button>
+        </div></div>
+      <div class="row"><label>Hierarchy</label>
+        <div class="seg" id="seg-mode">
+          <button data-v="compacted" class="on">Compacted</button>
+          <button data-v="uncompacted">Uncompacted</button>
+        </div></div>
+      <div class="row"><label>Projection</label>
+        <div class="seg" id="seg-proj">
+          <button data-v="globe" class="on">Globe</button>
+          <button data-v="mercator">Flat</button>
+        </div></div>
+      <div class="legend" id="legend"></div>
+      <div id="stats"></div>
+      <div class="note" id="sysnote"></div>
+    </div>
+  </div>
+
+</section>
+
+<section id="coverage">
+  <div class="inner">
+    <h2>Coverage demo: bbox_cover and polyfill</h2>
+    <p>Draw a query shape and Trifold returns stable indexes for the triangular cells that overlap it.
+    The full output is fixed-level cells; compacted output folds complete sibling sets into variable-level
+    parents; ranges are addr64 intervals for subtree scans. Switch on <b>T3 + S2</b> to cover the same
+    shape with Google S2 cells (computed live in the browser, area-matched level) and compare how much each
+    grid's quadtree <b>compaction</b> folds away.</p>
+  </div>
+  <div class="coverwrap">
+    <div id="covermap"></div>
+    <div class="coverpanel">
+      <div class="phead"><b>Controls</b>
+        <button id="coverpanelmin" aria-label="minimize control panel" title="minimize">–</button></div>
+      <div class="row"><label>Draw</label>
+        <div class="seg" id="cover-draw">
+          <button data-v="bbox" class="on">Bbox</button>
+          <button data-v="polygon">Polygon</button>
+        </div></div>
+      <div class="row"><label>Compare</label>
+        <div class="seg" id="cover-compare">
+          <button data-v="t3" class="on">T3 &#9650;</button>
+          <button data-v="s2">T3 + S2 &#9633;</button>
+        </div></div>
+      <div class="row"><label>Level</label>
+        <div class="coverrange">
+          <input id="cover-level" type="range" min="3" max="11" value="6" step="1">
+          <span class="coverlevel" id="cover-level-label">L6 ~110 km</span>
+        </div></div>
+      <div class="row"><label>Selection</label>
+        <div class="seg" id="cover-mode">
+          <button data-v="intersects" class="on">Intersects</button>
+          <button data-v="centroid">Centroid</button>
+        </div></div>
+      <div class="row"><label>Output</label>
+        <div class="seg" id="cover-output">
+          <button data-v="full" class="on">Full</button>
+          <button data-v="compacted">Compacted</button>
+          <button data-v="ranges">Ranges</button>
+        </div></div>
+      <div class="row"><label>Index</label>
+        <div class="seg" id="cover-format">
+          <button data-v="compact" class="on">Compact</button>
+          <button data-v="addr64">addr64</button>
+        </div></div>
+      <div class="coveractions">
+        <button class="primary" id="cover-run">Run</button>
+        <button id="cover-finish">Finish</button>
+        <button id="cover-clear">Clear</button>
+      </div>
+      <div class="coverhint" id="cover-hint">Drag to draw a bbox, or switch to polygon and click vertices.</div>
+      <div class="coverstats" id="cover-status">Loading coverage demo...</div>
+      <pre class="coverout" id="cover-output-box">[]</pre>
+      <div class="note">Coverage is conservative in intersects mode. The index list is T3; S2 is shown on the map
+      and in the stats. S2 cells are real Google S2 quads (quadratic projection, Hilbert order); the cover is
+      fixed-level to mirror T3's, not S2's variable-level region coverer.</div>
+    </div>
+  </div>
+
+</section>
+
+<section id="compare">
+  <h2>Grid system comparison</h2>
+  <table>
+    <tr><th></th><th><b>T3</b> (this)</th><th>A5</th><th>H3</th><th>S2</th><th>rHEALPix</th><th>HTM/QTM</th></tr>
+    <tr><td>base solid</td><td>icosahedron</td><td>dodecahedron</td><td>icosahedron</td>
+        <td>cube</td><td>cube (HEALPix)</td><td>octahedron</td></tr>
+    <tr><td>cell shape</td><td>triangle</td><td>pentagon</td><td>hexagon (+12 pentagons)</td>
+        <td>quad</td><td>quad (+caps/darts)</td><td>triangle</td></tr>
+    <tr><td>aperture / nesting</td><td class="good">4, exact</td>
+        <td>4, logical only</td><td class="bad">7, approximate</td>
+        <td class="good">4, exact</td><td class="good">9, exact</td><td class="good">4, exact</td></tr>
+    <tr><td>equal area</td><td>~±20%, smooth</td><td class="good">exact per level</td>
+        <td>~2× max/min</td><td>up to ~2×</td><td class="good">near-exact</td>
+        <td class="bad">larger deformation</td></tr>
+    <tr><td>edge neighbours</td><td>3 (+9 vertex)</td><td>5</td>
+        <td class="good">6 uniform</td><td>4</td><td>4</td><td>3 (+vertex)</td></tr>
+    <tr><td>index</td><td>uint64, prefix=subtree</td><td>uint64, Hilbert</td>
+        <td>uint64</td><td>uint64, Hilbert</td><td>string</td><td>quadtree string</td></tr>
+    <tr><td>ecosystem</td><td>this repository (2026)</td><td>introduced in 2025</td>
+        <td class="good">widely used</td><td class="good">widely used</td>
+        <td>academic / OGC</td><td>astronomy</td></tr>
+  </table>
+  <p>Selection depends on the application. <b>H3</b> provides uniform neighbour traversal and
+  a mature ecosystem; <b>S2</b> focuses on spatial indexing; <b>rHEALPix</b> and
+  <a href="https://a5geo.org" target="_blank"><b>A5</b></a> provide equal-area cells. T3
+  focuses on exact hierarchical aggregation, variable-resolution tilings, and pipelines based
+  on triangular geometry. Full analysis:
+  <a href="t3-technical-reference.md">technical reference</a>.</p>
+</section>
+
+<section id="usecases">
+  <h2>Suitable uses and limitations</h2>
+  <div class="twocol">
+    <div class="card"><b>Suitable uses</b><ul>
+      <li><b>Lossless multi-resolution aggregation</b>: level-9 sums roll into level-6 cells
+        exactly; no slivers, no overlap weighting.</li>
+      <li><b>Variable-resolution coverage</b>: compacted tilings retain shared boundaries; any subtree
+        is one uint64 range scan.</li>
+      <li><b>Simplicial pipelines</b>: FEM/FVM meshes, TINs, barycentric interpolation,
+        subdivision surfaces plug in directly.</li>
+      <li><b>Geodesic properties</b>: no polar singularity; ~±20% smooth area variation
+        worldwide vs 17× collapse for lon/lat at 80°N.</li>
+      <li><b>Survey/sampling designs</b> where hierarchy beats neighbour traversal.</li>
+    </ul></div>
+    <div class="card"><b>Limitations</b><ul>
+      <li><b>Neighbour-heavy algorithms</b>: 3 edge + 9 vertex neighbours with alternating
+        orientation; hexagonal grids provide 6 uniform neighbours.</li>
+      <li><b>General-audience choropleths</b>: triangle boundaries can be visually prominent.</li>
+      <li><b>Orientation-sensitive statistics</b>: up/down cells are congruent but rotated 60°.</li>
+      <li><b>City-scale local work</b>: a projected CRS and planar grid may be simpler.</li>
+    </ul></div>
+  </div>
+</section>
+
+<footer>
+  Trifold T3 · MIT license · <a href="__GH__" target="_blank">github.com/jaakla/trifold</a> ·
+  <a href="t3-technical-reference.md">technical reference</a> ·
+  land data <a href="https://www.naturalearthdata.com/" target="_blank">Natural Earth</a> ·
+  comparison layers via pya5, h3-py, s2sphere, rhealpixdggs ·
+  built with MapLibre GL &amp; topojson-client
+</footer>
+
+<script>__DATA__
+window.TRIFOLD_DATA={DATASETS,PMTILES_DATASETS,DATASET_STATS};</script>
+<script type="module" src="assets/index-demo.mjs"></script>
+</body>
+</html>
