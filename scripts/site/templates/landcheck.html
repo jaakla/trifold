@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>landcheck: offline land/sea lookup (a Trifold library)</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="landcheck: offline land/sea point lookup built on the Trifold T3 triangular DGGS. 182 KB dataset, microsecond lookups, confidence per answer. Interactive in-browser demo.">
+<script src="https://unpkg.com/maplibre-gl@5.6.2/dist/maplibre-gl.js"></script>
+<link href="https://unpkg.com/maplibre-gl@5.6.2/dist/maplibre-gl.css" rel="stylesheet">
+</head>
+<body>
+
+<section class="hero">
+  <h1>landcheck: is this point on <span style="color:var(--land)">land</span> or in the <span style="color:var(--sea)">sea</span>?</h1>
+  <p class="lede">An offline lookup library built on the Trifold grid. Thanks to exact
+  aperture-4 nesting, the level-10 grid (~7&nbsp;km cells) classified against Natural Earth
+  collapses into a <b>182&nbsp;KB</b> dataset that answers anywhere on Earth in microseconds,
+  with a confidence value for every answer. Python and JavaScript give identical results.
+  <b>This page runs the real JS library in your browser</b>; the dataset is embedded right
+  in this HTML file.</p>
+  <a class="cta" href="#demo" style="display:inline-block;padding:11px 22px;border-radius:8px;
+    background:var(--warm);color:#fff;text-decoration:none;font-weight:600">Try it on the map</a>
+</section>
+
+<section id="demo">
+  <div class="inner">
+    <h2>Interactive demo</h2>
+    <p>Load sample points or your own file (CSV <code>lon,lat</code> or GeoJSON points), and
+    every point is classified <b>in your browser</b> by the bundled library, with no server
+    and no network call per lookup. The lookups-per-second figure is measured tightly around
+    the classification loop on <i>your</i> machine (map rendering and file parsing excluded),
+    so it is the real library throughput. Use the 100k-random button for a stable number.
+    Switch to <b>Route</b> mode to classify a polyline — draw one on the map or pick an
+    example — and see the land/coast/sea stretches it crosses, each with its distance.</p>
+  </div>
+  <div class="viewerwrap">
+    <div id="map"></div>
+    <div class="panel">
+      <div class="phead"><b>Controls</b>
+        <button id="panelmin" aria-label="minimize control panel" title="minimize">–</button></div>
+      <div class="row"><label>Mode</label>
+        <div class="seg" id="seg-mode">
+          <button data-v="points" class="on">Points</button>
+          <button data-v="route">Route (line)</button>
+        </div>
+        <div class="note">Points: classify many lon/lat points. Route: classify a
+        polyline and see which land/sea stretches it crosses.</div></div>
+      <div class="row" id="row-points"><label>Sample points</label>
+        <div class="btns">
+          <button id="b-cities">World cities + tricky spots</button>
+          <button id="b-r1">1k random</button>
+          <button id="b-r10">10k random</button>
+          <button id="b-r100">100k random</button>
+        </div></div>
+      <div class="row" id="row-route" style="display:none"><label>Route (polyline)</label>
+        <div class="btns">
+          <button id="b-route-eu">Tallinn → Stockholm (sea crossing)</button>
+          <button id="b-route-med">Barcelona → Algiers</button>
+          <button id="b-route-asia">Lisbon → Cairo</button>
+        </div>
+        <div class="btns" style="margin-top:6px">
+          <button id="b-draw">✏️ Draw on map</button>
+          <button id="b-route-clear">Clear</button>
+        </div>
+        <div class="note" id="routenote">Pick an example, or hit <b>Draw on map</b> and
+        click to drop points; click <b>Finish</b> (or the button again) to classify.</div>
+        <div style="margin-top:9px;display:flex;gap:9px;align-items:center">
+          <label style="margin:0">Sampling step</label>
+          <div class="seg" id="seg-step">
+            <button data-v="1">1 km</button>
+            <button data-v="3.5" class="on">3.5 km</button>
+            <button data-v="10">10 km</button>
+          </div></div></div>
+      <div class="row"><label>Your own points / route</label>
+        <div class="btns">
+          <label class="filelabel">Open CSV / GeoJSON…
+            <input type="file" id="fileinput" accept=".csv,.txt,.json,.geojson" style="display:none">
+          </label>
+        </div>
+        <div id="droperr"></div>
+        <div class="note">CSV: <code>lon,lat[,name]</code> per line (or a header naming
+        <code>lat</code>/<code>lon</code> columns in either order). GeoJSON: a
+        FeatureCollection of Points (Points mode) or a LineString (Route mode).
+        Files stay on your machine.</div></div>
+      <div class="row"><label>OSM coastal refinement</label>
+        <label style="display:flex;gap:7px;align-items:flex-start;cursor:pointer;font-size:12.5px;
+            font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink)">
+          <input type="checkbox" id="refinecb" style="margin-top:2px">
+          <span>exact OSM polygon test wherever the coastline crosses a cell
+            (downloads once)</span></label>
+        <div class="note" id="refinenote">Off: coastal answers use the bundled
+        land-area fraction. On: near-exact coastline. Watch how the counts,
+        confidence and lookup rate change.</div></div>
+      <div class="row"><label>Debug layers</label>
+        <label style="display:flex;gap:7px;align-items:flex-start;cursor:pointer;font-size:12.5px;
+            font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink)">
+          <input type="checkbox" id="coastcb" style="margin-top:2px">
+          <span>source coastline (<b id="coastsrc">NE</b>, follows the
+            refinement setting)</span></label>
+        <div class="note" id="coastnote">Click anywhere on the map to see the
+        level-10 triangle and its classification.</div></div>
+      <div class="row"><label>Projection</label>
+        <div class="seg" id="seg-proj">
+          <button data-v="globe" class="on">Globe</button>
+          <button data-v="mercator">Flat</button>
+        </div></div>
+      <div id="perf"></div>
+      <div class="legend">
+        <i style="background:#22c55e"></i>land: certain (confidence 1.0)<br>
+        <i style="background:#f59e0b"></i>coast: mixed cell<br>
+        <i style="background:#16277e"></i>sea: certain (confidence 1.0)<br>
+        <i style="background:#fff;border:2px solid #c2185b"></i>answer flipped by OSM refinement
+      </div>
+      <div class="note" id="loadnote">Loading dataset…</div>
+    </div>
+  </div>
+
+  <div class="inner">
+    <p class="muted" style="margin-top:10px">Click any classified point for its full answer:
+    cell address (computed on the fly for sea points, whose cells are not stored), kind,
+    confidence and land fraction. Note the Natural Earth 1:50m caveats: lakes count as land
+    and islets below its resolution are missing. Switching on the <b>OSM coastal
+    refinement</b> makes OSM authoritative in cells crossed by either source coastline. Try the
+    cities sample with it on and off and compare the answers near coasts.</p>
+  </div>
+</section>
+
+<section id="guide">
+  <h2>User guide</h2>
+  <div class="twocol">
+    <div>
+      <h3>JavaScript (browser or Node)</h3>
+      <p>From a checkout of this repository:</p><pre><code>npm install ./landcheck</code></pre>
+      <pre><code>import { LandCheck } from "landcheck";
+
+// Node: bundled file · browser: fetch the 182 KB dataset
+const lc = await LandCheck.fromFile();              // Node
+// Browser alternative: import the .mjs file directly, then
+// const lc = await LandCheck.fromUrl("landsea_L10.tfls");
+
+lc.isLand(24.7536, 59.437);   // true  (lon, lat)
+lc.check(-0.1276, 51.5072);
+// { land: true, kind: 'land', confidence: 1,
+//   landFraction: 1, cell: 'TFA95BM', refined: false }
+
+// a whole route: land/sea segments with distances
+lc.checkPolyline([[24.75,59.44],[18.07,59.33]]).segments;
+// [{land:true,kind:'land',...,distanceKm,fraction}, ...]</code></pre>
+    </div>
+    <div>
+      <h3>Python (stdlib only)</h3>
+      <p>From a checkout of this repository:</p><pre><code>pip install ./landcheck</code></pre>
+      <pre><code>from landcheck import LandCheck
+
+lc = LandCheck()                       # bundled data
+lc.is_land(24.7536, 59.4370)           # True
+lc.check(-0.1276, 51.5072)
+# LandResult(land=True, kind='land', confidence=1.0,
+#   land_fraction=1.0, cell='TFA95BM', refined=False)
+
+# vectorised: ~2.8 µs/point with numpy
+lons, lats = [24.7536, -0.1276], [59.4370, 51.5072]
+lc.is_land_batch(lons, lats)
+
+# a whole route: land/sea segments with distances
+lc.check_polyline([(24.75, 59.44), (18.07, 59.33)]).segments</code></pre>
+    </div>
+  </div>
+  <h3>What the answer means</h3>
+  <table>
+    <tr><th>kind</th><th>meaning</th><th><code>land</code></th><th><code>confidence</code></th></tr>
+    <tr><td><b>land</b></td><td>cell wholly inside land</td><td>true</td><td>1.0</td></tr>
+    <tr><td><b>sea</b></td><td>cell absent from the dataset</td><td>false</td><td>1.0</td></tr>
+    <tr><td><b>coast</b></td><td>mixed cell; bundled land-area fraction decides</td>
+      <td>fraction ≥ 0.5</td><td>max(f, 1−f)</td></tr>
+    <tr><td><b>coast</b> + refined</td><td>decided by the optional OSM polygon layer</td>
+      <td>exact</td><td>0.99</td></tr>
+  </table>
+  <p class="muted">Measured accuracy: 99.82% agreement with exact polygon containment on
+  30,000 uniform random points. The <code>land</code> and <code>sea</code> answers were 100%
+  correct; all residual error lives in <code>coast</code> answers, which self-report lower
+  confidence.
+  With the OSM refinement loaded, coastal answers reach 99.95%.</p>
+  <h3>Command line</h3>
+  <pre><code>$ python landcheck/python/landcheck.py 24.7536 59.4370
+LAND  kind=land  confidence=1.000  land_fraction=1.0  cell=TFAVKGR  refined=False</code></pre>
+</section>
+
+<section id="tech">
+  <h2>Technical info</h2>
+  <div class="cards">
+    <div class="card"><b>Canonical index</b><p>Any Trifold cell at level ≤ 10 maps to
+      <code>addr64 &gt;&gt; 39</code>, a 25-bit integer where a level-l cell covers exactly
+      4<sup>10−l</sup> consecutive indices. The whole classification becomes run-length
+      intervals.</p></div>
+    <div class="card"><b>TFLS format · 182 KB</b><p>153,884 runs as
+      <code>varint(gap), varint(len·2|coastal)</code> + a 4-bit land fraction per coastal
+      cell, zlib-compressed. Level-agnostic: the same tooling serves an L8 (~30 KB) or
+      L12 (~3 MB) variant.</p></div>
+    <div class="card"><b>Lookup path</b><p>Pure-float point location (no dependencies,
+      bit-identical to the SDK) descends 10 subdivision levels, then one binary search over
+      the run starts. ~0.8 µs in Node, ~13 µs in pure Python, ~2.8 µs batched with numpy.</p></div>
+    <div class="card"><b>OSM refinement · TFLR</b><p>OSM simplified land polygons clipped
+      to every cell crossed by either source coastline, quantized to a cell-local 16-bit grid
+      (~0.1 m), with zigzag-varint rings and the even-odd rule. The OSM polygon test can
+      override Natural Earth land, sea or fraction answers in those cells.</p></div>
+  </div>
+  <p style="margin-top:14px">Full documentation, build scripts (<code>build.py</code>,
+  <code>refine_build.py</code>) and the cross-language test suite live in
+  <a href="__GH__/tree/main/landcheck" target="_blank"><code>landcheck/</code> on GitHub</a>.
+  Roadmap: country detection with the same run-length + clipped-border approach, an L12
+  variant, published pip/npm packages.</p>
+</section>
+
+<section id="benchmark">
+  <h2>Benchmark: Trifold vs SQL spatial engines</h2>
+  <p>Same job for every engine: classify 100,000 sphere-uniform random points against the same
+  OSM simplified land polygons. Median of seven warm runs on an Apple M5 Pro laptop (June 2026);
+  BigQuery ran as a managed on-demand service. In batch mode the OSM-refined Trifold was
+  3&ndash;4&times; faster than BigQuery and PostGIS and ~30&times; faster than DuckDB Spatial;
+  called one point at a time it answered ~86,000 lookups per second, 40&times; the embedded
+  DuckDB rate.</p>
+  <div class="twocol">
+    <div class="bench">
+      __LC_BENCH_BATCH__
+    </div>
+    <div class="bench">
+      __LC_BENCH_SINGULAR__
+    </div>
+  </div>
+  <div class="bench" style="margin-top:18px">
+    __LC_BENCH_POLYLINE__
+  </div>
+  <p class="muted">The SQL engines compute exact polygon containment on the loaded OSM snapshot;
+  Trifold's compact dataset agrees with that result on 99.5% of points (refined). PostGIS singular
+  includes localhost TCP + Docker transport; DuckDB runs embedded in-process. The
+  <b>Route (polyline)</b> row is per sampled point — a line query is one point-in-polygon per
+  sample for every engine; the live Route mode above reports the same per-sample rate on your
+  device. These bars are generated from the benchmark doc at build time. Full methodology,
+  dataset manifest and caveats:
+  <a href="__GH__/blob/main/benchmark.md" target="_blank"><code>benchmark.md</code></a>.</p>
+</section>
+
+<footer>
+  landcheck · a <a href="index.html">Trifold T3</a> application · MIT license ·
+  <a href="__GH__/tree/main/landcheck" target="_blank">source</a> ·
+  land data <a href="https://www.naturalearthdata.com/" target="_blank">Natural Earth</a> ·
+  optional refinement © <a href="https://osmdata.openstreetmap.de/data/land-polygons.html"
+  target="_blank">OpenStreetMap contributors</a>
+</footer>
+
+<script>window.TRIFOLD_CORE="__TFLS_B64__";</script>
+<script type="module" src="assets/landcheck-demo.mjs"></script>
+</body>
+</html>

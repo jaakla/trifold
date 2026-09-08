@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>countrycheck: offline country lookup (a Trifold library)</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="countrycheck: offline 'which country is this point in?' lookup built on the Trifold T3 triangular DGGS. 323 KB dataset, microsecond lookups, confidence per answer, coastal waters included. Interactive in-browser demo.">
+<script src="https://unpkg.com/maplibre-gl@5.6.2/dist/maplibre-gl.js"></script>
+<link href="https://unpkg.com/maplibre-gl@5.6.2/dist/maplibre-gl.css" rel="stylesheet">
+</head>
+<body>
+
+<section class="hero">
+  <h1>countrycheck: which <span style="color:var(--country)">country</span> is this point in?</h1>
+  <p class="lede">An offline lookup library built on the Trifold grid. The level-10 grid
+  (~7&nbsp;km cells) classified against country polygons with accurate OSM-derived borders &mdash;
+  extended with coastal waters and including X-coded territories like Kosovo and the Caspian Sea
+  &mdash; collapses into a <b>323&nbsp;KB</b> dataset that names the country anywhere on Earth in
+  microseconds, with a confidence value for every answer. Python and JavaScript give identical
+  results. <b>This page runs the real JS library in your browser</b>; the dataset is embedded
+  right in this HTML file.</p>
+  <a class="cta" href="#demo" style="display:inline-block;padding:11px 22px;border-radius:8px;
+    background:var(--warm);color:#fff;text-decoration:none;font-weight:600">Try it on the map</a>
+</section>
+
+<section id="demo">
+  <div class="inner">
+    <h2>Interactive demo</h2>
+    <p>Load sample points or your own file (CSV <code>lon,lat</code> or GeoJSON points), and
+    every point is resolved to a country <b>in your browser</b> by the bundled library, with no
+    server and no network call per lookup. Each dot is coloured by the country it lands in; open
+    ocean stays grey. The lookups-per-second figure is measured tightly around the classification
+    loop on <i>your</i> machine (map rendering and file parsing excluded), so it is the real
+    library throughput. Use the 100k-random button for a stable number.
+    Switch to <b>Route</b> mode to classify a polyline — draw one on the map or pick an
+    example — and see the countries it crosses in order, each with its distance.</p>
+  </div>
+  <div class="viewerwrap">
+    <div id="map"></div>
+    <div class="panel">
+      <div class="phead"><b>Controls</b>
+        <button id="panelmin" aria-label="minimize control panel" title="minimize">&ndash;</button></div>
+      <div class="row"><label>Mode</label>
+        <div class="seg" id="seg-mode">
+          <button data-v="points" class="on">Points</button>
+          <button data-v="route">Route (line)</button>
+        </div>
+        <div class="note">Points: resolve many lon/lat points to a country. Route:
+        classify a polyline and see which countries it crosses, in order.</div></div>
+      <div class="row" id="row-points"><label>Sample points</label>
+        <div class="btns">
+          <button id="b-cities">Capitals + tricky spots</button>
+          <button id="b-r1">1k random</button>
+          <button id="b-r10">10k random</button>
+          <button id="b-r100">100k random</button>
+        </div></div>
+      <div class="row" id="row-route" style="display:none"><label>Route (polyline)</label>
+        <div class="btns">
+          <button id="b-route-eu">Berlin → Warsaw → Vilnius</button>
+          <button id="b-route-med">Madrid → Rome</button>
+          <button id="b-route-asia">Istanbul → Tehran → Delhi</button>
+        </div>
+        <div class="btns" style="margin-top:6px">
+          <button id="b-draw">✏️ Draw on map</button>
+          <button id="b-route-clear">Clear</button>
+        </div>
+        <div class="note" id="routenote">Pick an example, or hit <b>Draw on map</b> and
+        click to drop points; click <b>Finish</b> (or the button again) to classify.</div>
+        <div style="margin-top:9px;display:flex;gap:9px;align-items:center">
+          <label style="margin:0">Sampling step</label>
+          <div class="seg" id="seg-step">
+            <button data-v="1">1 km</button>
+            <button data-v="3.5" class="on">3.5 km</button>
+            <button data-v="10">10 km</button>
+          </div></div></div>
+      <div class="row"><label>Your own points / route</label>
+        <div class="btns">
+          <label class="filelabel">Open CSV / GeoJSON&hellip;
+            <input type="file" id="fileinput" accept=".csv,.txt,.json,.geojson" style="display:none">
+          </label>
+        </div>
+        <div id="droperr"></div>
+        <div class="note">CSV: <code>lon,lat[,name]</code> per line (or a header naming
+        <code>lat</code>/<code>lon</code> columns in either order). GeoJSON: a
+        FeatureCollection of Points (Points mode) or a LineString (Route mode).
+        Files stay on your machine.</div></div>
+      <div class="row"><label>Exact border refinement</label>
+        <label style="display:flex;gap:7px;align-items:flex-start;cursor:pointer;font-size:12.5px;
+            font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink)">
+          <input type="checkbox" id="refinecb" style="margin-top:2px">
+          <span>exact polygon test wherever a border crosses a cell
+            (downloads ~19&nbsp;MB once)</span></label>
+        <div class="note" id="refinenote">Off: border cells use the bundled best-call
+        with its area share as confidence. On: exact country/country and coastline
+        borders. Watch how the counts, confidence and lookup rate change.</div></div>
+      <div class="row"><label>Debug layers</label>
+        <label style="display:flex;gap:7px;align-items:flex-start;cursor:pointer;font-size:12.5px;
+            font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink)">
+          <input type="checkbox" id="bordercb" style="margin-top:2px">
+          <span>source border polygons (needs the refinement layer)</span></label>
+        <div class="note" id="bordernote">Click anywhere on the map to see the
+        level-10 triangle and its country answer.</div></div>
+      <div class="row"><label>Projection</label>
+        <div class="seg" id="seg-proj">
+          <button data-v="globe" class="on">Globe</button>
+          <button data-v="mercator">Flat</button>
+        </div></div>
+      <div id="perf"></div>
+      <div class="legend">
+        <span class="swatch"></span>one hue per country (256 total)<br>
+        <i style="background:#8a93a0"></i>no country: open ocean (confidence 1.0)<br>
+        <i style="background:#fff;border:2px solid #1c2733"></i>border cell (mixed)<br>
+        <i style="background:#fff;border:2px solid #c2185b"></i>answer changed by refinement
+      </div>
+      <div class="note" id="loadnote">Loading dataset&hellip;</div>
+    </div>
+  </div>
+
+  <div class="inner">
+    <p class="muted" style="margin-top:10px">Click any classified point for its full answer:
+    country code (GADM <code>gid_0</code>), ISO&nbsp;2, name, kind, confidence, area share and
+    cell address (computed on the fly for open-ocean points, whose cells are not stored).
+    Switching on <b>exact border refinement</b> makes the source polygons authoritative in every
+    cell a border crosses. Caveats inherited from the source data: coastal waters are an
+    approximate distance-based assignment, not legal EEZ; disputed territories follow GADM
+    (Crimea, Western Sahara&hellip;); lakes belong to their surrounding country, except the
+    Caspian Sea, which is its own <code>XCA</code> entry.</p>
+  </div>
+</section>
+
+<section id="guide">
+  <h2>User guide</h2>
+  <div class="twocol">
+    <div>
+      <h3>JavaScript (browser or Node)</h3>
+      <p>From a checkout of this repository:</p><pre><code>npm install ./countrycheck</code></pre>
+      <pre><code>import { CountryCheck } from "countrycheck";
+
+// Node: bundled file &middot; browser: fetch the 323 KB dataset
+const cc = await CountryCheck.fromFile();                  // Node
+// Browser alternative: import the .mjs file directly, then
+// const cc = await CountryCheck.fromUrl("countries_L10.tfcs");
+
+cc.country(24.7536, 59.437);   // 'EST'  (lon, lat)
+cc.check(-0.1276, 51.5072);
+// { country: 'GBR', iso2: 'GB', name: 'United Kingdom',
+//   kind: 'country', confidence: 1, share: 1,
+//   cell: 'TFA95BM', refined: false }
+
+// a whole route: countries crossed, in order
+cc.checkPolyline([[13.4,52.5],[21.0,52.2],[25.3,54.7]]).segments;
+// [{country:'DEU',...,distanceKm,fraction}, ...]</code></pre>
+    </div>
+    <div>
+      <h3>Python (stdlib only)</h3>
+      <p>From a checkout of this repository:</p><pre><code>pip install ./countrycheck</code></pre>
+      <pre><code>from countrycheck import CountryCheck
+
+cc = CountryCheck()                    # bundled data
+cc.country(24.7536, 59.4370)           # 'EST'
+cc.check(-0.1276, 51.5072)
+# CountryResult(country='GBR', iso2='GB',
+#   name='United Kingdom', kind='country',
+#   confidence=1.0, share=1.0, cell='TFA95BM',
+#   refined=False)
+
+# a whole route: countries crossed, in order
+cc.check_polyline(
+  [(13.4, 52.5), (21.0, 52.2), (25.3, 54.7)]).segments</code></pre>
+    </div>
+  </div>
+  <h3>What the answer means</h3>
+  <table>
+    <tr><th>kind</th><th>meaning</th><th><code>country</code></th><th><code>confidence</code></th></tr>
+    <tr><td><b>country</b></td><td>cell wholly inside one country</td><td>that country</td><td>1.0</td></tr>
+    <tr><td><b>none</b></td><td>cell absent from the dataset (international waters)</td>
+      <td>null</td><td>1.0</td></tr>
+    <tr><td><b>border</b></td><td>mixed cell; bundled best call decides (may be none)</td>
+      <td>best call</td><td>area share</td></tr>
+    <tr><td><b>border</b> + refined</td><td>decided by the exact source polygon</td>
+      <td>exact</td><td>0.99</td></tr>
+  </table>
+  <p class="muted">Measured accuracy: 99.82% agreement with exact polygon containment on
+  30,000 uniform random points. The <code>country</code> and <code>none</code> answers were 100%
+  correct; all residual error lives in <code>border</code> answers, which self-report lower
+  confidence. With the border refinement loaded, agreement reaches <b>100.0%</b> on the same
+  sample.</p>
+  <h3>Command line</h3>
+  <pre><code>$ python countrycheck/python/countrycheck.py 24.7536 59.4370
+EST  iso2=EE  name='Estonia'  kind=country  confidence=1.000  share=1.0  cell=TFAVKGR  refined=False</code></pre>
+  <p class="muted">The CLI loads the border refinement automatically when
+  <code>borders_L10.tfcr</code> is present. Install with <code>pip install countrycheck</code> or
+  <code>npm install countrycheck</code>, or run straight from a repo checkout.</p>
+</section>
+
+<section id="tech">
+  <h2>Technical info</h2>
+  <div class="cards">
+    <div class="card"><b>Canonical index</b><p>Any Trifold cell at level &le; 10 maps to a
+      contiguous range in the level-10 index space (<code>face&middot;4<sup>10</sup> + path</code>):
+      a level-l cell covers exactly 4<sup>10&minus;l</sup> consecutive indices. The whole country
+      classification becomes run-length intervals.</p></div>
+    <div class="card"><b>TFCS format &middot; 323 KB</b><p>222,403 runs as
+      <code>varint(gap), varint(len&middot;2|border)</code> &mdash; interior runs carry a country id,
+      border runs a best call plus a 4-bit area share &mdash; over a country table of 256
+      code/iso2/name strings, all zlib-compressed. Level-agnostic.</p></div>
+    <div class="card"><b>Lookup path</b><p>Pure-float point location (no dependencies,
+      bit-identical to the SDK) descends 10 subdivision levels, then one binary search over the
+      run starts. ~0.6 µs in Node, ~13 µs in pure Python, ~3 µs batched with numpy.</p></div>
+    <div class="card"><b>Border refinement &middot; TFCR</b><p>Source country polygons clipped to
+      every border cell, quantized to a cell-local 16-bit grid (~0.1 m), one zone per country
+      present with zigzag-varint rings and the even-odd rule. A point-in-polygon test then decides
+      the exact country (or none) in those cells.</p></div>
+  </div>
+  <p style="margin-top:14px">The borders come from the timezone-boundary-builder &ldquo;with oceans&rdquo;
+  polygons (OSM-derived, already reaching into territorial water); GADM level-0 supplies only the
+  country identity and ISO codes, joined by max land overlap. 256 countries and territories, 6.90M
+  level-10 cells belonging to some country, of which 195,473 are border cells. Full documentation,
+  the one-pass <code>build.py</code>, the PostGIS source build (<code>sql/build_countries_coastal.sql</code>)
+  and the cross-language test suite live in
+  <a href="__GH__/tree/main/countrycheck" target="_blank"><code>countrycheck/</code> on GitHub</a>.
+  Roadmap: an L12 (~1.8&nbsp;km) variant and timezone detection from the same source data.</p>
+</section>
+
+<section id="accuracy">
+  <h2>Accuracy: tested on 57,501 real airports</h2>
+  <p>Ground truth is the <a href="https://ourairports.com/" target="_blank">OurAirports</a> dump
+  &mdash; 57,501 points, each tagged with an ISO country code from an unrelated source.
+  countrycheck places <b>99.50%</b> of them in the correct country from the bundled 323&nbsp;KB
+  data, and <b>99.68%</b> with the border refinement loaded. Interior-country answers are 99.91%
+  correct; the refinement works only on the 729 airports that fall in a <i>border cell</i>, and
+  there it lifts agreement from 80.66% to <b>95.20%</b> &mdash; the payoff of the accurate
+  OSM-derived borders.</p>
+  <div class="cards">
+    <div class="card"><b>99.50% &rarr; 99.68%</b><p>overall agreement with airport country codes,
+      bundled vs. border-refined. The residual is mostly disputed/border territory the sources map
+      differently, dependencies coded to a parent state, and offshore or placeholder
+      coordinates.</p></div>
+    <div class="card"><b>99.995% refined</b><p>against exact SQL point-in-polygon containment over
+      the same source polygons (100,000 random points): the refinement resolved all but 5 of the
+      168 base-mode border disagreements (those 5 are coastal-overlap tie-breaks). Base mode: 99.83%.</p></div>
+  </div>
+  <p class="muted">Reproduce with <code>scripts/accuracy_countrycheck_airports.py</code> (airports)
+  and <code>scripts/benchmark_countrycheck.py</code> (vs. SQL containment).</p>
+</section>
+
+<section id="benchmark">
+  <h2>Benchmark: 7&ndash;97&times; faster than SQL spatial engines</h2>
+  <p>One workload, four engines: assign a country (<code>gid_0</code>) to 100,000 sphere-uniform
+  random points against the same country polygons. Median of seven warm runs, Apple M5 Pro,
+  June 2026. The refined Trifold answers reproduce exact polygon containment to 99.995% (see above)
+  while running an order of magnitude faster &mdash; ~7&times; PostGIS, ~97&times; DuckDB Spatial.
+  Called one point at a time, the gap holds.</p>
+  <div class="twocol">
+    <div class="bench">
+      __CC_BENCH_BATCH__
+    </div>
+    <div class="bench">
+      __CC_BENCH_SINGULAR__
+    </div>
+  </div>
+  <div class="bench" style="margin-top:18px">
+    __CC_BENCH_POLYLINE__
+  </div>
+  <p class="muted" style="margin-top:12px">DuckDB and PostGIS compute exact containment
+  and returned byte-identical answers; BigQuery is documented but was not run in this pass. PostGIS
+  singular includes localhost TCP + Docker transport; DuckDB runs embedded in-process. The
+  <b>Route (polyline)</b> row is per sampled point — a line query is one point-in-polygon per
+  sample for every engine; the live figure in the demo panel is the same per-sample throughput
+  measured on your own device. These bars are generated from the benchmark doc at build time.
+  Full methodology, dataset manifest, the airport test and the BigQuery procedure:
+  <a href="__GH__/blob/main/countrycheck_benchmark.md" target="_blank"><code>countrycheck_benchmark.md</code></a>.</p>
+</section>
+
+<footer>
+  countrycheck &middot; a <a href="index.html">Trifold T3</a> library &middot; MIT license &middot;
+  <a href="__GH__/tree/main/countrycheck" target="_blank">source</a> &middot;
+  borders from the OSM-based <a href="https://github.com/evansiroky/timezone-boundary-builder"
+  target="_blank">timezone-boundary-builder</a>, identity from
+  <a href="https://gadm.org/" target="_blank">GADM</a>
+</footer>
+
+<script>window.TRIFOLD_CORE="__TFCS_B64__";</script>
+<script type="module" src="assets/countrycheck-demo.mjs"></script>
+</body>
+</html>

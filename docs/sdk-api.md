@@ -8,7 +8,7 @@ they do not define separate grid implementations.
 
 | Domain | Python | JavaScript |
 |---|---|---|
-| Public SDK | `trifold.api` and `trifold` | `js/trifold.js`, package `@trifold/grid` |
+| Public SDK | `trifold.api` and `trifold` | `js/trifold.js`, package `t3grid` |
 | Optional land extension | `trifold.land` | not implemented |
 | Applications | `trifold.cli`, `scripts/` | `worker/cell-server.js`, generated website |
 | Implementation modules | `address.py`, `core.py`, `grid.py`, `classify.py` | none outside `js/trifold.js` |
