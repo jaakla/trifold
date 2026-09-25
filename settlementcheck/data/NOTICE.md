@@ -8,6 +8,12 @@ Recommended source citation: European Commission, Joint Research Centre
 (JRC), *GHS-WUP Projections Data Package 2025*, product DOI
 [`10.2905/1c049178-ab00-4bbc-b638-3e3c19daaacb`](https://doi.org/10.2905/1c049178-ab00-4bbc-b638-3e3c19daaacb).
 
+Methodology report: Schiavina, M., Melchiorri, M., Mari Rivero, I., Florio, P.,
+Freire, S. et al., *GHSL WUP Projections Data Package 2025 — Public release
+GHS-WUP R2025*, Publications Office of the European Union, Luxembourg, 2025,
+JRC144209, DOI
+[`10.2760/2416436`](https://data.europa.eu/doi/10.2760/2416436).
+
 Change notice: Trifold transfers the final categorical 1 km Mollweide raster
 to a hierarchical triangular grid. It stores the dominant equal-area class
 and boundary diagnostics. It does not alter or re-run the DEGURBA method.
