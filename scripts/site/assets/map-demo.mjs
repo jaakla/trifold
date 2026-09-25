@@ -185,12 +185,20 @@ export function createMapDemo({
     `<div class="demo-toolbar"><fieldset><legend>Projection</legend><button data-projection="globe">Globe</button><button data-projection="mercator">Flat (Mercator)</button></fieldset><button class="demo-reset">Reset view</button></div><form class="demo-query"><label>Longitude <input name="longitude" inputmode="decimal" required value="${initialView.center[0]}"></label><label>Latitude <input name="latitude" inputmode="decimal" required value="${initialView.center[1]}"></label><button type="submit">Inspect point</button><label>Presets <select name="preset"><option value="">Choose a place</option></select></label></form>`,
   );
   const body = node("div", "demo-body"),
+    stage = node("div", "demo-stage"),
     side = node("aside", "demo-side");
   side.setAttribute("aria-label", "Map inspector");
-  body.append(canvas, side);
+  stage.append(canvas);
+  body.append(stage, side);
   frame.append(body);
   side.innerHTML =
-    '<h3>Layers</h3><label><input type="checkbox" class="demo-visible" checked> Demo layers</label><label>Opacity <input class="demo-opacity" type="range" min="0" max="100" value="100"></label><div class="demo-result" aria-live="polite"><h3>Selected point</h3>Select a point using the map or coordinates.</div><div class="demo-actions"><button data-action="copy">Copy result</button><button data-action="coordinates">Copy coordinates</button><button data-action="clear">Clear selection</button></div>';
+    '<div class="demo-result" aria-live="polite"><h3>Selected point</h3>Select a point using the map or coordinates.</div><div class="demo-actions"><button data-action="copy">Copy result</button><button data-action="coordinates">Copy coordinates</button><button data-action="clear">Clear selection</button></div>';
+  const details = node("details", "demo-tools"),
+    toolContent = node("div", "demo-tool-content");
+  details.open = !matchMedia("(max-width:850px)").matches;
+  details.append(node("summary", null, "Layers and tools"), toolContent);
+  toolContent.innerHTML = '<div class="demo-layer-controls"><label><input type="checkbox" class="demo-visible" checked> Demo layers</label><label>Opacity <input class="demo-opacity" type="range" min="0" max="100" value="100"></label></div>';
+  stage.append(details);
   let output = side.querySelector(".demo-result");
   const existing = tools?.querySelector("#result");
   if (existing) {
@@ -202,9 +210,17 @@ export function createMapDemo({
   if (tools) {
     tools.classList.remove("min");
     tools.querySelector("#seg-proj")?.parentElement.remove();
-    const details = node("details", "demo-tools");
-    details.append(node("summary", null, "Layers and tools"), tools);
-    side.append(details);
+    // Refinement affects the answer, not just its appearance. Keep its control
+    // and loading/failure state outside the collapsible map tools.
+    const refinement = tools.querySelector("#refinecb")?.closest(".row");
+    if (refinement) {
+      refinement.className = "demo-refinement";
+      refinement.setAttribute("role", "group");
+      refinement.setAttribute("aria-label", "Lookup refinement");
+      refinement.querySelector("#refinenote").setAttribute("role", "status");
+      frame.querySelector(".demo-query").before(refinement);
+    }
+    toolContent.append(tools);
   }
   const status = node("div", "demo-status", "Loading map…");
   status.setAttribute("role", "status");
@@ -240,7 +256,7 @@ export function createMapDemo({
     maxTileCacheSize: 80,
     canvasContextAttributes: { preserveDrawingBuffer: false },
   });
-  map.addControl(new maplibregl.NavigationControl(), "top-left");
+  map.addControl(new maplibregl.NavigationControl(), "top-right");
   const uiProjection = () => {
     const p = projection();
     frame
@@ -286,6 +302,8 @@ export function createMapDemo({
       table.append(tr);
     }
     output.append(table);
+    const notice = adapter.resultNotice?.(result);
+    if (notice) output.prepend(node("p", "demo-result-notice", notice));
   }
   async function select(lon, lat, { fly = false } = {}) {
     const task = selectTask.next();
@@ -328,8 +346,8 @@ export function createMapDemo({
   const opacity = new Map();
   let previousVisible = true;
   function applyLayers() {
-    const visible = side.querySelector(".demo-visible").checked,
-      factor = +side.querySelector(".demo-opacity").value / 100;
+    const visible = toolContent.querySelector(".demo-visible").checked,
+      factor = +toolContent.querySelector(".demo-opacity").value / 100;
     for (const layer of map.getStyle()?.layers || []) {
       if (
         !(
@@ -376,8 +394,8 @@ export function createMapDemo({
     }
     return result;
   };
-  side.querySelector(".demo-visible").onchange = applyLayers;
-  side.querySelector(".demo-opacity").oninput = applyLayers;
+  toolContent.querySelector(".demo-visible").onchange = applyLayers;
+  toolContent.querySelector(".demo-opacity").oninput = applyLayers;
   frame.querySelector(".demo-query").onsubmit = (e) => {
     e.preventDefault();
     select(
@@ -455,7 +473,7 @@ export function createMapDemo({
     const upload = node("details", "demo-batch");
     upload.innerHTML =
       '<summary>Point dataset</summary><p>CSV lon,lat or GeoJSON Points. Files stay on this device. Maximum 5,000 points / 2 MB; invalid rows are counted.</p><input type="file" accept=".csv,.json,.geojson,.txt" aria-label="Open point dataset"><div class="demo-actions"><button class="batch-sample">Sample points</button><button class="batch-clear">Clear dataset</button></div>';
-    side.append(upload);
+    toolContent.append(upload);
     async function run(points, invalid = 0) {
       const task = batchTask.next();
       if (!loaded) {

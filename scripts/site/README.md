@@ -33,14 +33,22 @@ generated `docs/demo.html` when rebuilding without the optional grid products
 
 The runtime contract is `createMapDemo({container, initialView, adapter, limits})`.
 An adapter supplies `id`, `layers`, `presets`, `queryPoint`, and optionally
-`describeResult`, `queryBatch`, `pointColor`, `acceptClick`, `clearSelection`,
+`describeResult`, `resultNotice`, `queryBatch`, `pointColor`, `acceptClick`, `clearSelection`,
 `setVisible` and `dispose`. Shared `task(name)` / `cancel(name)` generation guards
 prevent stale rendering; `setPaint` preserves scientific expressions when the
 user changes opacity. `loadWithRetry` handles recoverable core loading.
 
 Lookup pages share the point-dataset control (CSV or GeoJSON, 2 MB / 5,000 rows,
 invalid-row count, yielding, sample, cancellation/clear). Existing richer route
-and benchmark tools remain under **Layers and tools**. Benchmarks still classify
+and benchmark tools remain under **Layers and tools**, a collapsible overlay at
+the map's top left (open on desktop, initially collapsed on narrow screens).
+Visibility, opacity and point uploads live there too; the right side is for
+selected-point results. Zoom/compass controls sit at the top right, clear of the
+overlay. Refinement controls and their loading/error state remain in an
+always-visible header row, outside the overlay. Country and coastal lookups show
+an explicit core-only caveat until refinement is enabled; enabling or disabling
+it refreshes the selected answer. Downloads remain opt-in, not triggered by presets.
+Benchmarks still classify
 their requested point count, but upload at most 5,000 displayed point features.
 Settlement retains its 6,500-cell limit, two-face detail cache and opt-in details.
 The separate coverage demo retains its own drawing controls and bounded output.
@@ -78,8 +86,11 @@ fixture builder's Python interpreter. `QA_PAGES` selects a comma-separated subse
 
 The browser suite serves a **synthetic UI-only** three-run L12 fixture and limits
 coverage geometry to one real SDK-generated triangle per request. Comparison
-switching uses a one-cell fixture, and refinement toggles use an empty valid
-refinement file. These are UI tests, not scientific accuracy evidence. They run
+switching uses a one-cell fixture. Coastal refinement uses an empty valid file;
+country refinement assigns one synthetic cell to VAT, verifying that the Vatican
+preset's displayed answer and core-only caveat refresh after loading and retry.
+This is not real Vatican border geometry. These are UI tests, not scientific
+accuracy evidence. They run
 pages sequentially, close promptly, and never render a global L12 dataset or
 run the 100k benchmark. Production CARTO tiles are exercised without fixtures.
 Expected 503 responses test recovery. Screenshots are written to a temporary

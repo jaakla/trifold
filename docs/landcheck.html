@@ -71,15 +71,11 @@
         <code>lat</code>/<code>lon</code> columns in either order). GeoJSON: a
         FeatureCollection of Points (Points mode) or a LineString (Route mode).
         Files stay on your machine.</div></div>
-<div class="row"><label>OSM coastal refinement</label>
-<label style="display:flex;gap:7px;align-items:flex-start;cursor:pointer;font-size:12.5px;
-            font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink)">
-<input id="refinecb" style="margin-top:2px" type="checkbox"/>
-<span>exact OSM polygon test wherever the coastline crosses a cell
-            (downloads once)</span></label>
-<div class="note" id="refinenote">Off: coastal answers use the bundled
-        land-area fraction. On: near-exact coastline. Watch how the counts,
-        confidence and lookup rate change.</div></div>
+<div class="row">
+<label><input aria-describedby="refinenote" id="refinecb" type="checkbox"/>
+<strong>OSM coastal refinement</strong><span>Enable polygon lookup · downloads once</span></label>
+<div class="note" id="refinenote">Off — coastal answers use bundled land-area fractions.
+        Enable refinement for near-exact coastline answers from OSM polygons.</div></div>
 <div class="row"><label>Debug layers</label>
 <label style="display:flex;gap:7px;align-items:flex-start;cursor:pointer;font-size:12.5px;
             font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink)">

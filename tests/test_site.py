@@ -75,3 +75,17 @@ def test_overview_is_separate_from_live_demo():
     assert soup.select_one('#demo #map')
     assert soup.select_one('#coverage #covermap')
     assert 'demo.html' in overview
+
+
+def test_refinement_has_visible_copy_and_accessible_status():
+    for name in ('countrycheck', 'landcheck'):
+        soup = BeautifulSoup((ROOT / f'docs/{name}.html').read_text(), 'html.parser')
+        control = soup.select_one('#refinecb')
+        assert control['aria-describedby'] == 'refinenote'
+        assert not control.has_attr('checked')  # Large downloads stay opt-in.
+        assert 'refinement' in control.find_parent('label').get_text().lower()
+        assert 'Off' in soup.select_one('#refinenote').get_text()
+    runtime = (ROOT / 'docs/assets/map-demo.mjs').read_text()
+    assert 'stage.append(details)' in runtime
+    assert 'frame.querySelector(".demo-query").before(refinement)' in runtime
+    assert 'refinement.querySelector("#refinenote").setAttribute("role", "status")' in runtime

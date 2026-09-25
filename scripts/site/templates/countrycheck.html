@@ -84,15 +84,11 @@
         <code>lat</code>/<code>lon</code> columns in either order). GeoJSON: a
         FeatureCollection of Points (Points mode) or a LineString (Route mode).
         Files stay on your machine.</div></div>
-      <div class="row"><label>Exact border refinement</label>
-        <label style="display:flex;gap:7px;align-items:flex-start;cursor:pointer;font-size:12.5px;
-            font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink)">
-          <input type="checkbox" id="refinecb" style="margin-top:2px">
-          <span>exact polygon test wherever a border crosses a cell
-            (downloads ~19&nbsp;MB once)</span></label>
-        <div class="note" id="refinenote">Off: border cells use the bundled best-call
-        with its area share as confidence. On: exact country/country and coastline
-        borders. Watch how the counts, confidence and lookup rate change.</div></div>
+      <div class="row">
+        <label><input type="checkbox" id="refinecb" aria-describedby="refinenote">
+          <strong>Exact border refinement</strong><span>Enable polygon lookup · downloads ~19&nbsp;MB once</span></label>
+        <div class="note" id="refinenote">Off — core-only estimates. Small countries such as
+        Vatican City may resolve to a neighbour. Enable refinement for source-polygon border answers.</div></div>
       <div class="row"><label>Debug layers</label>
         <label style="display:flex;gap:7px;align-items:flex-start;cursor:pointer;font-size:12.5px;
             font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink)">

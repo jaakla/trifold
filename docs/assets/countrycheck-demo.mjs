@@ -162,6 +162,7 @@ const demo=createMapDemo({container:'map',initialView:{center:[15,30],zoom:1.4},
   id:'countrycheck',layers:['borderzones','borderlines','cell-fill','cell-line','pts','route-line','route-verts'],
   presets:CITIES.slice(0,10).map(c=>({name:c[0],center:[c[1],c[2]],zoom:10})),
   queryPoint:([lon,lat])=>{drawCell(lon,lat);return cc.check(lon,lat);},
+  resultNotice:()=>!cc._refine?'Core-only estimate: small countries such as Vatican City and border locations may resolve to a neighbour. Enable Exact border refinement in the map header.':null,
   queryBatch:([lon,lat])=>cc.check(lon,lat),pointColor:r=>countryColor(codeToCid.get(r.country)),
   acceptClick:()=>mode!=='route',
   clearSelection:()=>map.getSource('cell')?.setData(EMPTY)
@@ -383,14 +384,14 @@ refinecb.onchange=async()=>{
     refinecb.disabled=false;
     if(!loaded){
       refinecb.checked=false;
-      refinenote.textContent='Could not download the refinement layer, so the bundled best calls stay in use.';
+      refinenote.textContent='Download failed — core-only estimates remain active. Small countries may resolve to a neighbour. Check the box to retry.';
       return;
     }
   }else{
     cc._refine=refinecb.checked?refineCells:null;
     refinenote.textContent=refinecb.checked
       ?'Exact polygon test active in border cells.'
-      :'Off: border cells use the bundled best call and its area share.';
+      :'Off — core-only estimates. Small countries such as Vatican City may resolve to a neighbour. Enable refinement for source-polygon border answers.';
   }
   if(lastPts)show(lastPts,lastLabel);   // re-classify so the effect is visible
   demo.refreshSelection();

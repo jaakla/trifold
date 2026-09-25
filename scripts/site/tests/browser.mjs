@@ -10,6 +10,15 @@ import {join} from 'node:path';
 import {tmpdir} from 'node:os';
 const repo=fileURLToPath(new URL('../../../',import.meta.url));
 const root=join(repo,'docs');
+const {CountryCheck,locateIndex}=await import(new URL('../../../countrycheck/js/countrycheck.mjs',import.meta.url));
+const countryCore=await CountryCheck.fromBytes(new Uint8Array(await fs.readFile(join(repo,'countrycheck/data/countries_L10.tfcs'))));
+function varint(value){const out=[];do{const b=value%128;value=Math.floor(value/128);out.push(b|(value?128:0));}while(value);return out;}
+// Synthetic UI-only refinement: one whole cell assigned to VAT. Not real borders.
+const countryHeader=Buffer.alloc(12);countryHeader.write('TFCR');countryHeader[4]=1;countryHeader[5]=10;countryHeader.writeUInt32LE(1,8);
+const countryRefinement=Buffer.concat([countryHeader,deflateSync(Buffer.from([
+ ...varint(locateIndex(12.4534,41.9029,10)),1,...varint(countryCore.countries.findIndex(c=>c.code==='VAT')),0
+]))]);
+async function openTools(frame){if(!await frame.locator('.demo-tools').evaluate(n=>n.open))await frame.locator('.demo-tools > summary').click();}
 const fixture=await fs.mkdtemp(join(tmpdir(),'trifold-site-qa-'));
 execFileSync(process.env.TRIFOLD_PYTHON||join(repo,'.venv/bin/python'),[join(repo,'scripts/site/tests/build_fixture.py'),fixture]);
 console.log('UI-only synthetic fixture and screenshots:',fixture);
@@ -31,7 +40,7 @@ try{for(const name of (process.env.QA_PAGES||'settlementcheck,landcheck,countryc
  const page=await browser.newPage({viewport:{width:1505,height:1045}}),errors=[];page.on('pageerror',e=>{errors.push(e.message);console.log(name,e.message);});page.on('console',m=>{if(m.type()==='error')console.log(name,m.text().slice(0,200));});
  page.setDefaultTimeout(15000);page.on('crash',()=>console.log('PAGE CRASH',name));
  let refinementFails=true;
- await page.route(/\.(tflr|tfcr)(\?|$)/,route=>{if(refinementFails)return route.fulfill({status:503,body:'UI fixture failure'});const header=Buffer.alloc(12);header.write(name==='landcheck'?'TFLR':'TFCR');header[4]=1;header[5]=10;return route.fulfill({status:200,body:Buffer.concat([header,deflateSync(Buffer.alloc(0))])});});
+ await page.route(/\.(tflr|tfcr)(\?|$)/,async route=>{await new Promise(r=>setTimeout(r,150));if(refinementFails)return route.fulfill({status:503,body:'UI fixture failure'});const header=Buffer.alloc(12);header.write(name==='landcheck'?'TFLR':'TFCR');header[4]=1;header[5]=10;return route.fulfill({status:200,body:name==='countrycheck'?countryRefinement:Buffer.concat([header,deflateSync(Buffer.alloc(0))])});});
  page.on('response',r=>{if(r.status()>=400)console.log('HTTP',r.status(),r.url());});
  const start=Date.now();await page.goto(`http://127.0.0.1:${server.address().port}/${name}.html`);
  let readyMs=Date.now()-start;
@@ -59,6 +68,12 @@ try{for(const name of (process.env.QA_PAGES||'settlementcheck,landcheck,countryc
    await page.waitForTimeout(150);
    await page.screenshot({path:join(fixture,`${name}-entry.png`)});
    const frame=page.locator('.map-demo').first();await frame.scrollIntoViewIfNeeded();
+   assert.equal(await frame.locator('.demo-stage > .demo-tools').evaluate(n=>n.open),true);
+   assert.equal(await frame.locator('.demo-side .demo-tools').count(),0);
+   await frame.locator('.demo-tools > summary').click();
+   assert.equal(await frame.locator('.demo-visible').isVisible(),false);
+   await frame.locator('.demo-tools > summary').focus();await page.keyboard.press('Enter');
+   assert.equal(await frame.locator('.demo-visible').isVisible(),true);
    await frame.locator('[name=longitude]').fill('24.7536');await frame.locator('[name=latitude]').fill('59.437');
    await frame.getByRole('button',{name:'Inspect point',exact:true}).click();
    await page.waitForTimeout(350);assert.match(await frame.locator('.demo-status:not(.demo-layer-status)').innerText(),/Point ready/);
@@ -78,7 +93,7 @@ try{for(const name of (process.env.QA_PAGES||'settlementcheck,landcheck,countryc
      await page.waitForFunction(()=>document.querySelector('#detail-status')?.textContent.includes('unavailable'));failDetails=false;
      await page.getByRole('button',{name:'Load boundary details for this point'}).click();await page.waitForFunction(()=>!document.querySelector('#load-details'));
      assert.equal(details,2);assert.match(await page.locator('#result').innerText(),/60.0%/);
-     await frame.locator('.demo-tools summary').click();
+     await openTools(frame);
      await page.locator('#mixed').check();await page.waitForFunction(()=>document.querySelector('#status').textContent.startsWith('Rendered'));
      await page.locator('#mixed').uncheck();
      // No over-cap allocation: the budget gate empties the source at low zoom.
@@ -88,7 +103,7 @@ try{for(const name of (process.env.QA_PAGES||'settlementcheck,landcheck,countryc
      await page.waitForFunction(()=>document.querySelector('#status').textContent.startsWith('Rendered'));
      await page.evaluate(()=>__settlementcheck.demo.select(180.01,0));
      assert.match(await frame.locator('[name=longitude]').inputValue(),/-179.99/);
-     await frame.locator('.demo-tools summary').click();
+     await openTools(frame);
    }
    await frame.locator('.demo-visible').uncheck();await frame.locator('.demo-visible').check();
    if(['settlementcheck','landcheck','countrycheck'].includes(name)){
@@ -98,22 +113,40 @@ try{for(const name of (process.env.QA_PAGES||'settlementcheck,landcheck,countryc
      await frame.locator('.batch-sample').click();await page.waitForFunction(()=>document.querySelector('.demo-status').textContent.includes('points classified'));
    }
    if(name==='landcheck'||name==='countrycheck'){
-     await frame.locator('.demo-tools summary').click();
+     await openTools(frame);
      await page.locator('#seg-mode [data-v=route]').click();await page.locator('#b-route-eu').click();
      assert.match(await page.locator('#routenote').innerText(),/classified/);
      await page.locator('#fileinput').setInputFiles({name:'tiny-route.geojson',mimeType:'application/json',buffer:Buffer.from('{"type":"LineString","coordinates":[[24.7536,59.437],[24.754,59.438]]}')});
      await page.waitForTimeout(100);assert.equal(await page.locator('#droperr').innerText(),'');
      await page.locator('#b-route-clear').click();
      await page.locator('#seg-mode [data-v=points]').click();
-     await page.locator('#refinecb').check();await page.waitForFunction(()=>!document.querySelector('#refinecb').checked&&!document.querySelector('#refinecb').disabled);
+     await frame.locator('.demo-tools > summary').click();
+     assert.equal(await frame.locator('.demo-refinement #refinecb').isVisible(),true);
+     assert.equal(await frame.locator('.demo-tools #refinecb').count(),0);
+     if(name==='countrycheck'){
+       await frame.locator('[name=preset]').selectOption({label:'Vatican City'});
+       await page.waitForFunction(()=>document.querySelector('.demo-result-notice')?.textContent.includes('Core-only'));
+       assert.match(await page.locator('#refinenote').innerText(),/Vatican/);
+       await frame.scrollIntoViewIfNeeded();await page.screenshot({path:join(fixture,'vatican-core.png')});
+     }
+     await page.locator('#refinecb').check();
+     assert.equal(await page.locator('#refinecb').isDisabled(),true);
+     assert.match(await page.locator('#refinenote').innerText(),/Downloading/);
+     await page.waitForFunction(()=>!document.querySelector('#refinecb').checked&&!document.querySelector('#refinecb').disabled);
+     assert.match(await page.locator('#refinenote').innerText(),/retry/);
      refinementFails=false;await page.locator('#refinecb').check();await page.waitForFunction(()=>document.querySelector('#refinenote').textContent.includes('Loaded:'));
+     if(name==='countrycheck'){
+       await page.waitForFunction(()=>document.querySelector('.demo-result')?.textContent.includes('VAT')&&!document.querySelector('.demo-result-notice'));
+     }
      await page.locator('#refinecb').uncheck();
+     await page.waitForFunction(()=>document.querySelector('.demo-result-notice'));
+     await openTools(frame);
    }
    if(name==='demo'){
-     await frame.locator('.demo-tools summary').click();await page.locator('#seg-level [data-v="4"]').click();
+     await openTools(frame);await page.locator('#seg-level [data-v="4"]').click();
      await page.locator('#seg-sys [data-v="h3"]').click();await page.waitForTimeout(100);assert.match(await page.locator('#sysnote').innerText(),/Uber H3/);
      await page.locator('#seg-sys [data-v="tri"]').click();
-     const cover=page.locator('.map-demo').nth(1);await cover.locator('.demo-tools summary').click();
+     const cover=page.locator('.map-demo').nth(1);await openTools(cover);
      await page.locator('#cover-compare [data-v="s2"]').click();await page.locator('#cover-run').click();
      assert.match(await page.locator('#cover-status').innerText(),/S2/);
      await page.locator('#cover-output [data-v="ranges"]').click();
@@ -124,8 +157,25 @@ try{for(const name of (process.env.QA_PAGES||'settlementcheck,landcheck,countryc
    }
  }
  const code=page.locator('pre:has(code)').first();if(await code.count()){const expected=await code.locator('code').innerText();await code.getByRole('button',{name:'Copy code'}).click();assert.equal(await page.evaluate(()=>navigator.clipboard.readText()),expected);}
- await page.evaluate(()=>document.querySelectorAll('.demo-side').forEach(n=>n.scrollTop=0));
+ await page.evaluate(()=>document.querySelectorAll('.demo-side,.demo-tool-content').forEach(n=>n.scrollTop=0));
  await page.screenshot({path:join(fixture,`${name}-desktop.png`)});
- for(const width of [1440,1024,390,320]){await page.setViewportSize({width,height:width===1440?900:width===1024?768:844});await page.evaluate(()=>scrollTo(0,0));await page.waitForTimeout(120);if(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth))console.log('overflow',name,width,await page.evaluate(()=>[...document.querySelectorAll('main *')].filter(n=>n.getBoundingClientRect().right>innerWidth).slice(0,15).map(n=>[n.tagName,n.id,n.className,n.getBoundingClientRect().width])));assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,`${name} overflow ${width}`);if(width===390){await page.screenshot({path:join(fixture,`${name}-mobile.png`)});await page.getByRole('button',{name:'Menu',exact:true}).click();assert.equal(await page.locator('#product-nav a:visible').count(),7);await page.keyboard.press('Escape');assert.equal(await page.locator('.menu-toggle').getAttribute('aria-expanded'),'false');}}
+ for(const width of [1440,1024,390,320]){await page.setViewportSize({width,height:width===1440?900:width===1024?768:844});await page.evaluate(()=>scrollTo(0,0));await page.waitForTimeout(120);if(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth))console.log('overflow',name,width,await page.evaluate(()=>[...document.querySelectorAll('main *')].filter(n=>n.getBoundingClientRect().right>innerWidth).slice(0,15).map(n=>[n.tagName,n.id,n.className,n.getBoundingClientRect().width])));assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,`${name} overflow ${width}`);if(width===390){
+   for(const stage of await page.locator('.demo-stage').all()){
+     const summary=stage.locator('.demo-tools > summary');
+     await summary.click();await summary.click();
+     assert.equal(await summary.isVisible(),true);
+     const box=await stage.locator('.demo-tools').boundingBox(),mapBox=await stage.locator('.demo-canvas').boundingBox();
+     assert.ok(box.x>=mapBox.x&&box.y>=mapBox.y&&box.y+box.height<=mapBox.y+mapBox.height,'overlay stays inside map');
+   }
+   await page.evaluate(()=>scrollTo(0,0));await page.screenshot({path:join(fixture,`${name}-mobile.png`)});await page.getByRole('button',{name:'Menu',exact:true}).click();assert.equal(await page.locator('#product-nav a:visible').count(),7);await page.keyboard.press('Escape');assert.equal(await page.locator('.menu-toggle').getAttribute('aria-expanded'),'false');}}
+ if(name==='countrycheck'){
+   await page.setViewportSize({width:390,height:844});await page.reload();
+   await page.waitForFunction(()=>window.__countrycheck?.map.getSource('points'));
+   assert.equal(await page.locator('.demo-tools').evaluate(n=>n.open),false);
+   assert.equal(await page.locator('.demo-refinement #refinecb').isVisible(),true);
+   await page.screenshot({path:join(fixture,'countrycheck-mobile-entry.png')});
+   await openTools(page.locator('.map-demo'));
+   assert.equal(await page.locator('.demo-visible').isVisible(),true);
+ }
  console.log(JSON.stringify({name,readyMs,flowMs:Date.now()-start,errors}));assert.deepEqual(errors,[]);await page.close();
 }}finally{await browser.close();server.close();}

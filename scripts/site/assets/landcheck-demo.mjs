@@ -142,6 +142,7 @@ const demo=createMapDemo({container:'map',initialView:{center:[15,30],zoom:1.4},
   id:'landcheck',layers:['coastline','coast-zones','cell-fill','cell-line','pts','route-line','route-verts'],
   presets:CITIES.slice(0,10).map(c=>({name:c[0],center:[c[1],c[2]],zoom:10})),
   queryPoint:([lon,lat])=>{drawCell(lon,lat);return lc.check(lon,lat);},
+  resultNotice:()=>!lc._refine?'Core-only lookup: coastal answers use bundled land-area fractions. Enable OSM coastal refinement in the map header for polygon lookup.':null,
   queryBatch:([lon,lat])=>lc.check(lon,lat),pointColor:r=>KIND_COLOR[r.kind],
   acceptClick:()=>mode!=='route',
   clearSelection:()=>map.getSource('cell')?.setData(EMPTY)
@@ -404,7 +405,7 @@ refinecb.onchange=async()=>{
     refinecb.disabled=false;
     if(!loaded){
       refinecb.checked=false;
-      refinenote.textContent='Could not download the refinement layer, so the bundled fractions stay in use.';
+      refinenote.textContent='Download failed — bundled land-area fractions remain active. Check the box to retry.';
       return;
     }
   }else{
