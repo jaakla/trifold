@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Trifold live demo</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<script src="https://unpkg.com/maplibre-gl@5.6.2/dist/maplibre-gl.js"></script>
+<link href="https://unpkg.com/maplibre-gl@5.6.2/dist/maplibre-gl.css" rel="stylesheet">
+<script src="https://unpkg.com/topojson-client@3/dist/topojson-client.min.js"></script>
+<script src="https://unpkg.com/pmtiles@3/dist/pmtiles.js"></script>
+</head>
+<body>
+<section class="hero">
+  <h1>Live demo</h1>
+  <p>Compare seven grid systems, inspect cells, and draw coverage queries.
+  Use the same CARTO vector basemap in Globe or Flat view.</p>
+</section>
+
+<section id="demo">
+  <div class="inner">
+    <h2>Live demo: 7 grid systems, one map</h2>
+    <p>Trifold triangles vs <a href="https://a5geo.org" target="_blank">A5</a> pentagons,
+    H3 hexagons, S2 quads, rHEALPix, HTM (a related octahedral grid) and a plain lon/lat
+    grid. Each layer uses the same land mask and styling. Toggle <b>globe ↔ flat</b> to compare
+    the globe and Mercator projections; click any cell for its address and properties.</p>
+  </div>
+  <div class="viewerwrap">
+    <div id="map"></div>
+    <div id="loading">Loading grid data…</div>
+    <div class="panel">
+      <div class="phead"><b>Controls</b>
+        <button id="panelmin" aria-label="minimize control panel" title="minimize">–</button></div>
+      <div class="row"><label>System</label>
+        <div class="seg" id="seg-sys">
+          <button data-v="tri" class="on">T3 ▲</button>
+          <button data-v="a5">A5 ⬠</button>
+          <button data-v="h3">H3 ⬡</button>
+          <button data-v="s2">S2 ◻</button>
+          <button data-v="rhpx">rHPX</button>
+          <button data-v="htm">HTM</button>
+          <button data-v="rect">lon/lat</button>
+        </div></div>
+      <div class="row" id="row-level"><label>T3 base resolution</label>
+        <div class="seg" id="seg-level">
+          <button data-v="4">~440 km</button>
+          <button data-v="5">~220 km</button>
+          <button data-v="6" class="on">~110 km</button>
+          <button data-v="7">~55 km</button>
+          <button data-v="8">~28 km</button>
+          <button data-v="9">~14 km</button>
+          <button data-v="10">~7 km</button>
+        </div></div>
+      <div class="row" id="row-group"><label>Group as</label>
+        <div class="seg" id="seg-group">
+          <button data-v="triangle" class="on">Triangle ▲</button>
+          <button data-v="rhombus">Rhombus ◆</button>
+          <button data-v="hex">Hex group ⬡</button>
+        </div></div>
+      <div class="row"><label>Hierarchy</label>
+        <div class="seg" id="seg-mode">
+          <button data-v="compacted" class="on">Compacted</button>
+          <button data-v="uncompacted">Uncompacted</button>
+        </div></div>
+      <div class="row"><label>Projection</label>
+        <div class="seg" id="seg-proj">
+          <button data-v="globe" class="on">Globe</button>
+          <button data-v="mercator">Flat</button>
+        </div></div>
+      <div class="legend" id="legend"></div>
+      <div id="stats"></div>
+      <div class="note" id="sysnote"></div>
+    </div>
+  </div>
+
+</section>
+
+<section id="coverage">
+  <div class="inner">
+    <h2>Coverage demo: bbox_cover and polyfill</h2>
+    <p>Draw a query shape and Trifold returns stable indexes for the triangular cells that overlap it.
+    The full output is fixed-level cells; compacted output folds complete sibling sets into variable-level
+    parents; ranges are addr64 intervals for subtree scans. Switch on <b>T3 + S2</b> to cover the same
+    shape with Google S2 cells (computed live in the browser, area-matched level) and compare how much each
+    grid's quadtree <b>compaction</b> folds away.</p>
+  </div>
+  <div class="coverwrap">
+    <div id="covermap"></div>
+    <div class="coverpanel">
+      <div class="phead"><b>Controls</b>
+        <button id="coverpanelmin" aria-label="minimize control panel" title="minimize">–</button></div>
+      <div class="row"><label>Draw</label>
+        <div class="seg" id="cover-draw">
+          <button data-v="bbox" class="on">Bbox</button>
+          <button data-v="polygon">Polygon</button>
+        </div></div>
+      <div class="row"><label>Compare</label>
+        <div class="seg" id="cover-compare">
+          <button data-v="t3" class="on">T3 &#9650;</button>
+          <button data-v="s2">T3 + S2 &#9633;</button>
+        </div></div>
+      <div class="row"><label>Level</label>
+        <div class="coverrange">
+          <input id="cover-level" type="range" min="3" max="11" value="6" step="1">
+          <span class="coverlevel" id="cover-level-label">L6 ~110 km</span>
+        </div></div>
+      <div class="row"><label>Selection</label>
+        <div class="seg" id="cover-mode">
+          <button data-v="intersects" class="on">Intersects</button>
+          <button data-v="centroid">Centroid</button>
+        </div></div>
+      <div class="row"><label>Output</label>
+        <div class="seg" id="cover-output">
+          <button data-v="full" class="on">Full</button>
+          <button data-v="compacted">Compacted</button>
+          <button data-v="ranges">Ranges</button>
+        </div></div>
+      <div class="row"><label>Index</label>
+        <div class="seg" id="cover-format">
+          <button data-v="compact" class="on">Compact</button>
+          <button data-v="addr64">addr64</button>
+        </div></div>
+      <div class="coveractions">
+        <button class="primary" id="cover-run">Run</button>
+        <button id="cover-finish">Finish</button>
+        <button id="cover-clear">Clear</button>
+      </div>
+      <div class="coverhint" id="cover-hint">Drag to draw a bbox, or switch to polygon and click vertices.</div>
+      <div class="coverstats" id="cover-status">Loading coverage demo...</div>
+      <pre class="coverout" id="cover-output-box">[]</pre>
+      <div class="note">Coverage is conservative in intersects mode. The index list is T3; S2 is shown on the map
+      and in the stats. S2 cells are real Google S2 quads (quadratic projection, Hilbert order); the cover is
+      fixed-level to mirror T3's, not S2's variable-level region coverer.</div>
+    </div>
+  </div>
+
+</section>
+
+<p class="small">Land mask: <a href="https://www.naturalearthdata.com/">Natural Earth</a>.
+Comparison layers via pya5, h3-py, s2sphere and rhealpixdggs.
+<a href="index.html#compare">Grid comparison and trade-offs</a> ·
+<a href="sdk-api.html">SDK API</a></p>
+
+<script>__DATA__
+window.TRIFOLD_DATA={DATASETS,PMTILES_DATASETS,DATASET_STATS};</script>
+<script type="module" src="assets/index-demo.mjs"></script>
+</body>
+</html>

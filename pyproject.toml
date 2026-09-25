@@ -32,6 +32,7 @@ Documentation = "https://github.com/jaakla/trifold/blob/main/docs/t3-technical-r
 land = ["shapely>=2.0", "pyproj"]
 build = ["shapely>=2.0", "pyproj", "rasterio", "geopandas", "topojson", "h3>=4", "pya5", "s2sphere", "rhealpixdggs", "matplotlib"]
 dev = ["pytest"]
+site = ["beautifulsoup4==4.13.4", "Markdown==3.8.2"]
 
 [project.scripts]
 trifold = "trifold.cli:main"

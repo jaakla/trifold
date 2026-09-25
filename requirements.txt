@@ -1,6 +1,6 @@
 # Requirements for running the scripts/ tools in a virtualenv
 # System tools: tippecanoe (for make_pmtiles.sh) is OS-level (brew or build from source).
--e .[build]
+-e .[build,site]
 
 # Runtime packages (explicit fallback if you prefer explicit pins)
 numpy
